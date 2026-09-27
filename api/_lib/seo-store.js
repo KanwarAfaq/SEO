@@ -1,4 +1,4 @@
-const STORE_URL = process.env.SEO_STORE_URL || 'https://wikbbpvhvevcbqkpnikj.supabase.co/functions/v1/seo-store';
+const STORE_URL = process.env.SEO_STORE_URL || 'https://wikbbpvhvevcbqkpnikj.supabase.co/functions/v1/seo-store-v2';
 
 async function seoStore(action, payload = {}) {
   const secret = process.env.SEO_STORAGE_SECRET;
