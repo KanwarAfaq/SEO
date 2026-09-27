@@ -1,5 +1,5 @@
-const { googleFetch } = require('./_lib/google');
-const { getSites } = require('./_lib/config');
+const { googleFetch } = require('../google');
+const { getSites } = require('../config');
 const SCOPE = ['https://www.googleapis.com/auth/analytics.readonly'];
 
 module.exports = async function handler(req, res) {

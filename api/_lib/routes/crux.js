@@ -1,4 +1,4 @@
-const { getSites } = require('./_lib/config');
+const { getSites } = require('../config');
 
 const METRICS = ['largest_contentful_paint','interaction_to_next_paint','cumulative_layout_shift','first_contentful_paint'];
 

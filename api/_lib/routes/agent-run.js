@@ -1,5 +1,5 @@
-const { requireAdmin, getSites } = require('./_lib/config');
-const { seoStore } = require('./_lib/seo-store');
+const { requireAdmin, getSites } = require('../config');
+const { seoStore } = require('../seo-store');
 
 function invoke(handler, req={}) {
   return new Promise((resolve,reject)=>{
@@ -24,12 +24,12 @@ module.exports=async function handler(req,res){
   const startedAt=new Date().toISOString();
   try{
     const [healthR,gscR,gaR,auditR,cruxR,oppR]=await Promise.all([
-      invoke(require('./sites-health'),{}),
-      invoke(require('./gsc-overview'),{}),
-      invoke(require('./ga4-realtime'),{}),
-      invoke(require('./technical-audit'),{}),
+      invoke(require('../../sites-health'),{}),
+      invoke(require('../../gsc-overview'),{}),
+      invoke(require('../../ga4-realtime'),{}),
+      invoke(require('../../technical-audit'),{}),
       invoke(require('./crux'),{query:{}}),
-      invoke(require('./gsc-opportunities'),{})
+      invoke(require('../../gsc-opportunities'),{})
     ]);
     const health=healthR.body?.sites||[], gsc=gscR.body?.sites||[], ga=gaR.body?.sites||[], audits=auditR.body?.sites||[], crux=cruxR.body?.sites||[], opps=oppR.body?.opportunities||[];
     const sites=getSites();

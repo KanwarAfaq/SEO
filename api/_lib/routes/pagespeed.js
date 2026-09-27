@@ -1,5 +1,5 @@
-const { getSites } = require('./_lib/config');
-const { getGoogleAccessToken } = require('./_lib/google');
+const { getSites } = require('../config');
+const { getGoogleAccessToken } = require('../google');
 
 async function run(url, strategy) {
   const qs = new URLSearchParams({ url, strategy });
