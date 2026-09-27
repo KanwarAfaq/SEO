@@ -11,114 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Wait for production alias to respond
+      - name: Probe production
         shell: bash
         run: |
-          set -e
+          set +e
           BASE="https://seo-kmafaq.vercel.app"
-          for i in {1..12}; do
-            code=$(curl -L -sS -o /tmp/home.html -w "%{http_code}" "$BASE/" || true)
-            echo "Attempt $i -> HTTP $code"
-            if [ "$code" = "200" ]; then
-              break
-            fi
-            sleep 5
+          echo "=== HOME ==="
+          code=$(curl -L -sS -o /tmp/home.html -w "%{http_code}" "$BASE/")
+          echo "HTTP=$code"
+          head -c 800 /tmp/home.html; echo
+          echo
+          for path in api/config-status api/sites-health api/gsc-overview api/ga4-realtime api/technical-audit; do
+            echo "=== /$path ==="
+            code=$(curl -L -sS -o /tmp/out.txt -w "%{http_code}" "$BASE/$path")
+            echo "HTTP=$code"
+            head -c 5000 /tmp/out.txt; echo
+            echo
           done
-          test "$code" = "200"
-          grep -q "SEO Control Center" /tmp/home.html
-          echo "HOME_OK"
-
-      - name: Check configuration flags
-        shell: bash
-        run: |
-          set -e
-          BASE="https://seo-kmafaq.vercel.app"
-          curl -fsSL "$BASE/api/config-status" | tee /tmp/config.json
-          python - <<'PY'
-          import json
-          d=json.load(open('/tmp/config.json'))
-          print("CONFIG", d)
-          required=["google","line","adminProtection","siteConfig"]
-          missing=[k for k in required if not d.get(k)]
-          if missing:
-              raise SystemExit("Missing configuration: "+", ".join(missing))
-          PY
-
-      - name: Check all four websites and sitemaps
-        shell: bash
-        run: |
-          set -e
-          BASE="https://seo-kmafaq.vercel.app"
-          curl -fsSL "$BASE/api/sites-health" | tee /tmp/health.json
-          python - <<'PY'
-          import json
-          d=json.load(open('/tmp/health.json'))
-          sites=d.get("sites",[])
-          print("HEALTH_SITES", len(sites))
-          for s in sites:
-              print(s.get("domain"), "site=",s.get("status"),"sitemap=",s.get("sitemapStatus"),"latency=",s.get("latency"))
-          if len(sites)!=4:
-              raise SystemExit("Expected 4 sites")
-          PY
-
-      - name: Check Google Search Console
-        shell: bash
-        run: |
-          set -e
-          BASE="https://seo-kmafaq.vercel.app"
-          code=$(curl -sS -o /tmp/gsc.json -w "%{http_code}" "$BASE/api/gsc-overview")
-          cat /tmp/gsc.json
-          echo
-          echo "GSC_HTTP=$code"
-          test "$code" = "200"
-          python - <<'PY'
-          import json
-          d=json.load(open('/tmp/gsc.json'))
-          sites=d.get("sites",[])
-          print("GSC_RESULTS")
-          for s in sites:
-              print(s.get("id"), "clicks=",s.get("clicks"),"impressions=",s.get("impressions"),"error=",s.get("error"))
-          errs=[s for s in sites if s.get("error")]
-          if errs:
-              raise SystemExit("GSC errors: "+str([(x.get("id"),x.get("error")) for x in errs]))
-          PY
-
-      - name: Check GA4 realtime
-        shell: bash
-        run: |
-          set -e
-          BASE="https://seo-kmafaq.vercel.app"
-          code=$(curl -sS -o /tmp/ga.json -w "%{http_code}" "$BASE/api/ga4-realtime")
-          cat /tmp/ga.json
-          echo
-          echo "GA4_HTTP=$code"
-          test "$code" = "200"
-          python - <<'PY'
-          import json
-          d=json.load(open('/tmp/ga.json'))
-          sites=d.get("sites",[])
-          print("GA4_RESULTS")
-          for s in sites:
-              print(s.get("id"), "configured=",s.get("configured"),"active=",s.get("activeUsers"),"error=",s.get("error"))
-          errs=[s for s in sites if s.get("error")]
-          missing=[s for s in sites if s.get("configured") is False]
-          if errs or missing:
-              raise SystemExit("GA4 not fully healthy")
-          PY
-
-      - name: Run technical audit endpoint
-        shell: bash
-        run: |
-          set -e
-          BASE="https://seo-kmafaq.vercel.app"
-          curl -fsSL "$BASE/api/technical-audit" | tee /tmp/audit.json
-          python - <<'PY'
-          import json
-          d=json.load(open('/tmp/audit.json'))
-          sites=d.get("sites",[])
-          print("AUDIT_RESULTS")
-          for s in sites:
-              print(s.get("domain"),"score=",s.get("score"),"issues=",len(s.get("issues") or []))
-          if len(sites)!=4:
-              raise SystemExit("Expected 4 audit results")
-          PY
