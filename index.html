@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070b17" />
+  <meta name="description" content="SEO Control Center — monitor, diagnose and act across multiple websites." />
+  <title>SEO Control Center</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div><strong>SEO Control</strong><span>Operations Center</span></div>
+      </div>
+      <nav class="nav" id="nav">
+        <button class="nav-item active" data-view="overview"><span>⌂</span><b>Overview</b></button>
+        <button class="nav-item" data-view="search"><span>⌕</span><b>Google Search</b></button>
+        <button class="nav-item" data-view="realtime"><span>◉</span><b>Live Traffic</b></button>
+        <button class="nav-item" data-view="indexing"><span>◎</span><b>Indexing</b></button>
+        <button class="nav-item" data-view="actions"><span>⚡</span><b>Actions</b><i class="pill">4</i></button>
+        <button class="nav-item" data-view="alerts"><span>♢</span><b>Alerts</b></button>
+        <div class="nav-label">Workspace</div>
+        <button class="nav-item" data-view="integrations"><span>⛓</span><b>Integrations</b></button>
+        <button class="nav-item" data-view="settings"><span>⚙</span><b>Settings</b></button>
+      </nav>
+      <div class="side-foot">
+        <div class="agent-dot"></div>
+        <div><b>SEO Agent</b><small>Monitoring enabled</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <div class="crumb"><span>Workspace</span><b id="pageTitle">Overview</b></div>
+        <div class="top-actions">
+          <div class="live-chip"><i></i><span>Live monitoring</span></div>
+          <button class="icon-btn" id="refreshBtn" title="Refresh">↻</button>
+          <button class="primary-btn" id="runAuditBtn"><span>✦</span> Run audit</button>
+        </div>
+      </header>
+
+      <section class="content" id="view-overview">
+        <div class="hero-card">
+          <div>
+            <span class="eyebrow">MULTI-SITE COMMAND CENTER</span>
+            <h1>Search visibility, site health and actions — <em>in one place.</em></h1>
+            <p>Monitor four websites, detect SEO problems and trigger safe fixes without jumping between tools.</p>
+            <div class="hero-actions"><button class="primary-btn" data-view-jump="actions">Open action center</button><button class="ghost-btn" data-view-jump="integrations">Connect data sources</button></div>
+          </div>
+          <div class="radar-wrap">
+            <div class="radar"><div class="radar-sweep"></div><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span><div class="radar-center">4<small>sites</small></div></div>
+          </div>
+        </div>
+
+        <div class="status-strip" id="statusStrip">
+          <div class="strip-item"><span class="status-icon ok">✓</span><div><b id="healthySites">4 / 4</b><small>Sites online</small></div></div>
+          <div class="strip-item"><span class="status-icon blue">◉</span><div><b id="activeUsers">—</b><small>Active users</small></div></div>
+          <div class="strip-item"><span class="status-icon purple">⌕</span><div><b id="searchClicks">—</b><small>Search clicks · 28d</small></div></div>
+          <div class="strip-item"><span class="status-icon amber">!</span><div><b id="issueCount">0</b><small>Issues detected</small></div></div>
+          <div class="strip-item"><span class="status-icon cyan">↻</span><div><b id="lastUpdated">now</b><small>Last refresh</small></div></div>
+        </div>
+
+        <div class="section-head"><div><span class="eyebrow">PORTFOLIO HEALTH</span><h2>Your websites</h2></div><button class="text-btn" id="checkSitesBtn">Check all sites →</button></div>
+        <div class="site-grid" id="siteGrid"></div>
+
+        <div class="two-col">
+          <article class="panel performance-panel">
+            <div class="panel-head"><div><span class="eyebrow">ORGANIC PERFORMANCE</span><h3>Search clicks</h3></div><div class="segmented"><button class="active">28D</button><button>7D</button></div></div>
+            <div class="performance-summary"><div><b id="chartClicks">12.8K</b><span class="trend up">↑ 18.6%</span></div><span>Combined Google Search clicks</span></div>
+            <svg class="chart" id="clickChart" viewBox="0 0 800 230" preserveAspectRatio="none" aria-label="Search clicks trend"></svg>
+          </article>
+          <article class="panel activity-panel">
+            <div class="panel-head"><div><span class="eyebrow">AGENT ACTIVITY</span><h3>Latest signals</h3></div><span class="mini-live">LIVE</span></div>
+            <div id="activityList" class="activity-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="content hidden" id="view-search">
+        <div class="page-intro"><div><span class="eyebrow">GOOGLE SEARCH CONSOLE</span><h1>Search performance</h1><p>Clicks, impressions, CTR and average position across every property.</p></div><button class="primary-btn" id="refreshGscBtn">Refresh GSC</button></div>
+        <div class="metric-grid" id="gscMetrics"></div>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">PROPERTY BREAKDOWN</span><h3>28-day search performance</h3></div></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. position</th><th>Status</th></tr></thead><tbody id="gscTable"></tbody></table></div></article>
+        <article class="panel opportunity-panel"><div class="panel-head"><div><span class="eyebrow">QUICK-WIN FINDER</span><h3>SEO opportunities</h3></div><button class="text-btn" id="findOpportunitiesBtn">Find opportunities →</button></div><p class="panel-copy">High-impression queries currently around positions 4–20 with room to improve CTR or relevance.</p><div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Query</th><th>Position</th><th>Impressions</th><th>CTR</th><th>Page</th></tr></thead><tbody id="opportunityTable"><tr><td colspan="6">Connect Google and run the opportunity finder.</td></tr></tbody></table></div></article>
+      </section>
+
+      <section class="content hidden" id="view-realtime">
+        <div class="page-intro"><div><span class="eyebrow">GOOGLE ANALYTICS 4</span><h1>Realtime traffic</h1><p>Current visitors and activity from the GA4 Realtime API.</p></div><button class="primary-btn" id="refreshGaBtn">Refresh live data</button></div>
+        <div class="live-hero"><div><span class="pulse-ring"><i></i></span><div><small>ACTIVE USERS NOW</small><strong id="liveTotal">—</strong><span>across all connected properties</span></div></div><div class="live-bars" id="liveBars"></div></div>
+        <div class="site-grid" id="gaSiteGrid"></div>
+      </section>
+
+      <section class="content hidden" id="view-indexing">
+        <div class="page-intro"><div><span class="eyebrow">INDEX CONTROL</span><h1>Indexing & discovery</h1><p>Inspect URLs, verify sitemaps and notify supported search engines of changes.</p></div></div>
+        <div class="action-grid">
+          <article class="action-card accent-blue"><span class="action-icon">◎</span><h3>Inspect a URL</h3><p>Ask Google's URL Inspection API for the latest indexed status.</p><button class="action-button" data-action="inspect">Inspect URL</button></article>
+          <article class="action-card accent-purple"><span class="action-icon">⇧</span><h3>Submit sitemap</h3><p>Submit or resubmit a sitemap directly through Search Console.</p><button class="action-button" data-action="sitemap">Submit sitemap</button></article>
+          <article class="action-card accent-cyan"><span class="action-icon">↗</span><h3>IndexNow</h3><p>Notify IndexNow-compatible search engines about changed URLs.</p><button class="action-button" data-action="indexnow">Submit URLs</button></article>
+        </div>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">SITEMAPS</span><h3>Live sitemap checks</h3></div><button class="text-btn" id="sitemapRefreshBtn">Refresh</button></div><div class="data-table-wrap"><table><thead><tr><th>Property</th><th>Sitemap</th><th>HTTP</th><th>Entries</th><th>Health</th></tr></thead><tbody id="sitemapTable"></tbody></table></div></article>
+      </section>
+
+      <section class="content hidden" id="view-actions">
+        <div class="page-intro"><div><span class="eyebrow">SAFE AUTOMATION</span><h1>Action center</h1><p>Recommended fixes are queued here. External changes require your explicit approval.</p></div><span class="approval-badge">Approval mode ON</span></div>
+        <div class="action-queue" id="actionQueue"></div>
+      </section>
+
+      <section class="content hidden" id="view-alerts">
+        <div class="page-intro"><div><span class="eyebrow">LINE + MONITORING</span><h1>Alerts</h1><p>Critical site, sitemap and SEO signals are routed to LINE.</p></div><button class="primary-btn" id="testLineBtn">Send test LINE alert</button></div>
+        <div class="three-col">
+          <article class="panel stat-panel"><span class="stat-kicker">MONITOR INTERVAL</span><strong>5 min</strong><p>GitHub Actions monitor</p></article>
+          <article class="panel stat-panel"><span class="stat-kicker">ALERT CHANNEL</span><strong>LINE</strong><p id="lineStatusText">Waiting for credentials</p></article>
+          <article class="panel stat-panel"><span class="stat-kicker">NOISE CONTROL</span><strong>Planned</strong><p>Deduplication via Supabase</p></article>
+        </div>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">ALERT POLICY</span><h3>What triggers a notification</h3></div></div><div class="policy-grid"><div><b>🔴 Site unavailable</b><span>Timeout, 5xx or network failure</span></div><div><b>🟠 Sitemap failure</b><span>Unreachable or non-success HTTP status</span></div><div><b>🟡 Slow response</b><span>Page response over 4 seconds</span></div><div><b>🔵 SEO anomaly</b><span>Traffic/indexing anomaly — next phase</span></div></div></article>
+      </section>
+
+      <section class="content hidden" id="view-integrations">
+        <div class="page-intro"><div><span class="eyebrow">DATA SOURCES</span><h1>Integrations</h1><p>Connect the APIs that power monitoring, reporting and actions.</p></div></div>
+        <div class="integration-grid" id="integrationGrid"></div>
+        <article class="panel setup-panel"><div class="panel-head"><div><span class="eyebrow">GOOGLE SETUP</span><h3>Service-account wizard</h3></div></div><div class="steps"><div><span>1</span><p><b>Create a Google Cloud service account</b><small>Enable Search Console API + Google Analytics Data API.</small></p></div><div><span>2</span><p><b>Add its email to GSC</b><small>Give it access to all four Search Console properties.</small></p></div><div><span>3</span><p><b>Add it to GA4</b><small>Viewer access is enough for reporting.</small></p></div><div><span>4</span><p><b>Add JSON to Vercel</b><small>Save the one-line key as GOOGLE_SERVICE_ACCOUNT_JSON.</small></p></div></div></article>
+      </section>
+
+      <section class="content hidden" id="view-settings">
+        <div class="page-intro"><div><span class="eyebrow">WORKSPACE SECURITY</span><h1>Settings</h1><p>Action credentials are kept in session memory only and are never written to local storage.</p></div></div>
+        <article class="panel settings-form"><label>Admin action key<span>Used to authorize sitemap, URL inspection, IndexNow and LINE test actions.</span><input type="password" id="adminKey" placeholder="Enter ADMIN_ACTION_KEY" /></label><div class="form-row"><button class="primary-btn" id="saveAdminKey">Use for this session</button><button class="ghost-btn" id="clearAdminKey">Clear</button></div><div class="notice"><b>Security:</b> production secrets belong in Vercel Environment Variables and GitHub Actions Secrets — never in frontend source code.</div></article>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-wrap" id="toastWrap"></div>
+  <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal"><button class="modal-close" id="modalClose">×</button><div id="modalBody"></div></div></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
