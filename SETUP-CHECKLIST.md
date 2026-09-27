@@ -63,19 +63,19 @@ scholarportal.site GA4_PROPERTY_ID=
 
 The ChatGPT GitHub connector available in this chat can edit/push to existing repositories but does not expose repository creation.
 
-Create an empty repository in your GitHub account with this recommended name:
+Repository created and connected:
 
 ```text
-seo-control-center
+KanwarAfaq/SEO
 ```
 
-Recommended: Private initially. Do not initialize it with README/.gitignore/license, because the project already contains them.
+The project files are now pushed to the `main` branch.
 
 ## 4) Vercel
 
 After the GitHub repo exists:
 
-- Import `seo-control-center` into Vercel.
+- Import `KanwarAfaq/SEO` into Vercel.
 - We will add these Environment Variables:
   - `ADMIN_ACTION_KEY`
   - `MONITOR_SECRET`
