@@ -21,6 +21,7 @@
         <button class="nav-item active" data-view="overview"><span>⌂</span><b>Overview</b></button>
         <button class="nav-item" data-view="search"><span>⌕</span><b>Google Search</b></button>
         <button class="nav-item" data-view="realtime"><span>◉</span><b>Live Traffic</b></button>
+        <button class="nav-item" data-view="performance"><span>◇</span><b>Core Web Vitals</b></button>
         <button class="nav-item" data-view="indexing"><span>◎</span><b>Indexing</b></button>
         <button class="nav-item" data-view="actions"><span>⚡</span><b>Actions</b><i class="pill">4</i></button>
         <button class="nav-item" data-view="alerts"><span>♢</span><b>Alerts</b></button>
@@ -95,6 +96,13 @@
         <div class="site-grid" id="gaSiteGrid"></div>
       </section>
 
+      <section class="content hidden" id="view-performance">
+        <div class="page-intro"><div><span class="eyebrow">CRUX + PAGESPEED</span><h1>Core Web Vitals</h1><p>Real-user Chrome field data plus Lighthouse diagnostics for all four websites.</p></div><div class="hero-actions"><button class="ghost-btn" id="refreshCruxBtn">Refresh CrUX</button><button class="primary-btn" id="runPagespeedBtn">Run PageSpeed</button></div></div>
+        <div class="metric-grid" id="cwvSummary"></div>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">FIELD DATA</span><h3>75th percentile Core Web Vitals</h3></div><button class="text-btn" id="historyCruxBtn">View history →</button></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>LCP</th><th>INP</th><th>CLS</th><th>Status</th></tr></thead><tbody id="cwvTable"><tr><td colspan="5">CrUX data not loaded yet.</td></tr></tbody></table></div></article>
+        <article class="panel opportunity-panel"><div class="panel-head"><div><span class="eyebrow">LAB DIAGNOSTICS</span><h3>PageSpeed / Lighthouse</h3></div></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Device</th><th>Performance</th><th>Accessibility</th><th>Best practices</th><th>SEO</th></tr></thead><tbody id="pagespeedTable"><tr><td colspan="6">Run PageSpeed when you want a deeper diagnostic.</td></tr></tbody></table></div></article>
+      </section>
+
       <section class="content hidden" id="view-indexing">
         <div class="page-intro"><div><span class="eyebrow">INDEX CONTROL</span><h1>Indexing & discovery</h1><p>Inspect URLs, verify sitemaps and notify supported search engines of changes.</p></div></div>
         <div class="action-grid">
@@ -113,9 +121,9 @@
       <section class="content hidden" id="view-alerts">
         <div class="page-intro"><div><span class="eyebrow">LINE + MONITORING</span><h1>Alerts</h1><p>Critical site, sitemap and SEO signals are routed to LINE.</p></div><button class="primary-btn" id="testLineBtn">Send test LINE alert</button></div>
         <div class="three-col">
-          <article class="panel stat-panel"><span class="stat-kicker">MONITOR INTERVAL</span><strong>5 min</strong><p>GitHub Actions monitor</p></article>
+          <article class="panel stat-panel"><span class="stat-kicker">LINE DIGESTS</span><strong>4 / day</strong><p>08:00 · 12:00 · 18:00 · 22:00 Taiwan</p></article>
           <article class="panel stat-panel"><span class="stat-kicker">ALERT CHANNEL</span><strong>LINE</strong><p id="lineStatusText">Waiting for credentials</p></article>
-          <article class="panel stat-panel"><span class="stat-kicker">NOISE CONTROL</span><strong>Planned</strong><p>Deduplication via Supabase</p></article>
+          <article class="panel stat-panel"><span class="stat-kicker">NOISE CONTROL</span><strong>Enabled</strong><p>Issues/actions deduplicated in Supabase</p></article>
         </div>
         <article class="panel"><div class="panel-head"><div><span class="eyebrow">ALERT POLICY</span><h3>What triggers a notification</h3></div></div><div class="policy-grid"><div><b>🔴 Site unavailable</b><span>Timeout, 5xx or network failure</span></div><div><b>🟠 Sitemap failure</b><span>Unreachable or non-success HTTP status</span></div><div><b>🟡 Slow response</b><span>Page response over 4 seconds</span></div><div><b>🔵 SEO anomaly</b><span>Traffic/indexing anomaly — next phase</span></div></div></article>
       </section>
@@ -123,6 +131,7 @@
       <section class="content hidden" id="view-integrations">
         <div class="page-intro"><div><span class="eyebrow">DATA SOURCES</span><h1>Integrations</h1><p>Connect the APIs that power monitoring, reporting and actions.</p></div></div>
         <div class="integration-grid" id="integrationGrid"></div>
+        <article class="panel opportunity-panel"><div class="panel-head"><div><span class="eyebrow">ANALYTICS ADMIN</span><h3>Discovered Google properties</h3></div><button class="text-btn" id="discoverAnalyticsBtn">Discover →</button></div><div id="analyticsDiscovery" class="panel-copy">Run discovery to verify all GA4 properties through the Analytics Admin API.</div></article>
         <article class="panel setup-panel"><div class="panel-head"><div><span class="eyebrow">GOOGLE SETUP</span><h3>Service-account wizard</h3></div></div><div class="steps"><div><span>1</span><p><b>Create a Google Cloud service account</b><small>Enable Search Console API + Google Analytics Data API.</small></p></div><div><span>2</span><p><b>Add its email to GSC</b><small>Give it access to all four Search Console properties.</small></p></div><div><span>3</span><p><b>Add it to GA4</b><small>Viewer access is enough for reporting.</small></p></div><div><span>4</span><p><b>Add JSON to Vercel</b><small>Save the one-line key as GOOGLE_SERVICE_ACCOUNT_JSON.</small></p></div></div></article>
       </section>
 
