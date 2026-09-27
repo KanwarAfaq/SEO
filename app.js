@@ -64,11 +64,11 @@ function activity(){
     rows.push(...(bad.length?bad.map(x=>['!',x.domain+' needs attention','HTTP '+(x.status||'—')+' · sitemap '+(x.sitemapStatus||'—')]):[['✓','All sites responding','Live HTTP + sitemap checks passed']]));
   }
   const gscOk=state.gsc.filter(x=>!x.error).length;
-  rows.push([gscOk===SITES.length?'⌕':'!',gscOk===SITES.length?'Search Console live':'Search Console unavailable',gscOk===SITES.length?'4/4 properties loaded from Google':(state.errors.gsc||gscOk+'/4 properties loaded')]);
+  rows.push([gscOk===SITES.length?'⌕':'!',gscOk===SITES.length?'Search Console connected':'Search Console unavailable',gscOk===SITES.length?'4/4 properties loaded from Google API':(state.errors.gsc||gscOk+'/4 properties loaded')]);
   const gaOk=state.ga.filter(x=>x.configured!==false&&!x.error).length;
-  rows.push([gaOk===SITES.length?'◉':'!',gaOk===SITES.length?'GA4 realtime live':'GA4 realtime unavailable',gaOk===SITES.length?'4/4 properties loaded from Google':(state.errors.ga||gaOk+'/4 properties loaded')]);
+  rows.push([gaOk===SITES.length?'◉':'!',gaOk===SITES.length?'GA4 realtime live':'GA4 realtime unavailable',gaOk===SITES.length?'4/4 properties loaded from Google API':(state.errors.ga||gaOk+'/4 properties loaded')]);
   rows.push(['⚡','Safe action mode','Write actions require your admin key']);
-  $('#activityList').innerHTML=rows.slice(0,5).map(r=>`<div class="activity"><span class="activity-icon">${r[0]}</span><div><b>${esc(r[1])}</b><span>${esc(r[2])}</span></div><time>live</time></div>`).join('');
+  $('#activityList').innerHTML=rows.slice(0,5).map(r=>`<div class="activity"><span class="activity-icon">${r[0]}</span><div><b>${esc(r[1])}</b><span>${esc(r[2])}</span></div><time>API</time></div>`).join('');
 }
 function gsc(){
   const valid=state.gsc.filter(x=>!x.error);
@@ -81,7 +81,7 @@ function gsc(){
   $('#gscTable').innerHTML=SITES.map(s=>{
     const x=by(state.gsc,s.id);
     const live=x&&!x.error;
-    return `<tr><td class="table-domain">${s.domain}</td><td>${live?fmt(x.clicks):'—'}</td><td>${live?fmt(x.impressions):'—'}</td><td>${live&&x.ctr!=null?(Number(x.ctr)*100).toFixed(2)+'%':'—'}</td><td>${live&&x.position!=null?Number(x.position).toFixed(1):'—'}</td><td><span class="tag ${live?'good':'bad'}">${live?'LIVE GSC':esc(x?.error||state.errors.gsc||'Unavailable')}</span></td></tr>`;
+    return `<tr><td class="table-domain">${s.domain}</td><td>${live?fmt(x.clicks):'—'}</td><td>${live?fmt(x.impressions):'—'}</td><td>${live&&x.ctr!=null?(Number(x.ctr)*100).toFixed(2)+'%':'—'}</td><td>${live&&x.position!=null?Number(x.position).toFixed(1):'—'}</td><td><span class="tag ${live?'good':'bad'}">${live?'GSC API':esc(x?.error||state.errors.gsc||'Unavailable')}</span></td></tr>`;
   }).join('');
 }
 function ga(){
