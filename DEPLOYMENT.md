@@ -56,3 +56,8 @@ SITE_CONFIG_JSON    # optional; the known four sites are defaults
 ```
 
 The independent monitor is scheduled every 5 minutes.
+
+
+## Environment configuration checkpoint
+
+Production environment variables configured for the first live integration test.
