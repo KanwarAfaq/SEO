@@ -117,3 +117,31 @@ ADMIN_ACTION_KEY=<generate a long random value>
 MONITOR_SECRET=<generate a different long random value>
 INDEXNOW_KEY=<can be generated later>
 ```
+
+
+## Current automation secrets for GitHub Actions
+
+The scheduled jobs need their own GitHub secret copies. Add these under
+Repository → Settings → Secrets and variables → Actions:
+
+```text
+ADMIN_ACTION_KEY       # required by the daily SEO analysis agent
+SEO_STORAGE_SECRET     # lets the 4/day LINE digest store its history
+VERCEL_AUTOMATION_BYPASS_SECRET
+LINE_CHANNEL_ACCESS_TOKEN
+LINE_USER_ID
+```
+
+Do not create new values for ADMIN_ACTION_KEY or SEO_STORAGE_SECRET here; use the
+same values already configured in Vercel/Supabase.
+
+### Notification schedule
+
+LINE digests are scheduled at:
+
+- 08:00 Asia/Taipei
+- 12:00 Asia/Taipei
+- 18:00 Asia/Taipei
+- 22:00 Asia/Taipei
+
+The daily SEO analysis agent runs separately and does not send an extra LINE message.
