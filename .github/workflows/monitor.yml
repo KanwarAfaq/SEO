@@ -1,20 +1,24 @@
-name: SEO uptime + LINE monitor
+name: SEO digest monitor
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    # Taiwan (UTC+8): 08:00, 12:00, 18:00, 22:00
+    - cron: '0 0 * * *'
+    - cron: '0 4 * * *'
+    - cron: '0 10 * * *'
+    - cron: '0 14 * * *'
   workflow_dispatch:
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Check websites, sitemaps and send LINE alert on failure
+      - name: Build 4-site health digest and send one LINE message
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
