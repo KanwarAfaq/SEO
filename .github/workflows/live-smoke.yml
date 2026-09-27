@@ -2,29 +2,116 @@ name: Live SEO Control Center smoke test
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/live-smoke.yml"
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      BASE: https://seo-kmafaq.vercel.app
+      BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
     steps:
-      - name: Probe production
+      - name: Verify automation bypass is configured
         shell: bash
         run: |
-          set +e
-          BASE="https://seo-kmafaq.vercel.app"
-          echo "=== HOME ==="
-          code=$(curl -L -sS -o /tmp/home.html -w "%{http_code}" "$BASE/")
-          echo "HTTP=$code"
-          head -c 800 /tmp/home.html; echo
-          echo
-          for path in api/config-status api/sites-health api/gsc-overview api/ga4-realtime api/technical-audit; do
-            echo "=== /$path ==="
-            code=$(curl -L -sS -o /tmp/out.txt -w "%{http_code}" "$BASE/$path")
-            echo "HTTP=$code"
-            head -c 5000 /tmp/out.txt; echo
-            echo
-          done
+          if [ -z "$BYPASS" ]; then
+            echo "VERCEL_AUTOMATION_BYPASS_SECRET is missing in GitHub Actions secrets"
+            exit 1
+          fi
+
+      - name: Check production homepage
+        shell: bash
+        run: |
+          set -e
+          code=$(curl -L -sS -H "x-vercel-protection-bypass: $BYPASS" -o /tmp/home.html -w "%{http_code}" "$BASE/")
+          echo "HOME_HTTP=$code"
+          test "$code" = "200"
+          grep -q "SEO Control Center" /tmp/home.html
+          echo "HOME_OK"
+
+      - name: Check configuration flags
+        shell: bash
+        run: |
+          set -e
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/config-status" > /tmp/config.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/config.json'))
+          required=["google","line","adminProtection","siteConfig"]
+          missing=[k for k in required if not d.get(k)]
+          print("CONFIG_FLAGS", {k: bool(d.get(k)) for k in d})
+          if missing:
+              raise SystemExit("Missing configuration: "+", ".join(missing))
+          PY
+
+      - name: Check all four websites and sitemaps
+        shell: bash
+        run: |
+          set -e
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/sites-health" > /tmp/health.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/health.json'))
+          sites=d.get("sites",[])
+          print("HEALTH_COUNT", len(sites))
+          for s in sites:
+              print(s.get("domain"), "site_ok=", bool(s.get("ok")), "sitemap_ok=", bool(s.get("sitemapOk")))
+          if len(sites)!=4:
+              raise SystemExit("Expected 4 sites")
+          PY
+
+      - name: Check Google Search Console authentication and property access
+        shell: bash
+        run: |
+          set -e
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/gsc-overview" > /tmp/gsc.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/gsc.json'))
+          sites=d.get("sites",[])
+          errs=[(s.get("id"),s.get("error")) for s in sites if s.get("error")]
+          print("GSC_PROPERTY_COUNT", len(sites), "ERROR_COUNT", len(errs))
+          if errs:
+              print("GSC_ERRORS", errs)
+              raise SystemExit("GSC access failed")
+          if len(sites)!=4:
+              raise SystemExit("Expected 4 GSC properties")
+          PY
+
+      - name: Check GA4 realtime authentication and property access
+        shell: bash
+        run: |
+          set -e
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/ga4-realtime" > /tmp/ga.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/ga.json'))
+          sites=d.get("sites",[])
+          errs=[(s.get("id"),s.get("error")) for s in sites if s.get("error")]
+          missing=[s.get("id") for s in sites if s.get("configured") is False]
+          print("GA4_PROPERTY_COUNT", len(sites), "ERROR_COUNT", len(errs), "UNCONFIGURED_COUNT", len(missing))
+          if errs:
+              print("GA4_ERRORS", errs)
+              raise SystemExit("GA4 access failed")
+          if missing:
+              print("GA4_UNCONFIGURED", missing)
+              raise SystemExit("GA4 properties missing")
+          if len(sites)!=4:
+              raise SystemExit("Expected 4 GA4 properties")
+          PY
+
+      - name: Check technical audit
+        shell: bash
+        run: |
+          set -e
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/technical-audit" > /tmp/audit.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/audit.json'))
+          sites=d.get("sites",[])
+          print("AUDIT_SITE_COUNT", len(sites))
+          for s in sites:
+              print(s.get("domain"), "audit_ok=", not bool(s.get("error")), "issue_count=", len(s.get("issues") or []))
+          if len(sites)!=4:
+              raise SystemExit("Expected 4 audit results")
+          PY
