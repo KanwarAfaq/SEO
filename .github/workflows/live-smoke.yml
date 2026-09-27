@@ -2,6 +2,9 @@ name: Live SEO Control Center smoke test
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/live-smoke.yml"
 
 jobs:
   smoke:
