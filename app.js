@@ -4,7 +4,7 @@ const SITES=[
 {id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',c:'#35d2a0'},
 {id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',c:'#ff9c58'}];
 const state={health:[],gsc:[],ga:[],cwv:[],pagespeed:[],history:null,config:{},loaded:{health:false,gsc:false,ga:false,crux:false},errors:{health:null,gsc:null,ga:null,crux:null},lastUpdated:null};
-const $=q=>document.querySelector(q),$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=q=>document.querySelector(q),$$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>sessionStorage.getItem('seo-admin-key')||'';
 function toast(msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
 async function api(url,opt={}){const headers={...(opt.headers||{})};if(key())headers['x-admin-key']=key();const r=await fetch(url,{...opt,headers});let d={};try{d=await r.json()}catch{d={error:await r.text()}}if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);return d}
