@@ -1,0 +1,43 @@
+name: SEO analysis agent
+
+on:
+  schedule:
+    # Run once daily at 02:30 Taiwan time (18:30 UTC).
+    - cron: '30 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE: https://seo-kmafaq.vercel.app
+      BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      ADMIN_KEY: ${{ secrets.ADMIN_ACTION_KEY }}
+    steps:
+      - name: Verify agent secrets
+        shell: bash
+        run: |
+          set -e
+          test -n "$BYPASS"
+          test -n "$ADMIN_KEY"
+
+      - name: Run production SEO agent
+        shell: bash
+        run: |
+          set -e
+          code=$(curl -L -sS -o /tmp/agent.json -w "%{http_code}"             -X POST "$BASE/api/agent-run"             -H "x-vercel-protection-bypass: $BYPASS"             -H "x-admin-key: $ADMIN_KEY")
+          echo "AGENT_HTTP=$code"
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/agent.json'))
+          if "counts" in d:
+              c=d["counts"]
+              print("SITES", c.get("sites"))
+              print("ISSUES", c.get("issues"))
+              print("ACTIONS", c.get("actions"))
+              print("OPPORTUNITIES", c.get("opportunities"))
+          else:
+              print("AGENT_ERROR", d.get("error","unknown"))
+          PY
+          test "$code" = "200"
