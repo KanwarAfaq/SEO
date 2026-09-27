@@ -52,3 +52,35 @@ const r = await fetch('https://api.line.me/v2/bot/message/push', {
 });
 if (!r.ok) throw new Error('LINE push failed: ' + r.status + ' ' + (await r.text()).slice(0, 500));
 console.log('LINE_DIGEST_OK');
+
+
+if (process.env.SEO_STORAGE_SECRET) {
+  try {
+    const taipeiParts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false
+    }).formatToParts(new Date()).reduce((a,p)=>(a[p.type]=p.value,a),{});
+    const windowKey = taipeiParts.year + '-' + taipeiParts.month + '-' + taipeiParts.day + 'T' + taipeiParts.hour;
+    const sr = await fetch('https://wikbbpvhvevcbqkpnikj.supabase.co/functions/v1/seo-store-v2', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-seo-storage-secret': process.env.SEO_STORAGE_SECRET },
+      body: JSON.stringify({
+        action: 'digest',
+        row: {
+          window_key: windowKey,
+          scheduled_for: new Date().toISOString(),
+          sent_at: new Date().toISOString(),
+          channel: 'line',
+          status: 'sent',
+          healthy_sites: healthy,
+          issue_count: incidents.length,
+          summary: incidents.length ? incidents.slice(0,8).join(' | ') : 'All monitored sites healthy',
+          details: { rows }
+        }
+      })
+    });
+    if (!sr.ok) console.warn('SEO digest persistence failed', sr.status);
+    else console.log('SEO_DIGEST_STORED');
+  } catch (e) {
+    console.warn('SEO digest persistence error', e?.message || e);
+  }
+}
