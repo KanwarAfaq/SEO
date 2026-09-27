@@ -1,0 +1,39 @@
+name: LINE notification test
+
+on:
+  push:
+    paths:
+      - ".github/workflows/line-test.yml"
+
+jobs:
+  test-line:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Send SEO Control Center test notification
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        shell: bash
+        run: |
+          set -e
+          test -n "$LINE_CHANNEL_ACCESS_TOKEN"
+          test -n "$LINE_USER_ID"
+          payload=$(python - <<'PY'
+          import json
+          print(json.dumps({
+            "to": __import__("os").environ["LINE_USER_ID"],
+            "messages": [{
+              "type": "text",
+              "text": "✅ SEO Control Center connected\n\nLINE alerts are working.\n4 websites are now under monitoring."
+            }]
+          }))
+          PY
+          )
+          code=$(curl -sS -o /tmp/line.txt -w "%{http_code}"             -X POST "https://api.line.me/v2/bot/message/push"             -H "Authorization: Bearer $LINE_CHANNEL_ACCESS_TOKEN"             -H "Content-Type: application/json"             --data "$payload")
+          echo "LINE_HTTP=$code"
+          if [ "$code" != "200" ]; then
+            cat /tmp/line.txt
+            exit 1
+          fi
+          echo "LINE_TEST_OK"
