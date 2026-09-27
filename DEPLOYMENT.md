@@ -61,3 +61,6 @@ The independent monitor is scheduled every 5 minutes.
 ## Environment configuration checkpoint
 
 Production environment variables configured for the first live integration test.
+
+
+<!-- production redeploy requested 2026-09-28 -->
