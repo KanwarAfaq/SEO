@@ -1,0 +1,30 @@
+name: Validate SEO Control Center
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate JavaScript syntax
+        run: |
+          node --check app.js
+          for f in api/*.js api/_lib/*.js scripts/*.mjs; do
+            node --check "$f"
+          done
+      - name: Verify required project files
+        run: |
+          test -f index.html
+          test -f styles.css
+          test -f vercel.json
+          test -f .env.example
