@@ -136,3 +136,31 @@ jobs:
           if len(sites)!=4:
               raise SystemExit("Expected 4 audit results")
           PY
+
+      - name: Check deep site audit and search intelligence
+        shell: bash
+        run: |
+          set -e
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/deep-audit?site=anytool&limit=5" > /tmp/deep.json
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/search-intelligence?site=anytool" > /tmp/intel.json
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/index-coverage?site=anytool&sample=2" > /tmp/index.json
+          python - <<'PY'
+          import json
+          deep=json.load(open('/tmp/deep.json'))
+          assert deep.get('source')=='Live crawl', deep
+          assert deep.get('pagesChecked',0)>=1, deep
+          assert deep.get('site',{}).get('repository')=='KanwarAfaq/anytool-online', deep
+          print('DEEP_AUDIT', deep.get('score'), deep.get('pagesChecked'))
+
+          intel=json.load(open('/tmp/intel.json'))
+          sites=intel.get('sites',[])
+          assert len(sites)==1 and not sites[0].get('error'), intel
+          assert intel.get('priorityRegions')==['Asia','Europe'], intel
+          print('SEARCH_INTELLIGENCE', len(sites[0].get('rising',[])), len(sites[0].get('falling',[])), len(sites[0].get('cannibalization',[])))
+
+          idx=json.load(open('/tmp/index.json'))
+          sites=idx.get('sites',[])
+          assert len(sites)==1 and not sites[0].get('error'), idx
+          assert sites[0].get('sampleSize',0)>=1, idx
+          print('INDEX_COVERAGE', sites[0].get('sampleSize'), sites[0].get('pass'))
+          PY
