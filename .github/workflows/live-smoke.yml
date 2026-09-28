@@ -40,7 +40,7 @@ jobs:
           python - <<'PY'
           import json
           d=json.load(open('/tmp/config.json'))
-          required=["google","line","adminProtection","siteConfig"]
+          required=["google","facebook","line","adminProtection","siteConfig"]
           missing=[k for k in required if not d.get(k)]
           print("CONFIG_FLAGS", {k: bool(d.get(k)) for k in d})
           if missing:

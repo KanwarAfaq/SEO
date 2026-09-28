@@ -36,12 +36,14 @@
       </div>
     </aside>
 
+    <div class="nav-backdrop hidden" id="navBackdrop"></div>
+
     <main class="main">
       <header class="topbar">
         <button class="menu-btn" id="menuBtn">☰</button>
         <div class="crumb"><span>Workspace</span><b id="pageTitle">Overview</b></div>
         <div class="top-actions">
-          <div class="live-chip"><i></i><span>Source-backed only</span></div>
+          <div class="live-chip" id="sourceChip" data-state="loading"><i></i><span id="sourceChipText">Loading live sources…</span></div>
           <button class="icon-btn" id="refreshBtn" title="Refresh">↻</button>
           <button class="primary-btn" id="runAuditBtn"><span>✦</span> Run audit</button>
         </div>
@@ -114,7 +116,7 @@
         </article>
         <article class="panel opportunity-panel">
           <div class="panel-head"><div><span class="eyebrow">RECENT POSTS</span><h3>Post engagement</h3></div><span class="mini-live">META API</span></div>
-          <div class="data-table-wrap"><table><thead><tr><th>Date</th><th>Post</th><th>Reactions</th><th>Comments</th><th>Shares</th><th>Engagement</th><th></th></tr></thead><tbody id="fbPosts"><tr><td colspan="7">Waiting for Facebook data.</td></tr></tbody></table></div>
+          <div class="social-notice hidden" id="fbPermissionNotice"></div><div class="data-table-wrap"><table><thead><tr><th>Date</th><th>Post</th><th>Reactions</th><th>Comments</th><th>Shares</th><th>Engagement</th><th></th></tr></thead><tbody id="fbPosts"><tr><td colspan="7">Waiting for Facebook data.</td></tr></tbody></table></div>
         </article>
       </section>
 

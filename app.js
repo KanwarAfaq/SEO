@@ -7,9 +7,35 @@ const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],history:nu
 const $=q=>document.querySelector(q),$$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>sessionStorage.getItem('seo-admin-key')||'';
 function toast(msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
-async function api(url,opt={}){const headers={...(opt.headers||{})};if(key())headers['x-admin-key']=key();const r=await fetch(url,{...opt,headers});let d={};try{d=await r.json()}catch{d={error:await r.text()}}if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);return d}
-function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;$('#sidebar').classList.remove('open');history.replaceState(null,'',`#${name}`)}
-$$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function sourceState(text,type='good'){
+  const chip=$('#sourceChip'),label=$('#sourceChipText');
+  if(label)label.textContent=text;
+  if(chip)chip.dataset.state=type;
+}
+async function api(url,opt={}){
+  const headers={...(opt.headers||{})};
+  if(key())headers['x-admin-key']=key();
+  const r=await fetch(url,{...opt,headers,credentials:'same-origin',cache:'no-store'});
+  const raw=await r.text();
+  let d={};
+  try{d=raw?JSON.parse(raw):{}}catch{
+    const looksHtml=/^\s*<!doctype|^\s*<html/i.test(raw);
+    throw new Error(looksHtml?'API session is still initializing. Retrying…':('Invalid API response · HTTP '+r.status));
+  }
+  if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
+  return d;
+}
+function view(name){$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
+$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));
+function toggleNav(open){
+  const side=$('#sidebar'),back=$('#navBackdrop');
+  side?.classList.toggle('open',open);
+  back?.classList.toggle('hidden',!open);
+  document.body.classList.toggle('nav-open',open);
+}
+$('#menuBtn').onclick=()=>toggleNav(!$('#sidebar').classList.contains('open'));
+$('#navBackdrop').onclick=()=>toggleNav(false);
 const by=(arr,id)=>arr.find(x=>x.id===id)||{};
 function siteCards(){
   const H=Object.fromEntries(state.health.map(x=>[x.id,x]));
@@ -115,12 +141,45 @@ function actions(){
   $('[data-go]').forEach((b,i)=>b.onclick=()=>i===3?runAudit():view('indexing'));
 }
 function integrations(){const cards=[['google','G','Google Search + Analytics','GSC, inspection, GA4 realtime and Admin API','#4285f4'],['googleApiKey','C','CrUX + PageSpeed','Field data and Lighthouse diagnostics','#22d3ee'],['facebook','f','Facebook Page','DailyFunUpdates insights and post engagement','#1877f2'],['line','L','LINE Messaging API','Four scheduled digests each day','#06c755'],['seoStorage','S','Supabase SEO History','Snapshots, issues, actions and change tracking','#8b5cf6'],['indexNow','I','IndexNow','Notify supported search engines','#00b7c7'],['adminProtection','↯','Action Security','Protect production write actions','#f59e0b']];$('#integrationGrid').innerHTML=cards.map(c=>`<article class="integration-card"><div class="integration-logo" style="--ia:${c[4]}">${c[1]}</div><h3>${c[2]}</h3><p>${c[3]}</p><div class="integration-status ${state.config[c[0]]?'connected':''}"><i></i>${state.config[c[0]]?'Configured':'Needs setup'}</div></article>`).join('');$('#lineStatusText').textContent=state.config.line?'Credentials configured':'Waiting for credentials'}
-async function loadConfig(){try{state.config=await api('/api/config-status')}catch{state.config={}}integrations()}
+async function loadConfig(){
+  try{
+    state.config=await api('/api/config-status');
+    state.errors.config=null;
+    integrations();
+    return true;
+  }catch(e){
+    state.config={};
+    state.errors.config=e.message;
+    integrations();
+    return false;
+  }
+}
 
+function fbMetricMeta(name){
+  const map={
+    page_post_engagements:['Post engagements','28-day total'],
+    page_impressions:['Impressions','28-day total'],
+    page_impressions_unique:['Daily reach','Latest available day'],
+    page_views_total:['Page views','28-day total'],
+    page_follows:['New follows','28-day total'],
+    page_engaged_users:['Engaged users','Latest available day']
+  };
+  return map[name]||[name.replace(/^page_/,'').replaceAll('_',' '),'Meta Page Insights'];
+}
+function fbMetricValue(name,m){
+  if(!m)return null;
+  return ['page_impressions_unique','page_engaged_users'].includes(name)?m.latest:m.sum;
+}
+function sparkline(points=[]){
+  const vals=points.map(p=>Number(p.value)).filter(Number.isFinite);
+  if(vals.length<2)return '';
+  const min=Math.min(...vals),max=Math.max(...vals),span=max-min||1;
+  const pts=vals.map((v,i)=>((i/(vals.length-1))*100).toFixed(1)+','+(30-((v-min)/span)*26).toFixed(1)).join(' ');
+  return `<svg class="mini-spark" viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" vector-effect="non-scaling-stroke"/></svg>`;
+}
 function facebook(){
   const d=state.facebook;
   const page=d?.page||{};
-  const summary=d?.summary||{};
   const live=Boolean(d&&!state.errors.facebook);
 
   $('#fbPageName').textContent=live?(page.name||'Facebook Page'):'Facebook unavailable';
@@ -142,53 +201,66 @@ function facebook(){
 
   const tokenText=!live?'Unavailable':d.token?.checked
     ?(d.token.valid?'Token valid':'Token check failed')
-    :'Token not checked';
+    :'Connected';
   $('#fbTokenStatus').textContent=tokenText;
   $('#fbTokenStatus').className='tag '+(live&&d.token?.valid!==false?'good':'bad');
 
   const cards=[
-    ['Followers',page.followers,'Page API'],
-    ['Page likes',page.likes,'Page API'],
-    ['Engagements · 28d',summary.engagements28d,'Page Insights'],
-    ['Impressions · 28d',summary.impressions28d,'Page Insights'],
-    ['Daily reach',summary.dailyReach,'Latest available day'],
-    ['Page views · 28d',summary.views28d,'Page Insights']
+    {label:'Followers',value:page.followers,sub:'Page API',spark:''},
+    {label:'Page likes',value:page.likes,sub:'Page API',spark:''}
   ];
-  $('#fbMetrics').innerHTML=cards.map(x=>`<div class="metric-card fb-metric"><span>${x[0]}</span><strong>${live?fmt(x[1]):'—'}</strong><small>${x[1]==null&&live?'Unavailable from Meta':x[2]}</small></div>`).join('');
+  if(live){
+    for(const [name,m] of Object.entries(d.metrics||{})){
+      if(!m?.available)continue;
+      const [label,sub]=fbMetricMeta(name);
+      cards.push({label,value:fbMetricValue(name,m),sub,spark:sparkline(m.points||[])});
+    }
+  }
+  $('#fbMetrics').innerHTML=cards.map(x=>`<div class="metric-card fb-metric"><span>${esc(x.label)}</span><strong>${live?fmt(x.value):'—'}</strong><small>${esc(x.sub)}</small>${x.spark||''}</div>`).join('');
 
   const posts=live?(d.posts||[]):[];
+  const permissionNotice=$('#fbPermissionNotice');
+  if(permissionNotice){
+    if(d?.postsError){
+      permissionNotice.classList.remove('hidden');
+      permissionNotice.innerHTML='<b>Recent posts need one more Meta permission</b><span>Add <code>pages_read_user_content</code> to show post reactions, comments and shares here.</span>';
+    }else permissionNotice.classList.add('hidden');
+  }
   $('#fbPosts').innerHTML=posts.length?posts.map(p=>{
     const when=p.createdTime?new Date(p.createdTime).toLocaleDateString():'—';
     const message=esc((p.message||'(No text)').replace(/\s+/g,' ').slice(0,120));
     const open=p.permalink?`<a class="social-link" href="${esc(p.permalink)}" target="_blank" rel="noopener">Open ↗</a>`:'—';
     return `<tr><td>${when}</td><td class="post-message">${message}</td><td>${fmt(p.reactions)}</td><td>${fmt(p.comments)}</td><td>${fmt(p.shares)}</td><td><b>${fmt(p.engagement)}</b></td><td>${open}</td></tr>`;
-  }).join(''):`<tr><td colspan="7">${esc(state.errors.facebook||d?.postsError||'No recent posts returned by Meta.')}</td></tr>`;
+  }).join(''):`<tr><td colspan="7">${d?.postsError?'Post data is locked until the Meta permission above is enabled.':'No recent posts returned by Meta.'}</td></tr>`;
 
-  const available=live?Object.keys(d.metrics||[]):[];
-  const unavailable=live?Object.keys(d.metricErrors||[]):[];
+  const available=live?Object.keys(d.metrics||{}).filter(k=>d.metrics[k]?.available):[];
+  const unavailable=live?Object.keys(d.metricErrors||{}):[];
   $('#fbMetricStatus').innerHTML=live
-    ? `<span class="tag good">${available.length} insight metrics available</span>${unavailable.length?` <span class="tag warn">${unavailable.length} unavailable/deprecated</span>`:''}`
+    ? `<span class="tag good">${available.length} live insight metrics</span>${unavailable.length?` <span class="tag warn">${unavailable.length} unavailable</span>`:''}`
     : '<span class="tag bad">Meta API unavailable</span>';
 }
 async function loadFacebook(show=false){
   state.loaded.facebook=true;
   if(!state.config.facebook){
     state.facebook=null;
-    state.errors.facebook='Facebook Page credentials not configured';
+    state.errors.facebook='Facebook API configuration not loaded yet';
     facebook();
     if(show)toast(state.errors.facebook,'bad');
-    return;
+    return false;
   }
   try{
     state.facebook=await api('/api/facebook-insights');
     state.errors.facebook=null;
     if(show)toast('Facebook Page data refreshed');
+    facebook();
+    return true;
   }catch(e){
     state.facebook=null;
     state.errors.facebook=e.message;
     if(show)toast(e.message,'bad');
+    facebook();
+    return false;
   }
-  facebook();
 }
 
 function cwvStatus(type,val){
@@ -236,6 +308,7 @@ async function loadHealth(show=false){
   state.lastUpdated=new Date().toISOString();
   siteCards();status();activity();sitemaps();
   if(show&&!state.errors.health)toast('Live website and sitemap checks completed');
+  return !state.errors.health&&state.health.length===SITES.length;
 }
 async function loadGsc(show=false){
   state.loaded.gsc=true;
@@ -257,6 +330,7 @@ async function loadGsc(show=false){
   }
   state.lastUpdated=new Date().toISOString();
   gsc();siteCards();status();chart();activity();
+  return !state.errors.gsc&&state.gsc.length===SITES.length;
 }
 async function loadGa(show=false){
   state.loaded.ga=true;
@@ -277,8 +351,28 @@ async function loadGa(show=false){
   }
   state.lastUpdated=new Date().toISOString();
   ga();status();activity();
+  return !state.errors.ga&&state.ga.length===SITES.length;
 }
-async function refresh(){await loadConfig();await Promise.all([loadHealth(),loadGsc(),loadGa(),loadFacebook(),loadCrux()]);await loadHistory();toast('Dashboard refreshed')}
+async function refresh(show=true){
+  sourceState('Refreshing live sources…','loading');
+  const configOk=await loadConfig();
+  const results=await Promise.allSettled([loadHealth(false),loadGsc(false),loadGa(false),loadFacebook(false),loadCrux(false)]);
+  await loadHistory();
+  const coreOk=configOk&&state.health.length===SITES.length&&state.gsc.length===SITES.length&&state.ga.length===SITES.length&&Boolean(state.facebook);
+  sourceState(coreOk?'Live sources connected':'Some sources unavailable',coreOk?'good':'warn');
+  if(show)toast(coreOk?'Live data refreshed':'Refresh completed with unavailable sources',coreOk?'good':'bad');
+  return coreOk;
+}
+async function bootstrap(){
+  sourceState('Loading live sources…','loading');
+  for(const delay of [0,700,1800,3500]){
+    if(delay)await sleep(delay);
+    const ok=await refresh(false);
+    if(ok)return true;
+  }
+  sourceState('Some sources unavailable','warn');
+  return false;
+}
 function modal(html){$('#modalBody').innerHTML=html;$('#modalBackdrop').classList.remove('hidden')}
 $('#modalClose').onclick=()=>$('#modalBackdrop').classList.add('hidden');$('#modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')e.target.classList.add('hidden')};
 function requireKey(){if(key())return true;toast('Set ADMIN_ACTION_KEY in Settings first','bad');return false}
@@ -287,6 +381,10 @@ function actionModal(type){if(!requireKey())return;const base=`<label>Website</l
 $$('[data-action]').forEach(b=>b.onclick=()=>actionModal(b.dataset.action));
 async function opportunities(){if(!state.config.google)return toast('Connect Google service account first','bad');try{const rows=(await api('/api/gsc-opportunities')).opportunities||[];$('#opportunityTable').innerHTML=rows.length?rows.slice(0,25).map(x=>`<tr><td class="table-domain">${esc(x.domain)}</td><td>${esc(x.query)}</td><td>${Number(x.position).toFixed(1)}</td><td>${fmt(x.impressions)}</td><td>${(Number(x.ctr)*100).toFixed(2)}%</td><td title="${esc(x.page)}">${esc(x.page.replace(/^https?:\/\//,'').slice(0,42))}</td></tr>`).join(''):'<tr><td colspan="6">No matching opportunities found.</td></tr>';toast(`Found ${rows.length} opportunities`)}catch(e){toast(e.message,'bad')}}
 async function runAudit(){const b=$('#runAuditBtn'),old=b.innerHTML;b.innerHTML='↻ Auditing';b.disabled=true;try{const d=await api('/api/technical-audit'),rows=(d.sites||[]).map(s=>`<div class="audit-row"><div class="score-orb" style="--score:${s.score}"><b>${s.score}</b></div><div><strong>${s.domain}</strong><small>${s.latency||'—'} ms · ${s.issues?.length||0} issue(s)</small><p>${s.issues?.slice(0,4).map(i=>`• ${esc(i.message)}`).join('<br>')||'✓ No basic technical issues detected'}</p></div></div>`).join('');modal(`<h2>Technical SEO audit</h2><p>Homepage, metadata, robots.txt and sitemap checks.</p>${rows}`);toast('Technical audit completed')}catch(e){toast(e.message,'bad')}finally{b.innerHTML=old;b.disabled=false}}
-$('#refreshBtn').onclick=refresh;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
+$('#refreshBtn').onclick=()=>refresh(true);$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
 $('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};$('#testLineBtn').onclick=async()=>{if(!requireKey())return;try{await api('/api/line-test',{method:'POST'});toast('Test LINE notification sent')}catch(e){toast(e.message,'bad')}};
-siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();loadConfig().then(()=>Promise.all([loadHealth(),loadGsc(),loadGa(),loadFacebook(),loadCrux()])).then(()=>loadHistory());const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
+siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();
+const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
+bootstrap();
+window.addEventListener('pageshow',e=>{if(e.persisted||!state.health.length||!state.facebook)bootstrap()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(!state.health.length||!state.facebook))bootstrap()});

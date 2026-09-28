@@ -29,3 +29,13 @@ jobs:
           test -f styles.css
           test -f vercel.json
           test -f .env.example
+
+      - name: Verify live bootstrap and mobile nav
+        shell: bash
+        run: |
+          grep -q "async function bootstrap()" app.js
+          grep -q "credentials:'same-origin'" app.js
+          grep -q 'id="navBackdrop"' index.html
+          grep -q "sidebar.open" styles.css
+          grep -q "pages_read_user_content" app.js
+          echo "LIVE_BOOTSTRAP_MOBILE_NAV_OK"
