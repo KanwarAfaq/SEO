@@ -1,8 +1,8 @@
 const SITES=[
-{id:'anytool',name:'AnyTool',domain:'anytool.online',url:'https://anytool.online',sitemap:'https://anytool.online/sitemap.xml',gscProperty:'sc-domain:anytool.online',c:'#32c9e8'},
-{id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',c:'#8b6cff'},
-{id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',c:'#35d2a0'},
-{id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',c:'#ff9c58'}];
+{id:'anytool',name:'AnyTool',domain:'anytool.online',url:'https://anytool.online',sitemap:'https://anytool.online/sitemap.xml',gscProperty:'sc-domain:anytool.online',repo:'KanwarAfaq/anytool-online',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#32c9e8'},
+{id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',repo:'KanwarAfaq/kmafaq_blog',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#8b6cff'},
+{id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',repo:'KanwarAfaq/kmafaq',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#35d2a0'},
+{id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',repo:'KanwarAfaq/global-scholar-portal',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#ff9c58'}];
 const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],history:null,config:{},loaded:{health:false,gsc:false,ga:false,facebook:false,crux:false},errors:{health:null,gsc:null,ga:null,facebook:null,crux:null},lastUpdated:null};
 const $=q=>document.querySelector(q),$$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>sessionStorage.getItem('seo-admin-key')||'';
@@ -56,7 +56,7 @@ function siteCards(){
     const healthText=!healthKnown?'UNKNOWN':h.ok?'ONLINE':'ISSUE';
     const healthClass=!healthKnown?'warn':h.ok?'':'bad';
     const gscLive=g&&!g.error;
-    return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
+    return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
 }
 function status(){
@@ -142,7 +142,7 @@ function sitemaps(){const H=Object.fromEntries(state.health.map(x=>[x.id,x]));$(
 function actions(){
   const persisted=state.history?.actions||[];
   if(persisted.length){
-    $('#actionQueue').innerHTML=persisted.slice(0,30).map(a=>`<article class="queue-card"><span class="queue-icon">⚡</span><div><h3>${esc(a.title)}</h3><p>${esc(a.rationale||a.action_type)}</p><div class="queue-meta"><span class="tag warn">${esc(a.action_type)}</span><span class="tag ${a.status==='succeeded'?'good':'warn'}">${esc(a.status)}</span></div></div><div class="queue-actions">${a.status==='suggested'?'<button class="small-btn" data-approve="'+a.id+'">Approve</button><button class="small-btn" data-reject="'+a.id+'">Reject</button>':''}</div></article>`).join('');
+    $('#actionQueue').innerHTML=persisted.slice(0,30).map(a=>`<article class="queue-card"><span class="queue-icon">⚡</span><div><h3>${esc(a.title)}</h3><p>${esc(a.rationale||a.action_type)}</p><div class="queue-meta"><span class="tag warn">${esc(a.action_type)}</span><span class="tag ${a.status==='succeeded'?'good':'warn'}">${esc(a.status)}</span>${(()=>{const s=by(SITES,a.site_id);return s.repo?'<span class="tag">'+esc(s.repo.replace('KanwarAfaq/',''))+'</span>':''})()}</div></div><div class="queue-actions">${a.status==='suggested'?'<button class="small-btn" data-approve="'+a.id+'">Approve</button><button class="small-btn" data-reject="'+a.id+'">Reject</button>':''}</div></article>`).join('');
     $$('[data-approve]').forEach(b=>b.onclick=()=>updateAction(b.dataset.approve,'approved'));
     $$('[data-reject]').forEach(b=>b.onclick=()=>updateAction(b.dataset.reject,'rejected'));
     return;
