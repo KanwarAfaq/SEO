@@ -16,18 +16,29 @@ function sourceState(text,type='good'){
 async function api(url,opt={}){
   const headers={...(opt.headers||{})};
   if(key())headers['x-admin-key']=key();
-  const r=await fetch(url,{...opt,headers,credentials:'same-origin',cache:'no-store'});
-  const raw=await r.text();
-  let d={};
-  try{d=raw?JSON.parse(raw):{}}catch{
-    const looksHtml=/^\s*<!doctype|^\s*<html/i.test(raw);
-    throw new Error(looksHtml?'API session is still initializing. Retrying…':('Invalid API response · HTTP '+r.status));
+  const controller=new AbortController();
+  const timeoutMs=Number(opt.timeoutMs||15000);
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const {timeoutMs:_,...fetchOpt}=opt;
+    const r=await fetch(url,{...fetchOpt,headers,credentials:'same-origin',cache:'no-store',signal:fetchOpt.signal||controller.signal});
+    const raw=await r.text();
+    let d={};
+    try{d=raw?JSON.parse(raw):{}}catch{
+      const looksHtml=/^\s*<!doctype|^\s*<html/i.test(raw);
+      throw new Error(looksHtml?'API session is still initializing. Retrying…':('Invalid API response · HTTP '+r.status));
+    }
+    if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
+    return d;
+  }catch(e){
+    if(e?.name==='AbortError')throw new Error('API request timed out');
+    throw e;
+  }finally{
+    clearTimeout(timer);
   }
-  if(!r.ok)throw new Error(d.error||('HTTP '+r.status));
-  return d;
 }
-function view(name){$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
-$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));
+function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
+$$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));
 function toggleNav(open){
   const side=$('#sidebar'),back=$('#navBackdrop');
   side?.classList.toggle('open',open);
@@ -132,13 +143,13 @@ function actions(){
   const persisted=state.history?.actions||[];
   if(persisted.length){
     $('#actionQueue').innerHTML=persisted.slice(0,30).map(a=>`<article class="queue-card"><span class="queue-icon">⚡</span><div><h3>${esc(a.title)}</h3><p>${esc(a.rationale||a.action_type)}</p><div class="queue-meta"><span class="tag warn">${esc(a.action_type)}</span><span class="tag ${a.status==='succeeded'?'good':'warn'}">${esc(a.status)}</span></div></div><div class="queue-actions">${a.status==='suggested'?'<button class="small-btn" data-approve="'+a.id+'">Approve</button><button class="small-btn" data-reject="'+a.id+'">Reject</button>':''}</div></article>`).join('');
-    $('[data-approve]').forEach(b=>b.onclick=()=>updateAction(b.dataset.approve,'approved'));
-    $('[data-reject]').forEach(b=>b.onclick=()=>updateAction(b.dataset.reject,'rejected'));
+    $$('[data-approve]').forEach(b=>b.onclick=()=>updateAction(b.dataset.approve,'approved'));
+    $$('[data-reject]').forEach(b=>b.onclick=()=>updateAction(b.dataset.reject,'rejected'));
     return;
   }
   const rows=[['◎','Inspect URLs','Check Google indexed state','Google'],['⇧','Submit sitemap','Resubmit when sitemap changes','GSC'],['↗','Notify IndexNow','Send changed URLs to supported engines','IndexNow'],['✦','Technical audit','Run fast metadata/robots/sitemap checks','Agent']];
   $('#actionQueue').innerHTML=rows.map((r,i)=>`<article class="queue-card"><span class="queue-icon">${r[0]}</span><div><h3>${r[1]}</h3><p>${r[2]}</p><div class="queue-meta"><span class="tag warn">${r[3]}</span><span class="tag good">${i===3?'Live':'Approval'}</span></div></div><div class="queue-actions"><button class="small-btn" data-go="${i===3?'audit':'indexing'}">Open</button></div></article>`).join('');
-  $('[data-go]').forEach((b,i)=>b.onclick=()=>i===3?runAudit():view('indexing'));
+  $$('[data-go]').forEach((b,i)=>b.onclick=()=>i===3?runAudit():view('indexing'));
 }
 function integrations(){const cards=[['google','G','Google Search + Analytics','GSC, inspection, GA4 realtime and Admin API','#4285f4'],['googleApiKey','C','CrUX + PageSpeed','Field data and Lighthouse diagnostics','#22d3ee'],['facebook','f','Facebook Page','DailyFunUpdates insights and post engagement','#1877f2'],['line','L','LINE Messaging API','Four scheduled digests each day','#06c755'],['seoStorage','S','Supabase SEO History','Snapshots, issues, actions and change tracking','#8b5cf6'],['indexNow','I','IndexNow','Notify supported search engines','#00b7c7'],['adminProtection','↯','Action Security','Protect production write actions','#f59e0b']];$('#integrationGrid').innerHTML=cards.map(c=>`<article class="integration-card"><div class="integration-logo" style="--ia:${c[4]}">${c[1]}</div><h3>${c[2]}</h3><p>${c[3]}</p><div class="integration-status ${state.config[c[0]]?'connected':''}"><i></i>${state.config[c[0]]?'Configured':'Needs setup'}</div></article>`).join('');$('#lineStatusText').textContent=state.config.line?'Credentials configured':'Waiting for credentials'}
 async function loadConfig(){
@@ -363,15 +374,24 @@ async function refresh(show=true){
   if(show)toast(coreOk?'Live data refreshed':'Refresh completed with unavailable sources',coreOk?'good':'bad');
   return coreOk;
 }
+let bootstrapPromise=null;
 async function bootstrap(){
-  sourceState('Loading live sources…','loading');
-  for(const delay of [0,700,1800,3500]){
-    if(delay)await sleep(delay);
-    const ok=await refresh(false);
-    if(ok)return true;
-  }
-  sourceState('Some sources unavailable','warn');
-  return false;
+  if(bootstrapPromise)return bootstrapPromise;
+  bootstrapPromise=(async()=>{
+    sourceState('Loading live sources…','loading');
+    for(const delay of [0,500,1200,2500]){
+      if(delay)await sleep(delay);
+      const ok=await refresh(false);
+      if(ok){
+        sourceState('Live sources connected','good');
+        return true;
+      }
+    }
+    sourceState('Some sources unavailable','warn');
+    return false;
+  })();
+  try{return await bootstrapPromise}
+  finally{bootstrapPromise=null}
 }
 function modal(html){$('#modalBody').innerHTML=html;$('#modalBackdrop').classList.remove('hidden')}
 $('#modalClose').onclick=()=>$('#modalBackdrop').classList.add('hidden');$('#modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')e.target.classList.add('hidden')};
@@ -386,5 +406,5 @@ $('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return
 siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();
 const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
 bootstrap();
-window.addEventListener('pageshow',e=>{if(e.persisted||!state.health.length||!state.facebook)bootstrap()});
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(!state.health.length||!state.facebook))bootstrap()});
+window.addEventListener('pageshow',e=>{if(e.persisted||!state.health.length||!state.gsc.length||!state.ga.length||!state.facebook)bootstrap()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(!state.health.length||!state.gsc.length||!state.ga.length||!state.facebook))bootstrap()});
