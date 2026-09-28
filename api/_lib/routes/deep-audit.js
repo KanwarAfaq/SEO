@@ -7,8 +7,11 @@ function match(html, re) {
   const m = html.match(re);
   return m ? clean(m[1] || '') : '';
 }
+function hostKey(value) {
+  try { return new URL(value).hostname.toLowerCase().replace(/^www\./,''); } catch { return ''; }
+}
 function sameOrigin(url, origin) {
-  try { return new URL(url).origin === origin; } catch { return false; }
+  return Boolean(hostKey(url) && hostKey(url) === hostKey(origin));
 }
 function normalizeLink(href, base) {
   try {
@@ -112,7 +115,8 @@ module.exports=async function handler(req,res){
   const origin=new URL(site.url).origin;
   try{
     let urls=await sitemapUrls(site.sitemap,origin);
-    if(!urls.includes(site.url)) urls.unshift(site.url);
+    if(!urls.length) urls=[site.url];
+    else if(!urls.some(u=>sameOrigin(u,origin)&&new URL(u).pathname==='/')) urls.unshift(site.url);
     urls=[...new Set(urls)].slice(0,limit);
     const pages=await mapLimit(urls,4,u=>crawlPage(u,origin));
 

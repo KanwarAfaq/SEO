@@ -2,6 +2,8 @@ const { getSites } = require('../config');
 const { googleFetch } = require('../google');
 const SCOPE=['https://www.googleapis.com/auth/webmasters.readonly'];
 const UA='SEO-Control-Center-Index-Sample/1.0';
+function hostKey(value){try{return new URL(value).hostname.toLowerCase().replace(/^www\./,'')}catch{return''}}
+function sameSite(url,origin){return Boolean(hostKey(url)&&hostKey(url)===hostKey(origin))}
 
 async function fetchXml(url){
   const r=await fetch(url,{signal:AbortSignal.timeout(9000),headers:{'user-agent':UA}});
@@ -16,7 +18,7 @@ async function sitemapUrls(url,origin,depth=0,seen=new Set()){
   if(/<sitemapindex\b/i.test(text)){
     const out=[];for(const loc of locs.slice(0,15)){try{out.push(...await sitemapUrls(loc,origin,depth+1,seen));}catch{}if(out.length>=300)break;}return[...new Set(out)].slice(0,300);
   }
-  return [...new Set(locs.filter(x=>{try{return new URL(x).origin===origin}catch{return false}}))].slice(0,300);
+  return [...new Set(locs.filter(x=>sameSite(x,origin)))].slice(0,300);
 }
 function sampleEvenly(urls,n){
   if(urls.length<=n)return urls;
@@ -38,7 +40,7 @@ module.exports=async function handler(req,res){
   const results=[];
   for(const site of selected){
     try{
-      let urls=await sitemapUrls(site.sitemap,new URL(site.url).origin);if(!urls.includes(site.url))urls.unshift(site.url);
+      const origin=new URL(site.url).origin;let urls=await sitemapUrls(site.sitemap,origin);if(!urls.length)urls=[site.url];else if(!urls.some(u=>sameSite(u,origin)&&new URL(u).pathname==='/'))urls.unshift(site.url);
       const sampled=sampleEvenly(urls,n),rows=[];
       for(const url of sampled){try{rows.push(await inspect(site,url));}catch(e){rows.push({url,error:e.message});}}
       results.push({id:site.id,domain:site.domain,repository:site.repository,sitemapUrlCount:urls.length,sampleSize:rows.length,
