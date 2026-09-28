@@ -6,7 +6,10 @@ const routes = {
   'agent-run': require('./_lib/routes/agent-run'),
   'action-update': require('./_lib/routes/action-update'),
   'system-status': require('./_lib/routes/system-status'),
-  'facebook-insights': require('./_lib/routes/facebook-insights')
+  'facebook-insights': require('./_lib/routes/facebook-insights'),
+  'deep-audit': require('./_lib/routes/deep-audit'),
+  'search-intelligence': require('./_lib/routes/search-intelligence'),
+  'index-coverage': require('./_lib/routes/index-coverage')
 };
 
 module.exports = async function handler(req, res) {
