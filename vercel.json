@@ -53,6 +53,10 @@
     {
       "source": "/api/system-status",
       "destination": "/api/control?op=system-status"
+    },
+    {
+      "source": "/api/facebook-insights",
+      "destination": "/api/control?op=facebook-insights"
     }
   ]
 }

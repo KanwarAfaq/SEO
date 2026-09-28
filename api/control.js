@@ -5,7 +5,8 @@ const routes = {
   'seo-history': require('./_lib/routes/seo-history'),
   'agent-run': require('./_lib/routes/agent-run'),
   'action-update': require('./_lib/routes/action-update'),
-  'system-status': require('./_lib/routes/system-status')
+  'system-status': require('./_lib/routes/system-status'),
+  'facebook-insights': require('./_lib/routes/facebook-insights')
 };
 
 module.exports = async function handler(req, res) {

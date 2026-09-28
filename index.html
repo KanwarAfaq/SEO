@@ -21,6 +21,7 @@
         <button class="nav-item active" data-view="overview"><span>⌂</span><b>Overview</b></button>
         <button class="nav-item" data-view="search"><span>⌕</span><b>Google Search</b></button>
         <button class="nav-item" data-view="realtime"><span>◉</span><b>Live Traffic</b></button>
+        <button class="nav-item" data-view="facebook"><span>f</span><b>Facebook</b></button>
         <button class="nav-item" data-view="performance"><span>◇</span><b>Core Web Vitals</b></button>
         <button class="nav-item" data-view="indexing"><span>◎</span><b>Indexing</b></button>
         <button class="nav-item" data-view="actions"><span>⚡</span><b>Actions</b><i class="pill">4</i></button>
@@ -94,6 +95,27 @@
         <div class="page-intro"><div><span class="eyebrow">GA4 LIVE</span><h1>Realtime traffic</h1><p>Visitors right now.</p></div><button class="primary-btn" id="refreshGaBtn">Refresh</button></div>
         <div class="live-hero"><div><span class="pulse-ring"><i></i></span><div><small>ACTIVE USERS NOW</small><strong id="liveTotal">—</strong><span id="liveCoverage">Waiting for live GA4 data</span></div></div><div class="live-bars" id="liveBars"></div></div>
         <div class="site-grid" id="gaSiteGrid"></div>
+      </section>
+
+
+      <section class="content hidden" id="view-facebook">
+        <div class="page-intro"><div><span class="eyebrow">META GRAPH API</span><h1>Facebook Page</h1><p>DailyFunUpdates · source-backed only.</p></div><button class="primary-btn" id="refreshFacebookBtn">Refresh</button></div>
+        <article class="panel fb-hero">
+          <div class="fb-identity">
+            <div class="fb-avatar"><img id="fbPageImage" class="hidden" alt="" /><span>f</span></div>
+            <div><span class="eyebrow">PAGE</span><h2 id="fbPageName">Waiting for Meta…</h2><p id="fbPageMeta">Meta Graph API</p></div>
+          </div>
+          <div class="fb-hero-actions"><span id="fbTokenStatus" class="tag warn">Checking token</span><a id="fbPageLink" class="ghost-btn fb-open" href="https://www.facebook.com/DailyFunUpdates" target="_blank" rel="noopener">Facebook Page ↗</a></div>
+        </article>
+        <div class="metric-grid fb-grid" id="fbMetrics"></div>
+        <article class="panel">
+          <div class="panel-head"><div><span class="eyebrow">PAGE INSIGHTS</span><h3>Metric availability</h3></div><div id="fbMetricStatus"><span class="tag warn">Waiting for Meta</span></div></div>
+          <p class="panel-copy">Meta changes Page Insights metrics over time. Unsupported metrics stay unavailable rather than showing fallback data.</p>
+        </article>
+        <article class="panel opportunity-panel">
+          <div class="panel-head"><div><span class="eyebrow">RECENT POSTS</span><h3>Post engagement</h3></div><span class="mini-live">META API</span></div>
+          <div class="data-table-wrap"><table><thead><tr><th>Date</th><th>Post</th><th>Reactions</th><th>Comments</th><th>Shares</th><th>Engagement</th><th></th></tr></thead><tbody id="fbPosts"><tr><td colspan="7">Waiting for Facebook data.</td></tr></tbody></table></div>
+        </article>
       </section>
 
       <section class="content hidden" id="view-performance">

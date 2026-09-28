@@ -103,6 +103,24 @@ jobs:
               raise SystemExit("Expected 4 GA4 properties")
           PY
 
+      - name: Check Facebook Page Insights
+        shell: bash
+        run: |
+          set -e
+          curl -fsS "$BASE/api/facebook-insights" \
+            -H "x-vercel-protection-bypass: $BYPASS" > /tmp/facebook.json
+          python - <<'PY'
+          import json
+          d=json.load(open('/tmp/facebook.json'))
+          assert d.get('source') == 'Meta Graph API', d
+          assert d.get('page',{}).get('id'), d
+          assert d.get('page',{}).get('name'), d
+          print('FACEBOOK_PAGE', d['page']['name'])
+          print('FACEBOOK_FOLLOWERS', d['page'].get('followers'))
+          print('FACEBOOK_POSTS', len(d.get('posts',[])))
+          print('FACEBOOK_METRICS_AVAILABLE', len(d.get('metrics',{})))
+          PY
+
       - name: Check technical audit
         shell: bash
         run: |

@@ -3,12 +3,12 @@ const SITES=[
 {id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',c:'#8b6cff'},
 {id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',c:'#35d2a0'},
 {id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',c:'#ff9c58'}];
-const state={health:[],gsc:[],ga:[],cwv:[],pagespeed:[],history:null,config:{},loaded:{health:false,gsc:false,ga:false,crux:false},errors:{health:null,gsc:null,ga:null,crux:null},lastUpdated:null};
+const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],history:null,config:{},loaded:{health:false,gsc:false,ga:false,facebook:false,crux:false},errors:{health:null,gsc:null,ga:null,facebook:null,crux:null},lastUpdated:null};
 const $=q=>document.querySelector(q),$$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>sessionStorage.getItem('seo-admin-key')||'';
 function toast(msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
 async function api(url,opt={}){const headers={...(opt.headers||{})};if(key())headers['x-admin-key']=key();const r=await fetch(url,{...opt,headers});let d={};try{d=await r.json()}catch{d={error:await r.text()}}if(!r.ok)throw new Error(d.error||`HTTP ${r.status}`);return d}
-function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;$('#sidebar').classList.remove('open');history.replaceState(null,'',`#${name}`)}
+function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;$('#sidebar').classList.remove('open');history.replaceState(null,'',`#${name}`)}
 $$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');
 const by=(arr,id)=>arr.find(x=>x.id===id)||{};
 function siteCards(){
@@ -114,8 +114,83 @@ function actions(){
   $('#actionQueue').innerHTML=rows.map((r,i)=>`<article class="queue-card"><span class="queue-icon">${r[0]}</span><div><h3>${r[1]}</h3><p>${r[2]}</p><div class="queue-meta"><span class="tag warn">${r[3]}</span><span class="tag good">${i===3?'Live':'Approval'}</span></div></div><div class="queue-actions"><button class="small-btn" data-go="${i===3?'audit':'indexing'}">Open</button></div></article>`).join('');
   $('[data-go]').forEach((b,i)=>b.onclick=()=>i===3?runAudit():view('indexing'));
 }
-function integrations(){const cards=[['google','G','Google Search + Analytics','GSC, inspection, GA4 realtime and Admin API','#4285f4'],['googleApiKey','C','CrUX + PageSpeed','Field data and Lighthouse diagnostics','#22d3ee'],['line','L','LINE Messaging API','Four scheduled digests each day','#06c755'],['seoStorage','S','Supabase SEO History','Snapshots, issues, actions and change tracking','#8b5cf6'],['indexNow','I','IndexNow','Notify supported search engines','#00b7c7'],['adminProtection','↯','Action Security','Protect production write actions','#f59e0b']];$('#integrationGrid').innerHTML=cards.map(c=>`<article class="integration-card"><div class="integration-logo" style="--ia:${c[4]}">${c[1]}</div><h3>${c[2]}</h3><p>${c[3]}</p><div class="integration-status ${state.config[c[0]]?'connected':''}"><i></i>${state.config[c[0]]?'Configured':'Needs setup'}</div></article>`).join('');$('#lineStatusText').textContent=state.config.line?'Credentials configured':'Waiting for credentials'}
+function integrations(){const cards=[['google','G','Google Search + Analytics','GSC, inspection, GA4 realtime and Admin API','#4285f4'],['googleApiKey','C','CrUX + PageSpeed','Field data and Lighthouse diagnostics','#22d3ee'],['facebook','f','Facebook Page','DailyFunUpdates insights and post engagement','#1877f2'],['line','L','LINE Messaging API','Four scheduled digests each day','#06c755'],['seoStorage','S','Supabase SEO History','Snapshots, issues, actions and change tracking','#8b5cf6'],['indexNow','I','IndexNow','Notify supported search engines','#00b7c7'],['adminProtection','↯','Action Security','Protect production write actions','#f59e0b']];$('#integrationGrid').innerHTML=cards.map(c=>`<article class="integration-card"><div class="integration-logo" style="--ia:${c[4]}">${c[1]}</div><h3>${c[2]}</h3><p>${c[3]}</p><div class="integration-status ${state.config[c[0]]?'connected':''}"><i></i>${state.config[c[0]]?'Configured':'Needs setup'}</div></article>`).join('');$('#lineStatusText').textContent=state.config.line?'Credentials configured':'Waiting for credentials'}
 async function loadConfig(){try{state.config=await api('/api/config-status')}catch{state.config={}}integrations()}
+
+function facebook(){
+  const d=state.facebook;
+  const page=d?.page||{};
+  const summary=d?.summary||{};
+  const live=Boolean(d&&!state.errors.facebook);
+
+  $('#fbPageName').textContent=live?(page.name||'Facebook Page'):'Facebook unavailable';
+  $('#fbPageMeta').textContent=live
+    ? ('Meta Graph API · '+(d.range?.since||'—')+' → '+(d.range?.until||'—'))
+    : (state.errors.facebook||'Waiting for Meta Graph API');
+
+  const img=$('#fbPageImage');
+  if(img){
+    if(live&&page.picture){img.src=page.picture;img.classList.remove('hidden')}
+    else{img.removeAttribute('src');img.classList.add('hidden')}
+  }
+
+  const link=$('#fbPageLink');
+  if(link){
+    link.href=page.link||'https://www.facebook.com/DailyFunUpdates';
+    link.textContent=live?'Open Page ↗':'Facebook Page ↗';
+  }
+
+  const tokenText=!live?'Unavailable':d.token?.checked
+    ?(d.token.valid?'Token valid':'Token check failed')
+    :'Token not checked';
+  $('#fbTokenStatus').textContent=tokenText;
+  $('#fbTokenStatus').className='tag '+(live&&d.token?.valid!==false?'good':'bad');
+
+  const cards=[
+    ['Followers',page.followers,'Page API'],
+    ['Page likes',page.likes,'Page API'],
+    ['Engagements · 28d',summary.engagements28d,'Page Insights'],
+    ['Impressions · 28d',summary.impressions28d,'Page Insights'],
+    ['Daily reach',summary.dailyReach,'Latest available day'],
+    ['Page views · 28d',summary.views28d,'Page Insights']
+  ];
+  $('#fbMetrics').innerHTML=cards.map(x=>`<div class="metric-card fb-metric"><span>${x[0]}</span><strong>${live?fmt(x[1]):'—'}</strong><small>${x[1]==null&&live?'Unavailable from Meta':x[2]}</small></div>`).join('');
+
+  const posts=live?(d.posts||[]):[];
+  $('#fbPosts').innerHTML=posts.length?posts.map(p=>{
+    const when=p.createdTime?new Date(p.createdTime).toLocaleDateString():'—';
+    const message=esc((p.message||'(No text)').replace(/\s+/g,' ').slice(0,120));
+    const open=p.permalink?`<a class="social-link" href="${esc(p.permalink)}" target="_blank" rel="noopener">Open ↗</a>`:'—';
+    return `<tr><td>${when}</td><td class="post-message">${message}</td><td>${fmt(p.reactions)}</td><td>${fmt(p.comments)}</td><td>${fmt(p.shares)}</td><td><b>${fmt(p.engagement)}</b></td><td>${open}</td></tr>`;
+  }).join(''):`<tr><td colspan="7">${esc(state.errors.facebook||d?.postsError||'No recent posts returned by Meta.')}</td></tr>`;
+
+  const available=live?Object.keys(d.metrics||[]):[];
+  const unavailable=live?Object.keys(d.metricErrors||[]):[];
+  $('#fbMetricStatus').innerHTML=live
+    ? `<span class="tag good">${available.length} insight metrics available</span>${unavailable.length?` <span class="tag warn">${unavailable.length} unavailable/deprecated</span>`:''}`
+    : '<span class="tag bad">Meta API unavailable</span>';
+}
+async function loadFacebook(show=false){
+  state.loaded.facebook=true;
+  if(!state.config.facebook){
+    state.facebook=null;
+    state.errors.facebook='Facebook Page credentials not configured';
+    facebook();
+    if(show)toast(state.errors.facebook,'bad');
+    return;
+  }
+  try{
+    state.facebook=await api('/api/facebook-insights');
+    state.errors.facebook=null;
+    if(show)toast('Facebook Page data refreshed');
+  }catch(e){
+    state.facebook=null;
+    state.errors.facebook=e.message;
+    if(show)toast(e.message,'bad');
+  }
+  facebook();
+}
+
 function cwvStatus(type,val){
   if(val==null)return ['—','warn'];
   if(type==='lcp')return [val<=2500?'Good':val<=4000?'Needs improvement':'Poor',val<=2500?'good':val<=4000?'warn':'bad'];
@@ -203,7 +278,7 @@ async function loadGa(show=false){
   state.lastUpdated=new Date().toISOString();
   ga();status();activity();
 }
-async function refresh(){await loadConfig();await Promise.all([loadHealth(),loadGsc(),loadGa(),loadCrux()]);await loadHistory();toast('Dashboard refreshed')}
+async function refresh(){await loadConfig();await Promise.all([loadHealth(),loadGsc(),loadGa(),loadFacebook(),loadCrux()]);await loadHistory();toast('Dashboard refreshed')}
 function modal(html){$('#modalBody').innerHTML=html;$('#modalBackdrop').classList.remove('hidden')}
 $('#modalClose').onclick=()=>$('#modalBackdrop').classList.add('hidden');$('#modalBackdrop').onclick=e=>{if(e.target.id==='modalBackdrop')e.target.classList.add('hidden')};
 function requireKey(){if(key())return true;toast('Set ADMIN_ACTION_KEY in Settings first','bad');return false}
@@ -212,6 +287,6 @@ function actionModal(type){if(!requireKey())return;const base=`<label>Website</l
 $$('[data-action]').forEach(b=>b.onclick=()=>actionModal(b.dataset.action));
 async function opportunities(){if(!state.config.google)return toast('Connect Google service account first','bad');try{const rows=(await api('/api/gsc-opportunities')).opportunities||[];$('#opportunityTable').innerHTML=rows.length?rows.slice(0,25).map(x=>`<tr><td class="table-domain">${esc(x.domain)}</td><td>${esc(x.query)}</td><td>${Number(x.position).toFixed(1)}</td><td>${fmt(x.impressions)}</td><td>${(Number(x.ctr)*100).toFixed(2)}%</td><td title="${esc(x.page)}">${esc(x.page.replace(/^https?:\/\//,'').slice(0,42))}</td></tr>`).join(''):'<tr><td colspan="6">No matching opportunities found.</td></tr>';toast(`Found ${rows.length} opportunities`)}catch(e){toast(e.message,'bad')}}
 async function runAudit(){const b=$('#runAuditBtn'),old=b.innerHTML;b.innerHTML='↻ Auditing';b.disabled=true;try{const d=await api('/api/technical-audit'),rows=(d.sites||[]).map(s=>`<div class="audit-row"><div class="score-orb" style="--score:${s.score}"><b>${s.score}</b></div><div><strong>${s.domain}</strong><small>${s.latency||'—'} ms · ${s.issues?.length||0} issue(s)</small><p>${s.issues?.slice(0,4).map(i=>`• ${esc(i.message)}`).join('<br>')||'✓ No basic technical issues detected'}</p></div></div>`).join('');modal(`<h2>Technical SEO audit</h2><p>Homepage, metadata, robots.txt and sitemap checks.</p>${rows}`);toast('Technical audit completed')}catch(e){toast(e.message,'bad')}finally{b.innerHTML=old;b.disabled=false}}
-$('#refreshBtn').onclick=refresh;$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
+$('#refreshBtn').onclick=refresh;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
 $('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};$('#testLineBtn').onclick=async()=>{if(!requireKey())return;try{await api('/api/line-test',{method:'POST'});toast('Test LINE notification sent')}catch(e){toast(e.message,'bad')}};
-siteCards();gsc();ga();status();activity();sitemaps();actions();chart();integrations();loadConfig().then(()=>Promise.all([loadHealth(),loadGsc(),loadGa(),loadCrux()])).then(()=>loadHistory());const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
+siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();loadConfig().then(()=>Promise.all([loadHealth(),loadGsc(),loadGa(),loadFacebook(),loadCrux()])).then(()=>loadHistory());const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);

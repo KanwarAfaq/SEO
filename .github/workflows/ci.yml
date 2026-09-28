@@ -19,7 +19,8 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           node --check app.js
-          for f in api/*.js api/_lib/*.js scripts/*.mjs; do
+          find api -type f -name '*.js' -print0 | xargs -0 -n1 node --check
+          for f in scripts/*.mjs; do
             node --check "$f"
           done
       - name: Verify required project files
