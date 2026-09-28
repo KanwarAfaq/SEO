@@ -121,7 +121,7 @@ jobs:
           import json
           deep=json.load(open('/tmp/deep.json'))
           assert deep.get('source')=='Live crawl', deep
-          assert deep.get('pagesChecked',0)>=1, deep
+          assert deep.get('pagesChecked',0)>=3, deep
           assert deep.get('site',{}).get('repository')=='KanwarAfaq/anytool-online', deep
           print('DEEP_AUDIT_OK', deep.get('score'), deep.get('pagesChecked'))
 
@@ -134,6 +134,6 @@ jobs:
           idx=json.load(open('/tmp/index.json'))
           sites=idx.get('sites',[])
           assert len(sites)==1 and not sites[0].get('error'), idx
-          assert sites[0].get('sampleSize',0)>=1, idx
+          assert sites[0].get('sampleSize',0)>=2, idx
           print('INDEX_COVERAGE_OK', sites[0].get('sampleSize'), sites[0].get('pass'))
           PY
