@@ -72,3 +72,20 @@ jobs:
           }
           console.log('DOM_BINDINGS_OK');
           NODE
+
+      - name: Verify intelligence routes and Vercel function budget
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const path=require('path');
+          const control=fs.readFileSync('api/control.js','utf8');
+          const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
+          for(const route of ['deep-audit','search-intelligence','index-coverage']){
+            if(!control.includes("'"+route+"'")) throw new Error('Missing control route '+route);
+            if(!(vercel.rewrites||[]).some(x=>x.source==='/api/'+route)) throw new Error('Missing Vercel rewrite '+route);
+          }
+          const top=fs.readdirSync('api').filter(x=>x.endsWith('.js')).length;
+          if(top>12) throw new Error('Vercel function budget exceeded: '+top+'/12');
+          console.log('INTELLIGENCE_ROUTES_OK top_level_functions='+top);
+          NODE
