@@ -1,16 +1,11 @@
 const { getSites } = require('../config');
 
 const UA = 'SEO-Control-Center-Deep-Audit/1.0';
-const sleep = ms => new Promise(r => setTimeout(r, ms));
 const clean = s => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
 function match(html, re) {
   const m = html.match(re);
   return m ? clean(m[1] || '') : '';
-}
-function attr(tag, name) {
-  const m = tag.match(new RegExp('\\b' + name + '=["\\']([^"\\']*)["\\']', 'i'));
-  return m ? m[1] : '';
 }
 function sameOrigin(url, origin) {
   try { return new URL(url).origin === origin; } catch { return false; }
