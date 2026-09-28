@@ -57,6 +57,18 @@
     {
       "source": "/api/facebook-insights",
       "destination": "/api/control?op=facebook-insights"
+    },
+    {
+      "source": "/api/deep-audit",
+      "destination": "/api/control?op=deep-audit"
+    },
+    {
+      "source": "/api/search-intelligence",
+      "destination": "/api/control?op=search-intelligence"
+    },
+    {
+      "source": "/api/index-coverage",
+      "destination": "/api/control?op=index-coverage"
     }
   ]
 }

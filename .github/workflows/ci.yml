@@ -72,3 +72,68 @@ jobs:
           }
           console.log('DOM_BINDINGS_OK');
           NODE
+
+      - name: Verify intelligence routes and Vercel function budget
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const path=require('path');
+          const control=fs.readFileSync('api/control.js','utf8');
+          const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
+          for(const route of ['deep-audit','search-intelligence','index-coverage']){
+            if(!control.includes("'"+route+"'")) throw new Error('Missing control route '+route);
+            if(!(vercel.rewrites||[]).some(x=>x.source==='/api/'+route)) throw new Error('Missing Vercel rewrite '+route);
+          }
+          const top=fs.readdirSync('api').filter(x=>x.endsWith('.js')).length;
+          if(top>12) throw new Error('Vercel function budget exceeded: '+top+'/12');
+          console.log('INTELLIGENCE_ROUTES_OK top_level_functions='+top);
+          NODE
+
+      - name: Smoke-test Vercel PR preview
+        if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          set -euo pipefail
+          branch="${GITHUB_HEAD_REF//\//-}"
+          base="https://seo-git-${branch}-kmafaq.vercel.app"
+          echo "Preview: $base"
+          test -n "$BYPASS"
+
+          ready=0
+          for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            code=$(curl -L -sS -o /tmp/home.html -w "%{http_code}" "$base/" -H "x-vercel-protection-bypass: $BYPASS" || true)
+            if [ "$code" = "200" ]; then ready=1; break; fi
+            sleep 10
+          done
+          test "$ready" = "1"
+
+          curl -fsSL "$base/app.js" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/app.js
+          node --check /tmp/app.js
+
+          curl -fsSL "$base/api/deep-audit?site=anytool&limit=5" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/deep.json
+          curl -fsSL "$base/api/search-intelligence?site=anytool" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/intel.json
+          curl -fsSL "$base/api/index-coverage?site=anytool&sample=2" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/index.json
+
+          python - <<'PY'
+          import json
+          deep=json.load(open('/tmp/deep.json'))
+          assert deep.get('source')=='Live crawl', deep
+          assert deep.get('pagesChecked',0)>=1, deep
+          assert deep.get('site',{}).get('repository')=='KanwarAfaq/anytool-online', deep
+          print('DEEP_AUDIT_OK', deep.get('score'), deep.get('pagesChecked'))
+
+          intel=json.load(open('/tmp/intel.json'))
+          sites=intel.get('sites',[])
+          assert len(sites)==1 and not sites[0].get('error'), intel
+          assert intel.get('priorityRegions')==['Asia','Europe'], intel
+          print('SEARCH_INTELLIGENCE_OK', len(sites[0].get('rising',[])), len(sites[0].get('falling',[])))
+
+          idx=json.load(open('/tmp/index.json'))
+          sites=idx.get('sites',[])
+          assert len(sites)==1 and not sites[0].get('error'), idx
+          assert sites[0].get('sampleSize',0)>=1, idx
+          print('INDEX_COVERAGE_OK', sites[0].get('sampleSize'), sites[0].get('pass'))
+          PY

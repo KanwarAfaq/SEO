@@ -51,7 +51,7 @@ module.exports=async function handler(req,res){
         sitemap_ok:h.sitemapOk??null,sitemap_status:h.sitemapStatus||null,sitemap_entries:h.urlCount??null,
         gsc_clicks:g.clicks??null,gsc_impressions:g.impressions??null,gsc_ctr:g.ctr??null,gsc_position:g.position??null,
         ga4_active_users:a.activeUsers??null,cwv:c?.error?{}:{lcp:c.lcp,inp:c.inp,cls:c.cls,fcp:c.fcp},
-        technical_score:t.score??null,issue_count:0,metadata:{gsc_error:g.error||null,ga_error:a.error||null,crux_error:c.error||null}
+        technical_score:t.score??null,issue_count:0,metadata:{gsc_error:g.error||null,ga_error:a.error||null,crux_error:c.error||null,repository:site.repository||null,market:site.market||'Worldwide',priority_regions:site.priorityRegions||[]}
       });
     }
     for(const o of opps.slice(0,20)){
@@ -59,12 +59,12 @@ module.exports=async function handler(req,res){
         site_id:o.siteId,fingerprint:'gsc-opportunity:'+o.query+':'+o.page,action_type:'content_optimization',
         status:'suggested',title:'Improve ranking opportunity: '+o.query,
         rationale:'High impressions with position '+Number(o.position).toFixed(1)+' and CTR '+(Number(o.ctr)*100).toFixed(2)+'%',
-        payload:{query:o.query,page:o.page,impressions:o.impressions,position:o.position,ctr:o.ctr,priorityScore:o.priorityScore}
+        payload:{query:o.query,page:o.page,impressions:o.impressions,position:o.position,ctr:o.ctr,priorityScore:o.priorityScore,repository:(sites.find(s=>s.id===o.siteId)||{}).repository||null,market:(sites.find(s=>s.id===o.siteId)||{}).market||'Worldwide',priorityRegions:(sites.find(s=>s.id===o.siteId)||{}).priorityRegions||[]}
       });
     }
     for(const i of issues){
       if(i.category==='technical'||i.category==='performance'){
-        actions.push({site_id:i.site_id,fingerprint:'fix:'+i.fingerprint,action_type:'investigate_fix',status:'suggested',title:'Investigate '+i.title,rationale:'Detected by automated SEO agent',payload:{issue:i}});
+        const site=sites.find(s=>s.id===i.site_id)||{}; actions.push({site_id:i.site_id,fingerprint:'fix:'+i.fingerprint,action_type:'investigate_fix',status:'suggested',title:'Investigate '+i.title,rationale:'Detected by automated SEO agent',payload:{issue:i,repository:site.repository||null,market:site.market||'Worldwide',priorityRegions:site.priorityRegions||[]}});
       }
     }
     snapshots.forEach(s=>s.issue_count=issues.filter(i=>i.site_id===s.site_id).length);

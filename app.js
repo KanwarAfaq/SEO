@@ -1,9 +1,9 @@
 const SITES=[
-{id:'anytool',name:'AnyTool',domain:'anytool.online',url:'https://anytool.online',sitemap:'https://anytool.online/sitemap.xml',gscProperty:'sc-domain:anytool.online',c:'#32c9e8'},
-{id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',c:'#8b6cff'},
-{id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',c:'#35d2a0'},
-{id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',c:'#ff9c58'}];
-const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],history:null,config:{},loaded:{health:false,gsc:false,ga:false,facebook:false,crux:false},errors:{health:null,gsc:null,ga:null,facebook:null,crux:null},lastUpdated:null};
+{id:'anytool',name:'AnyTool',domain:'anytool.online',url:'https://anytool.online',sitemap:'https://anytool.online/sitemap.xml',gscProperty:'sc-domain:anytool.online',repo:'KanwarAfaq/anytool-online',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#32c9e8'},
+{id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',repo:'KanwarAfaq/kmafaq_blog',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#8b6cff'},
+{id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',repo:'KanwarAfaq/kmafaq',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#35d2a0'},
+{id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',repo:'KanwarAfaq/global-scholar-portal',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#ff9c58'}];
+const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],searchIntel:null,deepAudit:null,indexCoverage:null,history:null,config:{},loaded:{health:false,gsc:false,ga:false,facebook:false,crux:false},errors:{health:null,gsc:null,ga:null,facebook:null,crux:null},lastUpdated:null};
 const $=q=>document.querySelector(q),$$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>sessionStorage.getItem('seo-admin-key')||'';
 function toast(msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
@@ -37,7 +37,7 @@ async function api(url,opt={}){
     clearTimeout(timer);
   }
 }
-function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
+function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',audit:'Site Audit',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
 $$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));
 function toggleNav(open){
   const side=$('#sidebar'),back=$('#navBackdrop');
@@ -56,7 +56,7 @@ function siteCards(){
     const healthText=!healthKnown?'UNKNOWN':h.ok?'ONLINE':'ISSUE';
     const healthClass=!healthKnown?'warn':h.ok?'':'bad';
     const gscLive=g&&!g.error;
-    return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
+    return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
 }
 function status(){
@@ -142,7 +142,7 @@ function sitemaps(){const H=Object.fromEntries(state.health.map(x=>[x.id,x]));$(
 function actions(){
   const persisted=state.history?.actions||[];
   if(persisted.length){
-    $('#actionQueue').innerHTML=persisted.slice(0,30).map(a=>`<article class="queue-card"><span class="queue-icon">⚡</span><div><h3>${esc(a.title)}</h3><p>${esc(a.rationale||a.action_type)}</p><div class="queue-meta"><span class="tag warn">${esc(a.action_type)}</span><span class="tag ${a.status==='succeeded'?'good':'warn'}">${esc(a.status)}</span></div></div><div class="queue-actions">${a.status==='suggested'?'<button class="small-btn" data-approve="'+a.id+'">Approve</button><button class="small-btn" data-reject="'+a.id+'">Reject</button>':''}</div></article>`).join('');
+    $('#actionQueue').innerHTML=persisted.slice(0,30).map(a=>`<article class="queue-card"><span class="queue-icon">⚡</span><div><h3>${esc(a.title)}</h3><p>${esc(a.rationale||a.action_type)}</p><div class="queue-meta"><span class="tag warn">${esc(a.action_type)}</span><span class="tag ${a.status==='succeeded'?'good':'warn'}">${esc(a.status)}</span>${(()=>{const s=by(SITES,a.site_id);return s.repo?'<span class="tag">'+esc(s.repo.replace('KanwarAfaq/',''))+'</span>':''})()}</div></div><div class="queue-actions">${a.status==='suggested'?'<button class="small-btn" data-approve="'+a.id+'">Approve</button><button class="small-btn" data-reject="'+a.id+'">Reject</button>':''}</div></article>`).join('');
     $$('[data-approve]').forEach(b=>b.onclick=()=>updateAction(b.dataset.approve,'approved'));
     $$('[data-reject]').forEach(b=>b.onclick=()=>updateAction(b.dataset.reject,'rejected'));
     return;
@@ -399,11 +399,95 @@ function requireKey(){if(key())return true;toast('Set ADMIN_ACTION_KEY in Settin
 function options(){return SITES.map(s=>`<option value="${s.id}">${s.domain}</option>`).join('')}
 function actionModal(type){if(!requireKey())return;const base=`<label>Website</label><select id="mSite">${options()}</select>`;if(type==='inspect')modal(`<h2>Inspect URL</h2>${base}<label>URL</label><input id="mUrl" placeholder="https://example.com/page"><button class="primary-btn" id="mGo">Inspect</button><div class="result-box hidden" id="mResult"></div>`);if(type==='sitemap')modal(`<h2>Submit sitemap</h2>${base}<label>Sitemap URL</label><input id="mUrl" value="${SITES[0].sitemap}"><button class="primary-btn" id="mGo">Submit</button><div class="result-box hidden" id="mResult"></div>`);if(type==='indexnow')modal(`<h2>IndexNow</h2>${base}<label>Changed URLs — one per line</label><textarea id="mUrl"></textarea><button class="primary-btn" id="mGo">Submit</button><div class="result-box hidden" id="mResult"></div>`);$('#mSite').onchange=e=>{if(type==='sitemap')$('#mUrl').value=by(SITES,e.target.value).sitemap};$('#mGo').onclick=async()=>{const s=by(SITES,$('#mSite').value),box=$('#mResult');box.classList.remove('hidden');box.textContent='Working…';try{let d;if(type==='inspect')d=await api('/api/url-inspect',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({inspectionUrl:$('#mUrl').value.trim(),siteUrl:s.gscProperty})});if(type==='sitemap')d=await api('/api/gsc-submit-sitemap',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({siteUrl:s.gscProperty,sitemapUrl:$('#mUrl').value.trim()})});if(type==='indexnow')d=await api('/api/indexnow-submit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({host:s.domain,urls:$('#mUrl').value.split(/\n+/).map(x=>x.trim()).filter(Boolean)})});box.textContent=JSON.stringify(d,null,2)}catch(e){box.textContent=e.message}}}
 $$('[data-action]').forEach(b=>b.onclick=()=>actionModal(b.dataset.action));
+function renderSearchIntel(){
+  const data=state.searchIntel;
+  if(!data){
+    $('#searchIntelSummary').innerHTML='';
+    return;
+  }
+  const valid=(data.sites||[]).filter(x=>!x.error);
+  const rising=valid.reduce((n,x)=>n+(x.rising?.length||0),0);
+  const falling=valid.reduce((n,x)=>n+(x.falling?.length||0),0);
+  const cannibal=valid.reduce((n,x)=>n+(x.cannibalization?.length||0),0);
+  const asia=valid.reduce((n,x)=>n+Number((x.regionSummary||[]).find(r=>r.region==='Asia')?.clicks||0),0);
+  const europe=valid.reduce((n,x)=>n+Number((x.regionSummary||[]).find(r=>r.region==='Europe')?.clicks||0),0);
+  $('#searchIntelSummary').innerHTML=[
+    ['Rising queries',rising,'vs previous 28d'],
+    ['Falling queries',falling,'needs review'],
+    ['Cannibalization',cannibal,'multi-page queries'],
+    ['Asia + Europe',fmt(asia+europe),'priority-region clicks']
+  ].map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
+  $('#searchIntelSites').innerHTML=(data.sites||[]).map(x=>{
+    if(x.error)return `<tr><td class="table-domain">${esc(x.domain)}</td><td colspan="5"><span class="tag bad">${esc(x.error)}</span></td></tr>`;
+    const asia=(x.regionSummary||[]).find(r=>r.region==='Asia')?.clicks||0;
+    const europe=(x.regionSummary||[]).find(r=>r.region==='Europe')?.clicks||0;
+    return `<tr><td class="table-domain">${esc(x.domain)}</td><td>${fmt(asia)}</td><td>${fmt(europe)}</td><td><span class="tag good">${x.rising?.length||0}</span></td><td><span class="tag warn">${x.falling?.length||0}</span></td><td>${x.cannibalization?.length||0}</td></tr>`;
+  }).join('');
+  const movers=[];
+  for(const x of valid){
+    for(const q of (x.rising||[]).slice(0,4)) movers.push({dir:'↑',site:x.domain,...q});
+    for(const q of (x.falling||[]).slice(0,4)) movers.push({dir:'↓',site:x.domain,...q});
+  }
+  movers.sort((a,b)=>Math.abs(Number(b.clicksChange||0))-Math.abs(Number(a.clicksChange||0)));
+  $('#searchIntelMovers').innerHTML=movers.length?movers.slice(0,20).map(x=>`<tr><td><span class="tag ${x.dir==='↑'?'good':'bad'}">${x.dir}</span></td><td class="table-domain">${esc(x.site)}</td><td>${esc(x.query)}</td><td>${fmt(x.clicks)}</td><td>${x.clicksChange==null?'—':(x.clicksChange>0?'+':'')+Number(x.clicksChange).toFixed(0)+'%'}</td><td>${Number(x.position||0).toFixed(1)}</td></tr>`).join(''):'<tr><td colspan="6">No significant movers found.</td></tr>';
+}
+async function runSearchIntel(){
+  const b=$('#runSearchIntelBtn'),old=b.textContent;b.disabled=true;b.textContent='Analyzing…';
+  try{
+    state.searchIntel=await api('/api/search-intelligence',{timeoutMs:60000});
+    renderSearchIntel();
+    toast('Search intelligence updated');
+  }catch(e){toast(e.message,'bad')}
+  finally{b.disabled=false;b.textContent=old}
+}
+function renderDeepAudit(){
+  const d=state.deepAudit;if(!d)return;
+  $('#deepAuditRepo').textContent=d.site?.repository||'Repository';
+  $('#deepAuditSummary').innerHTML=[
+    ['Audit score',d.score,'heuristic'],
+    ['Pages checked',d.pagesChecked,'live crawl'],
+    ['Critical + high',Number(d.summary?.critical||0)+Number(d.summary?.high||0),'priority issues'],
+    ['Broken links',d.summary?.brokenLinks??0,'checked internal links']
+  ].map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
+  $('#deepAuditIssues').innerHTML=(d.issues||[]).length?(d.issues||[]).slice(0,60).map(i=>`<tr><td><span class="tag ${i.severity==='critical'||i.severity==='high'?'bad':i.severity==='medium'?'warn':'good'}">${esc(i.severity)}</span></td><td>${esc(i.code)}</td><td title="${esc(i.url)}">${esc(String(i.url||'').replace(/^https?:\/\//,'').slice(0,48))}</td><td>${esc(i.message)}</td></tr>`).join(''):'<tr><td colspan="4">No issues detected in the crawled sample.</td></tr>';
+  $('#deepAuditPages').innerHTML=(d.pages||[]).map(p=>`<tr><td>${p.status??'—'}</td><td title="${esc(p.url)}">${esc(String(p.url||'').replace(/^https?:\/\//,'').slice(0,54))}</td><td>${p.latency??'—'} ms</td><td>${esc((p.title||'—').slice(0,55))}</td><td>${p.issues?.length||0}</td></tr>`).join('')||'<tr><td colspan="5">No pages returned.</td></tr>';
+}
+async function runDeepAudit(){
+  const b=$('#runDeepAuditBtn'),old=b.textContent,site=$('#auditSiteSelect').value;
+  b.disabled=true;b.textContent='Crawling…';
+  try{
+    state.deepAudit=await api('/api/deep-audit?site='+encodeURIComponent(site)+'&limit=12',{timeoutMs:60000});
+    renderDeepAudit();
+    toast('Deep audit completed');
+  }catch(e){toast(e.message,'bad')}
+  finally{b.disabled=false;b.textContent=old}
+}
+function renderIndexCoverage(){
+  const d=state.indexCoverage;
+  const rows=[];
+  for(const site of (d?.sites||[])){
+    if(site.error){rows.push(`<tr><td class="table-domain">${esc(site.domain)}</td><td colspan="4"><span class="tag bad">${esc(site.error)}</span></td></tr>`);continue}
+    for(const r of (site.rows||[])){
+      rows.push(`<tr><td class="table-domain">${esc(site.domain)}</td><td title="${esc(r.url)}">${esc(String(r.url||'').replace(/^https?:\/\//,'').slice(0,50))}</td><td><span class="tag ${r.verdict==='PASS'?'good':r.error?'bad':'warn'}">${esc(r.verdict||'ERROR')}</span></td><td>${esc(r.coverageState||r.error||'—')}</td><td>${r.lastCrawlTime?new Date(r.lastCrawlTime).toLocaleDateString():'—'}</td></tr>`);
+    }
+  }
+  $('#indexCoverageTable').innerHTML=rows.length?rows.join(''):'<tr><td colspan="5">No inspection data returned.</td></tr>';
+}
+async function runIndexCoverage(){
+  const b=$('#runIndexCoverageBtn'),old=b.textContent;b.disabled=true;b.textContent='Inspecting…';
+  try{
+    state.indexCoverage=await api('/api/index-coverage?sample=3',{timeoutMs:60000});
+    renderIndexCoverage();
+    toast('Index coverage sample completed');
+  }catch(e){toast(e.message,'bad')}
+  finally{b.disabled=false;b.textContent=old}
+}
+
 async function opportunities(){if(!state.config.google)return toast('Connect Google service account first','bad');try{const rows=(await api('/api/gsc-opportunities')).opportunities||[];$('#opportunityTable').innerHTML=rows.length?rows.slice(0,25).map(x=>`<tr><td class="table-domain">${esc(x.domain)}</td><td>${esc(x.query)}</td><td>${Number(x.position).toFixed(1)}</td><td>${fmt(x.impressions)}</td><td>${(Number(x.ctr)*100).toFixed(2)}%</td><td title="${esc(x.page)}">${esc(x.page.replace(/^https?:\/\//,'').slice(0,42))}</td></tr>`).join(''):'<tr><td colspan="6">No matching opportunities found.</td></tr>';toast(`Found ${rows.length} opportunities`)}catch(e){toast(e.message,'bad')}}
 async function runAudit(){const b=$('#runAuditBtn'),old=b.innerHTML;b.innerHTML='↻ Auditing';b.disabled=true;try{const d=await api('/api/technical-audit'),rows=(d.sites||[]).map(s=>`<div class="audit-row"><div class="score-orb" style="--score:${s.score}"><b>${s.score}</b></div><div><strong>${s.domain}</strong><small>${s.latency||'—'} ms · ${s.issues?.length||0} issue(s)</small><p>${s.issues?.slice(0,4).map(i=>`• ${esc(i.message)}`).join('<br>')||'✓ No basic technical issues detected'}</p></div></div>`).join('');modal(`<h2>Technical SEO audit</h2><p>Homepage, metadata, robots.txt and sitemap checks.</p>${rows}`);toast('Technical audit completed')}catch(e){toast(e.message,'bad')}finally{b.innerHTML=old;b.disabled=false}}
-$('#refreshBtn').onclick=()=>refresh(true);$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
+$('#refreshBtn').onclick=()=>refresh(true);$('#runSearchIntelBtn').onclick=runSearchIntel;$('#runDeepAuditBtn').onclick=runDeepAudit;$('#runIndexCoverageBtn').onclick=runIndexCoverage;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
 $('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};$('#testLineBtn').onclick=async()=>{if(!requireKey())return;try{await api('/api/line-test',{method:'POST'});toast('Test LINE notification sent')}catch(e){toast(e.message,'bad')}};
-siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();
+siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();$('#auditSiteSelect').innerHTML=options();
 const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
 bootstrap();
 window.addEventListener('pageshow',e=>{if(e.persisted||!state.health.length||!state.gsc.length||!state.ga.length||!state.facebook)bootstrap()});

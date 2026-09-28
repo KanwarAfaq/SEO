@@ -23,6 +23,7 @@
         <button class="nav-item" data-view="realtime"><span>◉</span><b>Live Traffic</b></button>
         <button class="nav-item" data-view="facebook"><span>f</span><b>Facebook</b></button>
         <button class="nav-item" data-view="performance"><span>◇</span><b>Core Web Vitals</b></button>
+        <button class="nav-item" data-view="audit"><span>◫</span><b>Site Audit</b></button>
         <button class="nav-item" data-view="indexing"><span>◎</span><b>Indexing</b></button>
         <button class="nav-item" data-view="actions"><span>⚡</span><b>Actions</b><i class="pill">4</i></button>
         <button class="nav-item" data-view="alerts"><span>♢</span><b>Alerts</b></button>
@@ -91,6 +92,14 @@
         <div class="metric-grid" id="gscMetrics"></div>
         <article class="panel"><div class="panel-head"><div><span class="eyebrow">PROPERTY BREAKDOWN</span><h3>28-day search performance</h3></div></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Avg. position</th><th>Status</th></tr></thead><tbody id="gscTable"></tbody></table></div></article>
         <article class="panel opportunity-panel"><div class="panel-head"><div><span class="eyebrow">QUICK-WIN FINDER</span><h3>SEO opportunities</h3></div><button class="text-btn" id="findOpportunitiesBtn">Find opportunities →</button></div><p class="panel-copy">Queries close to page-one wins.</p><div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Query</th><th>Position</th><th>Impressions</th><th>CTR</th><th>Page</th></tr></thead><tbody id="opportunityTable"><tr><td colspan="6">Connect Google and run the opportunity finder.</td></tr></tbody></table></div></article>
+        <article class="panel intelligence-panel">
+          <div class="panel-head"><div><span class="eyebrow">SEARCH INTELLIGENCE</span><h3>Growth, decay & regions</h3></div><button class="primary-btn" id="runSearchIntelBtn">Analyze 28D</button></div>
+          <p class="panel-copy">Current 28 days vs previous 28 days · Worldwide with Asia + Europe highlighted.</p>
+          <div class="metric-grid intel-summary" id="searchIntelSummary"></div>
+          <div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Asia clicks</th><th>Europe clicks</th><th>Rising</th><th>Falling</th><th>Cannibalization</th></tr></thead><tbody id="searchIntelSites"><tr><td colspan="6">Run analysis to load GSC intelligence.</td></tr></tbody></table></div>
+          <div class="panel-head compact-head"><div><span class="eyebrow">QUERY MOVERS</span><h3>Biggest changes</h3></div></div>
+          <div class="data-table-wrap"><table><thead><tr><th>Direction</th><th>Site</th><th>Query</th><th>Clicks</th><th>Change</th><th>Position</th></tr></thead><tbody id="searchIntelMovers"><tr><td colspan="6">No analysis yet.</td></tr></tbody></table></div>
+        </article>
       </section>
 
       <section class="content hidden" id="view-realtime">
@@ -127,6 +136,23 @@
         <article class="panel opportunity-panel"><div class="panel-head"><div><span class="eyebrow">LAB DIAGNOSTICS</span><h3>PageSpeed / Lighthouse</h3></div></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Device</th><th>Performance</th><th>Accessibility</th><th>Best practices</th><th>SEO</th></tr></thead><tbody id="pagespeedTable"><tr><td colspan="6">Run PageSpeed when you want a deeper diagnostic.</td></tr></tbody></table></div></article>
       </section>
 
+
+      <section class="content hidden" id="view-audit">
+        <div class="page-intro">
+          <div><span class="eyebrow">DEEP CRAWLER</span><h1>Site audit</h1><p>Live sitemap pages, metadata, canonicals, headings, schema and internal links.</p></div>
+          <div class="hero-actions audit-controls"><select id="auditSiteSelect"></select><button class="primary-btn" id="runDeepAuditBtn">Run deep audit</button></div>
+        </div>
+        <div class="metric-grid" id="deepAuditSummary"></div>
+        <article class="panel">
+          <div class="panel-head"><div><span class="eyebrow">ISSUES</span><h3>Prioritized findings</h3></div><span class="mini-live">LIVE CRAWL</span></div>
+          <div class="data-table-wrap"><table><thead><tr><th>Severity</th><th>Issue</th><th>Page</th><th>Details</th></tr></thead><tbody id="deepAuditIssues"><tr><td colspan="4">Choose a site and run the audit.</td></tr></tbody></table></div>
+        </article>
+        <article class="panel opportunity-panel">
+          <div class="panel-head"><div><span class="eyebrow">CRAWLED PAGES</span><h3>Page-level checks</h3></div><span id="deepAuditRepo" class="tag">Repository</span></div>
+          <div class="data-table-wrap"><table><thead><tr><th>HTTP</th><th>Page</th><th>Latency</th><th>Title</th><th>Issues</th></tr></thead><tbody id="deepAuditPages"><tr><td colspan="5">No crawl yet.</td></tr></tbody></table></div>
+        </article>
+      </section>
+
       <section class="content hidden" id="view-indexing">
         <div class="page-intro"><div><span class="eyebrow">INDEXING</span><h1>Index control</h1><p>Inspect, submit, notify.</p></div></div>
         <div class="action-grid">
@@ -135,6 +161,11 @@
           <article class="action-card accent-cyan"><span class="action-icon">↗</span><h3>IndexNow</h3><p>Push changed URLs.</p><button class="action-button" data-action="indexnow">Submit URLs</button></article>
         </div>
         <article class="panel"><div class="panel-head"><div><span class="eyebrow">SITEMAPS</span><h3>Live sitemap checks</h3></div><button class="text-btn" id="sitemapRefreshBtn">Refresh</button></div><div class="data-table-wrap"><table><thead><tr><th>Property</th><th>Sitemap</th><th>HTTP</th><th>Entries</th><th>Health</th></tr></thead><tbody id="sitemapTable"></tbody></table></div></article>
+        <article class="panel opportunity-panel">
+          <div class="panel-head"><div><span class="eyebrow">URL INSPECTION</span><h3>Index coverage sample</h3></div><button class="primary-btn" id="runIndexCoverageBtn">Inspect sample</button></div>
+          <p class="panel-copy">A small representative sample from each sitemap. This is not a sitewide indexed-page count.</p>
+          <div class="data-table-wrap"><table><thead><tr><th>Site</th><th>URL</th><th>Verdict</th><th>Coverage</th><th>Last crawl</th></tr></thead><tbody id="indexCoverageTable"><tr><td colspan="5">Run a sample inspection.</td></tr></tbody></table></div>
+        </article>
       </section>
 
       <section class="content hidden" id="view-actions">

@@ -420,3 +420,19 @@ th{font-size:9px;color:#8392b0}
   .fb-open{justify-content:center}
   .metric-card{min-height:132px}
 }
+
+.site-context{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.site-context span{font-size:8px;line-height:1;padding:5px 7px;border-radius:999px;border:1px solid #7f98ff24;background:#ffffff07;color:#8596b6;text-transform:uppercase;letter-spacing:.05em}
+
+/* SEO intelligence + deep audit */
+.audit-controls{display:flex;align-items:center;gap:10px;margin-top:0}
+.audit-controls select{min-width:220px;padding:10px 34px 10px 12px;border-radius:12px;border:1px solid #8299ff30;background:#0d1529;color:#eef3ff;font:inherit;outline:none}
+.audit-controls select:focus{border-color:#62dfff70;box-shadow:0 0 0 3px #20e3ff12}
+.intelligence-panel{margin-top:15px;border-color:#a56bff28;background:linear-gradient(145deg,#131932f4,#101126f0)}
+.intel-summary{grid-template-columns:repeat(4,minmax(0,1fr));margin:14px 0}
+.compact-head{margin-top:22px}
+#deepAuditSummary{margin-bottom:15px}
+#deepAuditIssues td:nth-child(3),#deepAuditPages td:nth-child(2),#indexCoverageTable td:nth-child(2){max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#searchIntelMovers td:nth-child(3){max-width:360px;white-space:normal;line-height:1.35}
+@media(max-width:900px){.intel-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.audit-controls{width:100%;margin-top:14px}.audit-controls select{flex:1;min-width:0}}
+@media(max-width:560px){.intel-summary{grid-template-columns:1fr}.audit-controls{display:grid;grid-template-columns:1fr}.audit-controls .primary-btn,.audit-controls select{width:100%}}
