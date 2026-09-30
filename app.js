@@ -243,8 +243,13 @@ function facebook(){
       : 'Unavailable from Meta';
   const earningsText=estimate?money(estimate.low)+'–'+money(estimate.high):(rpm?'Waiting for Meta views':'Set RPM');
   const earningsSub=estimate
-    ? ('Model only · '+(usingPageViews?'28-day views':'recent content views')+' · 
-    {label:'Engagement · 28d',display:live&&engagementValue!=null?fmt(engagementValue):'—',sub:engagementSub,spark:summary.engagementMetric?sparkline(d.metrics?.[summary.engagementMetric]?.points||[]):''},
+    ? ('Model only · '+(usingPageViews?'28-day views':'recent content views')+' · $'+rpm.low.toFixed(2)+'–$'+rpm.high.toFixed(2)+' RPM')
+    : (rpm?'Needs a usable Meta views metric':'Configure RPM in Settings');
+
+  const cards=[
+    {label:'Followers',display:live?fmt(page.followers):'—',sub:'Meta Page API',spark:''},
+    {label:viewLabel,display:live&&effectiveViews!=null?fmt(effectiveViews):'—',sub:viewsSub,spark:usingPageViews&&summary.viewsMetric?sparkline(d.metrics?.[summary.viewsMetric]?.points||[]):''},
+    {label:'Engagement',display:live&&engagementValue!=null?fmt(engagementValue):'—',sub:engagementSub,spark:summary.engagementMetric?sparkline(d.metrics?.[summary.engagementMetric]?.points||[]):''},
     {label:'Recent post engagement',display:live?fmt(summary.recentEngagement):'—',sub:(summary.recentPostCount||0)+' recent posts',spark:''},
     {label:'New follows · 28d',display:live&&summary.follows28d!=null?fmt(summary.follows28d):'—',sub:summary.follows28d!=null?'Meta Page Insights':'Unavailable from Meta',spark:''},
     {label:'Estimated earnings',display:earningsText,sub:earningsSub,spark:'',estimate:true}
