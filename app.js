@@ -11,7 +11,8 @@ function fbRpm(){
   const high=Number(localStorage.getItem('fb-rpm-high'));
   return Number.isFinite(low)&&Number.isFinite(high)&&low>=0&&high>=low&&high>0?{low,high}:null;
 }
-function money(n){return Number.isFinite(Number(n))?('msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
+function money(n){return Number.isFinite(Number(n))?('$'+Number(n).toFixed(2)):'—'}
+function toast(msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function sourceState(text,type='good'){
   const chip=$('#sourceChip'),label=$('#sourceChipText');
