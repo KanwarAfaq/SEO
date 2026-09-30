@@ -436,3 +436,22 @@ th{font-size:9px;color:#8392b0}
 #searchIntelMovers td:nth-child(3){max-width:360px;white-space:normal;line-height:1.35}
 @media(max-width:900px){.intel-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.audit-controls{width:100%;margin-top:14px}.audit-controls select{flex:1;min-width:0}}
 @media(max-width:560px){.intel-summary{grid-template-columns:1fr}.audit-controls{display:grid;grid-template-columns:1fr}.audit-controls .primary-btn,.audit-controls select{width:100%}}
+
+/* Index progress + Facebook earnings model */
+.index-progress-panel{margin-bottom:15px;border-color:#20e3ff2d;background:linear-gradient(145deg,#101d32f4,#0b1426f3)}
+.index-progress-actions{display:flex;gap:9px;align-items:center}
+.index-progress-actions select{min-width:190px;padding:9px 32px 9px 11px;border-radius:11px;border:1px solid #8299ff30;background:#0d1529;color:#eef3ff;font:inherit}
+.index-progress-grid{grid-template-columns:repeat(5,minmax(0,1fr));margin:14px 0}
+.index-progress-grid .metric-card strong{font-size:30px}
+.earning-note{margin-bottom:14px;border-color:#ffd16626;background:linear-gradient(145deg,#17192ef4,#171526f2)}
+.estimate-card:before{background:linear-gradient(#ffd166,#ff9c58,#ff58bd)}
+.estimate-card strong{font-size:26px}
+.rpm-settings{margin-top:15px}
+.rpm-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:13px 0}
+.rpm-row label{display:grid;gap:7px}
+.rpm-row label span{font-size:9px;color:#8392b0}
+.rpm-row input{width:100%;padding:11px 12px;border-radius:12px;border:1px solid #8299ff30;background:#0b1224;color:#eef3ff;outline:none}
+.rpm-row input:focus{border-color:#62dfff70;box-shadow:0 0 0 3px #20e3ff12}
+@media(max-width:1100px){.index-progress-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:820px){.index-progress-actions{width:100%;margin-top:12px}.index-progress-actions select{flex:1}.index-progress-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.index-progress-actions{display:grid;grid-template-columns:1fr}.index-progress-actions select,.index-progress-actions .primary-btn{width:100%}.index-progress-grid{grid-template-columns:1fr}.rpm-row{grid-template-columns:1fr}}
