@@ -1,12 +1,12 @@
-const sites = JSON.parse(process.env.SITE_CONFIG_JSON || '[{"domain":"anytool.online","url":"https://anytool.online","sitemap":"https://anytool.online/sitemap.xml"},{"domain":"kmafaq.online","url":"https://kmafaq.online","sitemap":"https://kmafaq.online/sitemap.xml"},{"domain":"kmafaq.site","url":"https://kmafaq.site","sitemap":"https://kmafaq.site/sitemap.xml"},{"domain":"scholarportal.site","url":"https://scholarportal.site","sitemap":"https://scholarportal.site/sitemap.xml"}]');
+const sites = JSON.parse(process.env.SITE_CONFIG_JSON || '[{"id":"anytool","domain":"anytool.online","url":"https://anytool.online","sitemap":"https://anytool.online/sitemap.xml"},{"id":"kmafaq-online","domain":"kmafaq.online","url":"https://kmafaq.online","sitemap":"https://kmafaq.online/sitemap.xml"},{"id":"kmafaq-site","domain":"kmafaq.site","url":"https://kmafaq.site","sitemap":"https://kmafaq.site/sitemap.xml"},{"id":"scholarportal","domain":"scholarportal.site","url":"https://scholarportal.site","sitemap":"https://scholarportal.site/sitemap.xml"}]');
 
 const BASE = process.env.SEO_DASHBOARD_BASE || 'https://seo-kmafaq.vercel.app';
 const BYPASS = process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '';
 
-async function jsonApi(path, timeout = 15000) {
-  const headers = { 'user-agent': 'SEO-Control-Center-GitHub-Monitor/3.0' };
+async function jsonApi(path, timeout = 15000, options = {}) {
+  const headers = { 'user-agent': 'SEO-Control-Center-GitHub-Monitor/3.0', ...(options.headers || {}) };
   if (BYPASS) headers['x-vercel-protection-bypass'] = BYPASS;
-  const r = await fetch(BASE + path, { headers, signal: AbortSignal.timeout(timeout) });
+  const r = await fetch(BASE + path, { ...options, headers, signal: AbortSignal.timeout(timeout) });
   const text = await r.text();
   let data = {};
   try { data = text ? JSON.parse(text) : {}; } catch {}
@@ -57,18 +57,39 @@ const signals = {
   facebook: null,
   cwv: null,
   opportunities: null,
+  indexing: null,
   errors: []
 };
+
+// Advance verified indexing coverage in a small quota-friendly batch on each scheduled digest.
+if (process.env.SEO_STORAGE_SECRET) {
+  for (const site of sites) {
+    if (!site.id) continue;
+    try {
+      await jsonApi('/api/index-progress', 45000, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-seo-storage-secret': process.env.SEO_STORAGE_SECRET
+        },
+        body: JSON.stringify({ site: site.id, batch: 5 })
+      });
+    } catch (e) {
+      signals.errors.push('Index scan '+site.domain+': '+e.message);
+    }
+  }
+}
 
 const apiResults = await Promise.allSettled([
   jsonApi('/api/gsc-overview'),
   jsonApi('/api/ga4-realtime'),
   jsonApi('/api/facebook-insights'),
   jsonApi('/api/crux'),
-  jsonApi('/api/gsc-opportunities')
+  jsonApi('/api/gsc-opportunities'),
+  jsonApi('/api/index-progress', 30000)
 ]);
 
-const [gscR, gaR, fbR, cwvR, oppR] = apiResults;
+const [gscR, gaR, fbR, cwvR, oppR, indexR] = apiResults;
 
 if (gscR.status === 'fulfilled') {
   const valid = (gscR.value.sites || []).filter(x => !x.error);
@@ -95,6 +116,9 @@ if (fbR.status === 'fulfilled') {
   signals.facebook = {
     followers: fbR.value?.page?.followers ?? null,
     posts: Array.isArray(fbR.value?.posts) ? fbR.value.posts.length : null,
+    views28d: fbR.value?.summary?.views28d ?? null,
+    engagements28d: fbR.value?.summary?.engagements28d ?? null,
+    recentEngagement: fbR.value?.summary?.recentEngagement ?? null,
     metrics: fbR.value?.metrics ? Object.keys(fbR.value.metrics).filter(k => fbR.value.metrics[k]?.available).length : 0
   };
 } else signals.errors.push('Facebook: ' + fbR.reason.message);
@@ -125,6 +149,10 @@ if (oppR.status === 'fulfilled') {
   };
 } else signals.errors.push('Opportunities: ' + oppR.reason.message);
 
+if (indexR.status === 'fulfilled') {
+  signals.indexing = indexR.value?.portfolio || null;
+} else signals.errors.push('Indexing: ' + indexR.reason.message);
+
 const taipeiTime = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Asia/Taipei',
   month: '2-digit',
@@ -141,7 +169,11 @@ const metricLines = [];
 if (signals.gsc) metricLines.push('🔎 Search 28d: ' + signals.gsc.clicks.toLocaleString() + ' clicks · ' + signals.gsc.impressions.toLocaleString() + ' impressions');
 if (signals.ga4) metricLines.push('◉ GA4 now: ' + signals.ga4.activeUsers.toLocaleString() + ' active users');
 if (signals.cwv?.known) metricLines.push('⚡ CWV: ' + signals.cwv.good + ' good · ' + signals.cwv.attention + ' attention');
-if (signals.facebook) metricLines.push('f Facebook: ' + (signals.facebook.followers ?? '—') + ' followers · ' + (signals.facebook.posts ?? '—') + ' recent posts');
+if (signals.facebook) {
+  const engagement = signals.facebook.engagements28d ?? signals.facebook.recentEngagement;
+  metricLines.push('f Facebook: ' + (signals.facebook.followers ?? '—') + ' followers · ' + (signals.facebook.views28d ?? '—') + ' views · ' + (engagement ?? '—') + ' engagements');
+}
+if (signals.indexing) metricLines.push('📚 Indexing: ' + signals.indexing.indexed + ' verified indexed / ' + signals.indexing.totalPages + ' total · ' + signals.indexing.remaining + ' unchecked');
 if (signals.opportunities) metricLines.push('🎯 SEO opportunities: ' + signals.opportunities.count);
 
 const topOpportunity = signals.opportunities?.top
