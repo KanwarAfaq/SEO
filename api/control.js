@@ -9,7 +9,8 @@ const routes = {
   'facebook-insights': require('./_lib/routes/facebook-insights'),
   'deep-audit': require('./_lib/routes/deep-audit'),
   'search-intelligence': require('./_lib/routes/search-intelligence'),
-  'index-coverage': require('./_lib/routes/index-coverage')
+  'index-coverage': require('./_lib/routes/index-coverage'),
+  'index-progress': require('./_lib/routes/index-progress')
 };
 
 module.exports = async function handler(req, res) {

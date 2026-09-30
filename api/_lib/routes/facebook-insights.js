@@ -69,13 +69,18 @@ module.exports = async function handler(req, res) {
       limit: 10
     }).catch(error => ({ data: [], _error: error.message }));
 
+    // Metrics are queried one-by-one so a deprecated/unsupported Meta metric
+    // cannot break the rest of the Facebook dashboard.
     const metricNames = [
+      'page_media_view',
+      'page_total_media_view_unique',
       'page_post_engagements',
-      'page_impressions',
-      'page_impressions_unique',
       'page_views_total',
+      'page_daily_follows',
       'page_follows',
-      'page_engaged_users'
+      'page_engaged_users',
+      'page_impressions',
+      'page_impressions_unique'
     ];
 
     const metricResultsPromise = Promise.all(metricNames.map(async metric => {
@@ -140,13 +145,31 @@ module.exports = async function handler(req, res) {
       picture: pageRaw.picture?.data?.url || null
     };
 
+    const recentEngagement = posts.reduce((n, p) => n + Number(p.engagement || 0), 0);
+    const viewsMetric = metrics.page_media_view?.available
+      ? 'page_media_view'
+      : metrics.page_views_total?.available
+        ? 'page_views_total'
+        : metrics.page_impressions?.available
+          ? 'page_impressions'
+          : null;
+    const views28d = viewsMetric ? metrics[viewsMetric]?.sum ?? null : null;
+    const engagementMetric = metrics.page_post_engagements?.available ? 'page_post_engagements' : null;
+    const engagements28d = engagementMetric ? metrics[engagementMetric]?.sum ?? null : null;
+
     const summary = {
-      engagements28d: metrics.page_post_engagements?.sum ?? null,
+      views28d,
+      viewsMetric,
+      engagements28d,
+      engagementMetric,
+      recentEngagement,
+      recentPostCount: posts.length,
+      uniqueMediaViewers28d: metrics.page_total_media_view_unique?.sum ?? null,
+      follows28d: metrics.page_daily_follows?.sum ?? metrics.page_follows?.sum ?? null,
+      dailyEngagedUsers: metrics.page_engaged_users?.latest ?? null,
+      // Legacy/fallback fields kept for compatibility with older UI code.
       impressions28d: metrics.page_impressions?.sum ?? null,
-      dailyReach: metrics.page_impressions_unique?.latest ?? null,
-      views28d: metrics.page_views_total?.sum ?? null,
-      follows28d: metrics.page_follows?.sum ?? null,
-      dailyEngagedUsers: metrics.page_engaged_users?.latest ?? null
+      dailyReach: metrics.page_impressions_unique?.latest ?? null
     };
 
     res.status(200).json({

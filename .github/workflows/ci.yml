@@ -81,7 +81,7 @@ jobs:
           const path=require('path');
           const control=fs.readFileSync('api/control.js','utf8');
           const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
-          for(const route of ['deep-audit','search-intelligence','index-coverage']){
+          for(const route of ['deep-audit','search-intelligence','index-coverage','index-progress']){
             if(!control.includes("'"+route+"'")) throw new Error('Missing control route '+route);
             if(!(vercel.rewrites||[]).some(x=>x.source==='/api/'+route)) throw new Error('Missing Vercel rewrite '+route);
           }
@@ -116,6 +116,7 @@ jobs:
           curl -fsSL "$base/api/deep-audit?site=anytool&limit=5" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/deep.json
           curl -fsSL "$base/api/search-intelligence?site=anytool" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/intel.json
           curl -fsSL "$base/api/index-coverage?site=anytool&sample=2" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/index.json
+          curl -fsSL "$base/api/index-progress?site=anytool" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/index-progress.json
 
           python - <<'PY'
           import json
@@ -136,4 +137,11 @@ jobs:
           assert len(sites)==1 and not sites[0].get('error'), idx
           assert sites[0].get('sampleSize',0)>=2, idx
           print('INDEX_COVERAGE_OK', sites[0].get('sampleSize'), sites[0].get('pass'))
+
+          progress=json.load(open('/tmp/index-progress.json'))
+          sites=progress.get('sites',[])
+          assert len(sites)==1 and not sites[0].get('error'), progress
+          assert sites[0].get('totalPages',0)>=3, progress
+          assert progress.get('portfolio',{}).get('totalPages',0)>=3, progress
+          print('INDEX_PROGRESS_OK', sites[0].get('totalPages'), sites[0].get('indexed'), sites[0].get('remaining'))
           PY

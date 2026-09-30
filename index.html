@@ -119,6 +119,10 @@
           <div class="fb-hero-actions"><span id="fbTokenStatus" class="tag warn">Checking token</span><a id="fbPageLink" class="ghost-btn fb-open" href="https://www.facebook.com/DailyFunUpdates" target="_blank" rel="noopener">Facebook Page ↗</a></div>
         </article>
         <div class="metric-grid fb-grid" id="fbMetrics"></div>
+        <article class="panel earning-note">
+          <div class="panel-head"><div><span class="eyebrow">EARNINGS MODEL</span><h3>Estimated earnings</h3></div><span class="tag warn">ESTIMATE ONLY</span></div>
+          <p class="panel-copy">The earnings card uses the Meta views metric available for this Page and your RPM range from Settings. It is a planning estimate, not a Meta payout balance.</p>
+        </article>
         <article class="panel">
           <div class="panel-head"><div><span class="eyebrow">PAGE INSIGHTS</span><h3>Metric availability</h3></div><div id="fbMetricStatus"><span class="tag warn">Waiting for Meta</span></div></div>
           <p class="panel-copy">Meta changes Page Insights metrics over time. Unsupported metrics stay unavailable rather than showing fallback data.</p>
@@ -154,7 +158,18 @@
       </section>
 
       <section class="content hidden" id="view-indexing">
-        <div class="page-intro"><div><span class="eyebrow">INDEXING</span><h1>Index control</h1><p>Inspect, submit, notify.</p></div></div>
+        <div class="page-intro"><div><span class="eyebrow">INDEXING</span><h1>Index control</h1><p>Track verified Google coverage, inspect, submit and notify.</p></div></div>
+
+        <article class="panel index-progress-panel">
+          <div class="panel-head">
+            <div><span class="eyebrow">VERIFIED COVERAGE</span><h3>Indexing progress</h3></div>
+            <div class="index-progress-actions"><select id="indexProgressSite"></select><button class="primary-btn" id="verifyIndexBatchBtn">Verify next 5</button></div>
+          </div>
+          <p class="panel-copy">Total pages come from live sitemaps. Indexed / not indexed are verified URL-by-URL with Google's URL Inspection API. “Remaining” means URLs not yet verified by this dashboard.</p>
+          <div class="metric-grid index-progress-grid" id="indexProgressSummary"></div>
+          <div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Total pages</th><th>Indexed</th><th>Not indexed</th><th>Remaining</th><th>Verified</th><th>Last update</th></tr></thead><tbody id="indexProgressTable"><tr><td colspan="7">Loading verified indexing progress…</td></tr></tbody></table></div>
+        </article>
+
         <div class="action-grid">
           <article class="action-card accent-blue"><span class="action-icon">◎</span><h3>Inspect a URL</h3><p>Check Google index status.</p><button class="action-button" data-action="inspect">Inspect URL</button></article>
           <article class="action-card accent-purple"><span class="action-icon">⇧</span><h3>Submit sitemap</h3><p>Send sitemap to Google.</p><button class="action-button" data-action="sitemap">Submit sitemap</button></article>
@@ -193,6 +208,15 @@
       <section class="content hidden" id="view-settings">
         <div class="page-intro"><div><span class="eyebrow">SECURITY</span><h1>Settings</h1><p>Session-only admin access.</p></div></div>
         <article class="panel settings-form"><label>Admin action key<span>Unlocks protected actions for this browser session.</span><input type="password" id="adminKey" placeholder="Enter ADMIN_ACTION_KEY" /></label><div class="form-row"><button class="primary-btn" id="saveAdminKey">Use for this session</button><button class="ghost-btn" id="clearAdminKey">Clear</button></div><div class="notice"><b>Safe by default.</b> Production secrets stay server-side.</div></article>
+        <article class="panel settings-form rpm-settings">
+          <div class="panel-head"><div><span class="eyebrow">FACEBOOK MODEL</span><h3>Earnings estimate assumptions</h3></div></div>
+          <p class="panel-copy">Enter your expected revenue per 1,000 views (RPM). These values are stored only in this browser and are used for the estimate card.</p>
+          <div class="rpm-row">
+            <label>Low RPM (USD)<span>Example: your conservative historical RPM.</span><input type="number" min="0" step="0.01" id="fbRpmLow" placeholder="e.g. 0.80" /></label>
+            <label>High RPM (USD)<span>Example: your optimistic historical RPM.</span><input type="number" min="0" step="0.01" id="fbRpmHigh" placeholder="e.g. 3.00" /></label>
+          </div>
+          <div class="form-row"><button class="primary-btn" id="saveFbRpm">Save RPM range</button><button class="ghost-btn" id="clearFbRpm">Clear estimate</button></div>
+        </article>
       </section>
     </main>
   </div>

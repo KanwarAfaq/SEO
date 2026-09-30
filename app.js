@@ -3,9 +3,15 @@ const SITES=[
 {id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',repo:'KanwarAfaq/kmafaq_blog',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#8b6cff'},
 {id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',repo:'KanwarAfaq/kmafaq',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#35d2a0'},
 {id:'scholarportal',name:'ScholarPortal',domain:'scholarportal.site',url:'https://scholarportal.site',sitemap:'https://scholarportal.site/sitemap.xml',gscProperty:'sc-domain:scholarportal.site',repo:'KanwarAfaq/global-scholar-portal',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#ff9c58'}];
-const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],searchIntel:null,deepAudit:null,indexCoverage:null,history:null,config:{},loaded:{health:false,gsc:false,ga:false,facebook:false,crux:false},errors:{health:null,gsc:null,ga:null,facebook:null,crux:null},lastUpdated:null};
+const state={health:[],gsc:[],ga:[],facebook:null,cwv:[],pagespeed:[],searchIntel:null,deepAudit:null,indexCoverage:null,indexProgress:null,history:null,config:{},loaded:{health:false,gsc:false,ga:false,facebook:false,crux:false,indexProgress:false},errors:{health:null,gsc:null,ga:null,facebook:null,crux:null,indexProgress:null},lastUpdated:null};
 const $=q=>document.querySelector(q),$$=q=>[...document.querySelectorAll(q)],fmt=n=>n==null?'—':Number(n).toLocaleString(),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const key=()=>sessionStorage.getItem('seo-admin-key')||'';
+function fbRpm(){
+  const low=Number(localStorage.getItem('fb-rpm-low'));
+  const high=Number(localStorage.getItem('fb-rpm-high'));
+  return Number.isFinite(low)&&Number.isFinite(high)&&low>=0&&high>=low&&high>0?{low,high}:null;
+}
+function money(n){return Number.isFinite(Number(n))?('$'+Number(n).toFixed(2)):'—'}
 function toast(msg,type='good'){const e=document.createElement('div');e.className=`toast ${type}`;e.textContent=msg;$('#toastWrap').append(e);setTimeout(()=>e.remove(),4200)}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function sourceState(text,type='good'){
@@ -168,12 +174,15 @@ async function loadConfig(){
 
 function fbMetricMeta(name){
   const map={
+    page_media_view:['Content views','28-day total'],
+    page_total_media_view_unique:['Unique media viewers','28-day total'],
     page_post_engagements:['Post engagements','28-day total'],
-    page_impressions:['Impressions','28-day total'],
-    page_impressions_unique:['Daily reach','Latest available day'],
     page_views_total:['Page views','28-day total'],
-    page_follows:['New follows','28-day total'],
-    page_engaged_users:['Engaged users','Latest available day']
+    page_daily_follows:['New follows','28-day total'],
+    page_follows:['Followers','Meta Page Insights'],
+    page_engaged_users:['Engaged users','Latest available day'],
+    page_impressions:['Legacy impressions','28-day fallback'],
+    page_impressions_unique:['Legacy reach','Latest available day']
   };
   return map[name]||[name.replace(/^page_/,'').replaceAll('_',' '),'Meta Page Insights'];
 }
@@ -191,6 +200,7 @@ function sparkline(points=[]){
 function facebook(){
   const d=state.facebook;
   const page=d?.page||{};
+  const summary=d?.summary||{};
   const live=Boolean(d&&!state.errors.facebook);
 
   $('#fbPageName').textContent=live?(page.name||'Facebook Page'):'Facebook unavailable';
@@ -216,18 +226,29 @@ function facebook(){
   $('#fbTokenStatus').textContent=tokenText;
   $('#fbTokenStatus').className='tag '+(live&&d.token?.valid!==false?'good':'bad');
 
+  const rpm=fbRpm();
+  const estimate=live&&summary.views28d!=null&&rpm
+    ? {low:Number(summary.views28d)/1000*rpm.low,high:Number(summary.views28d)/1000*rpm.high}
+    : null;
+  const engagementValue=summary.engagements28d!=null?summary.engagements28d:summary.recentEngagement;
+  const engagementSub=summary.engagements28d!=null?'Meta · 28-day total':'Recent '+(summary.recentPostCount||0)+' posts';
+  const viewsSub=summary.views28d!=null
+    ? (summary.viewsMetric==='page_media_view'?'Meta content views · 28d':summary.viewsMetric==='page_views_total'?'Meta page views · 28d':'Meta fallback metric · 28d')
+    : 'Unavailable from Meta';
+  const earningsText=estimate?money(estimate.low)+'–'+money(estimate.high):(rpm?'Waiting for Meta views':'Set RPM');
+  const earningsSub=estimate
+    ? ('Model only · $'+rpm.low.toFixed(2)+'–$'+rpm.high.toFixed(2)+' RPM')
+    : (rpm?'Needs a usable Meta views metric':'Configure RPM in Settings');
+
   const cards=[
-    {label:'Followers',value:page.followers,sub:'Page API',spark:''},
-    {label:'Page likes',value:page.likes,sub:'Page API',spark:''}
+    {label:'Followers',display:live?fmt(page.followers):'—',sub:'Meta Page API',spark:''},
+    {label:'Views · 28d',display:live&&summary.views28d!=null?fmt(summary.views28d):'—',sub:viewsSub,spark:summary.viewsMetric? sparkline(d.metrics?.[summary.viewsMetric]?.points||[]):''},
+    {label:'Engagement · 28d',display:live&&engagementValue!=null?fmt(engagementValue):'—',sub:engagementSub,spark:summary.engagementMetric?sparkline(d.metrics?.[summary.engagementMetric]?.points||[]):''},
+    {label:'Recent post engagement',display:live?fmt(summary.recentEngagement):'—',sub:(summary.recentPostCount||0)+' recent posts',spark:''},
+    {label:'New follows · 28d',display:live&&summary.follows28d!=null?fmt(summary.follows28d):'—',sub:summary.follows28d!=null?'Meta Page Insights':'Unavailable from Meta',spark:''},
+    {label:'Estimated earnings',display:earningsText,sub:earningsSub,spark:'',estimate:true}
   ];
-  if(live){
-    for(const [name,m] of Object.entries(d.metrics||{})){
-      if(!m?.available)continue;
-      const [label,sub]=fbMetricMeta(name);
-      cards.push({label,value:fbMetricValue(name,m),sub,spark:sparkline(m.points||[])});
-    }
-  }
-  $('#fbMetrics').innerHTML=cards.map(x=>`<div class="metric-card fb-metric"><span>${esc(x.label)}</span><strong>${live?fmt(x.value):'—'}</strong><small>${esc(x.sub)}</small>${x.spark||''}</div>`).join('');
+  $('#fbMetrics').innerHTML=cards.map(x=>`<div class="metric-card fb-metric ${x.estimate?'estimate-card':''}"><span>${esc(x.label)}</span><strong>${esc(x.display)}</strong><small>${esc(x.sub)}</small>${x.spark||''}</div>`).join('');
 
   const posts=live?(d.posts||[]):[];
   const permissionNotice=$('#fbPermissionNotice');
@@ -367,7 +388,7 @@ async function loadGa(show=false){
 async function refresh(show=true){
   sourceState('Refreshing live sources…','loading');
   const configOk=await loadConfig();
-  const results=await Promise.allSettled([loadHealth(false),loadGsc(false),loadGa(false),loadFacebook(false),loadCrux(false)]);
+  const results=await Promise.allSettled([loadHealth(false),loadGsc(false),loadGa(false),loadFacebook(false),loadCrux(false),loadIndexProgress(false)]);
   await loadHistory();
   const coreOk=configOk&&state.health.length===SITES.length&&state.gsc.length===SITES.length&&state.ga.length===SITES.length&&Boolean(state.facebook);
   sourceState(coreOk?'Live sources connected':'Some sources unavailable',coreOk?'good':'warn');
@@ -462,6 +483,51 @@ async function runDeepAudit(){
   }catch(e){toast(e.message,'bad')}
   finally{b.disabled=false;b.textContent=old}
 }
+function renderIndexProgress(){
+  const d=state.indexProgress;
+  const p=d?.portfolio||{};
+  const complete=Boolean(d&&!state.errors.indexProgress);
+  const cards=[
+    ['Total sitemap pages',complete?fmt(p.totalPages):'—','Live sitemap count'],
+    ['Verified indexed',complete?fmt(p.indexed):'—','Google URL Inspection PASS'],
+    ['Verified not indexed',complete?fmt(p.notIndexed):'—','Checked URLs not passing'],
+    ['Remaining unchecked',complete?fmt(p.remaining):'—','Will be verified in batches'],
+    ['Verification progress',complete?(Number(p.verifiedPercent||0).toFixed(1)+'%'):'—','Checked / total sitemap URLs']
+  ];
+  $('#indexProgressSummary').innerHTML=cards.map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
+  $('#indexProgressTable').innerHTML=complete?(d.sites||[]).map(x=>{
+    if(x.error)return `<tr><td class="table-domain">${esc(x.domain)}</td><td colspan="6"><span class="tag bad">${esc(x.error)}</span></td></tr>`;
+    return `<tr><td class="table-domain">${esc(x.domain)}</td><td>${fmt(x.totalPages)}</td><td><span class="tag good">${fmt(x.indexed)}</span></td><td><span class="tag ${x.notIndexed?'warn':'good'}">${fmt(x.notIndexed)}</span></td><td>${fmt(x.remaining)}</td><td>${Number(x.verifiedPercent||0).toFixed(1)}%</td><td>${x.lastUpdated?new Date(x.lastUpdated).toLocaleString():'Not started'}</td></tr>`;
+  }).join(''):`<tr><td colspan="7">${esc(state.errors.indexProgress||'Loading verified indexing progress…')}</td></tr>`;
+}
+async function loadIndexProgress(show=false){
+  state.loaded.indexProgress=true;
+  try{
+    state.indexProgress=await api('/api/index-progress',{timeoutMs:30000});
+    state.errors.indexProgress=null;
+    renderIndexProgress();
+    if(show)toast('Indexing progress refreshed');
+    return true;
+  }catch(e){
+    state.indexProgress=null;
+    state.errors.indexProgress=e.message;
+    renderIndexProgress();
+    if(show)toast(e.message,'bad');
+    return false;
+  }
+}
+async function verifyNextIndexBatch(){
+  if(!requireKey())return;
+  const b=$('#verifyIndexBatchBtn'),old=b.textContent,site=$('#indexProgressSite').value;
+  b.disabled=true;b.textContent='Verifying…';
+  try{
+    const d=await api('/api/index-progress',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({site,batch:5}),timeoutMs:60000});
+    toast('Verified '+Number(d.sites?.[0]?.advanced||0)+' new URL(s)');
+    await loadIndexProgress(false);
+  }catch(e){toast(e.message,'bad')}
+  finally{b.disabled=false;b.textContent=old}
+}
+
 function renderIndexCoverage(){
   const d=state.indexCoverage;
   const rows=[];
@@ -485,9 +551,14 @@ async function runIndexCoverage(){
 
 async function opportunities(){if(!state.config.google)return toast('Connect Google service account first','bad');try{const rows=(await api('/api/gsc-opportunities')).opportunities||[];$('#opportunityTable').innerHTML=rows.length?rows.slice(0,25).map(x=>`<tr><td class="table-domain">${esc(x.domain)}</td><td>${esc(x.query)}</td><td>${Number(x.position).toFixed(1)}</td><td>${fmt(x.impressions)}</td><td>${(Number(x.ctr)*100).toFixed(2)}%</td><td title="${esc(x.page)}">${esc(x.page.replace(/^https?:\/\//,'').slice(0,42))}</td></tr>`).join(''):'<tr><td colspan="6">No matching opportunities found.</td></tr>';toast(`Found ${rows.length} opportunities`)}catch(e){toast(e.message,'bad')}}
 async function runAudit(){const b=$('#runAuditBtn'),old=b.innerHTML;b.innerHTML='↻ Auditing';b.disabled=true;try{const d=await api('/api/technical-audit'),rows=(d.sites||[]).map(s=>`<div class="audit-row"><div class="score-orb" style="--score:${s.score}"><b>${s.score}</b></div><div><strong>${s.domain}</strong><small>${s.latency||'—'} ms · ${s.issues?.length||0} issue(s)</small><p>${s.issues?.slice(0,4).map(i=>`• ${esc(i.message)}`).join('<br>')||'✓ No basic technical issues detected'}</p></div></div>`).join('');modal(`<h2>Technical SEO audit</h2><p>Homepage, metadata, robots.txt and sitemap checks.</p>${rows}`);toast('Technical audit completed')}catch(e){toast(e.message,'bad')}finally{b.innerHTML=old;b.disabled=false}}
-$('#refreshBtn').onclick=()=>refresh(true);$('#runSearchIntelBtn').onclick=runSearchIntel;$('#runDeepAuditBtn').onclick=runDeepAudit;$('#runIndexCoverageBtn').onclick=runIndexCoverage;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
-$('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};$('#testLineBtn').onclick=async()=>{if(!requireKey())return;try{await api('/api/line-test',{method:'POST'});toast('Test LINE notification sent')}catch(e){toast(e.message,'bad')}};
-siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();$('#auditSiteSelect').innerHTML=options();
+$('#refreshBtn').onclick=()=>refresh(true);$('#runSearchIntelBtn').onclick=runSearchIntel;$('#runDeepAuditBtn').onclick=runDeepAudit;$('#runIndexCoverageBtn').onclick=runIndexCoverage;$('#verifyIndexBatchBtn').onclick=verifyNextIndexBatch;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
+$('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};
+$('#saveFbRpm').onclick=()=>{const low=Number($('#fbRpmLow').value),high=Number($('#fbRpmHigh').value);if(!Number.isFinite(low)||!Number.isFinite(high)||low<0||high<low||high<=0)return toast('Enter a valid RPM range','bad');localStorage.setItem('fb-rpm-low',String(low));localStorage.setItem('fb-rpm-high',String(high));facebook();toast('Facebook earnings model updated')};
+$('#clearFbRpm').onclick=()=>{localStorage.removeItem('fb-rpm-low');localStorage.removeItem('fb-rpm-high');$('#fbRpmLow').value='';$('#fbRpmHigh').value='';facebook();toast('Facebook earnings estimate cleared')};$('#testLineBtn').onclick=async()=>{if(!requireKey())return;try{await api('/api/line-test',{method:'POST'});toast('Test LINE notification sent')}catch(e){toast(e.message,'bad')}};
+siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();
+$('#auditSiteSelect').innerHTML=options();$('#indexProgressSite').innerHTML=options();
+const storedRpm=fbRpm();if(storedRpm){$('#fbRpmLow').value=storedRpm.low;$('#fbRpmHigh').value=storedRpm.high}
+renderIndexProgress();
 const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
 bootstrap();
 window.addEventListener('pageshow',e=>{if(e.persisted||!state.health.length||!state.gsc.length||!state.ga.length||!state.facebook)bootstrap()});
