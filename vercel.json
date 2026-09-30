@@ -69,6 +69,10 @@
     {
       "source": "/api/index-coverage",
       "destination": "/api/control?op=index-coverage"
+    },
+    {
+      "source": "/api/index-progress",
+      "destination": "/api/control?op=index-progress"
     }
   ]
 }
