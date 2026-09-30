@@ -120,6 +120,11 @@ jobs:
           print('FACEBOOK_FOLLOWERS', d['page'].get('followers'))
           print('FACEBOOK_POSTS', len(d.get('posts',[])))
           print('FACEBOOK_METRICS_AVAILABLE', len(d.get('metrics',{})))
+          summary=d.get('summary',{})
+          assert 'views28d' in summary and 'engagements28d' in summary and 'recentEngagement' in summary, d
+          print('FACEBOOK_VIEWS_28D', summary.get('views28d'))
+          print('FACEBOOK_ENGAGEMENTS_28D', summary.get('engagements28d'))
+          print('FACEBOOK_RECENT_ENGAGEMENT', summary.get('recentEngagement'))
           PY
 
       - name: Check technical audit
@@ -145,6 +150,7 @@ jobs:
           curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/deep-audit?site=anytool&limit=5" > /tmp/deep.json
           curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/search-intelligence?site=anytool" > /tmp/intel.json
           curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/index-coverage?site=anytool&sample=2" > /tmp/index.json
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/index-progress" > /tmp/index-progress.json
           python - <<'PY'
           import json
           deep=json.load(open('/tmp/deep.json'))
@@ -164,4 +170,15 @@ jobs:
           assert len(sites)==1 and not sites[0].get('error'), idx
           assert sites[0].get('sampleSize',0)>=2, idx
           print('INDEX_COVERAGE', sites[0].get('sampleSize'), sites[0].get('pass'))
+
+          progress=json.load(open('/tmp/index-progress.json'))
+          sites=progress.get('sites',[])
+          assert len(sites)==4, progress
+          assert all((not s.get('error')) and s.get('totalPages',0)>=1 for s in sites), progress
+          p=progress.get('portfolio',{})
+          assert p.get('totalPages',0)>=4, progress
+          print('INDEX_PROGRESS_TOTAL', p.get('totalPages'))
+          print('INDEX_PROGRESS_INDEXED', p.get('indexed'))
+          print('INDEX_PROGRESS_NOT_INDEXED', p.get('notIndexed'))
+          print('INDEX_PROGRESS_REMAINING', p.get('remaining'))
           PY
