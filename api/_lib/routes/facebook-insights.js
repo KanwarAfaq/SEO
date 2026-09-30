@@ -45,6 +45,16 @@ async function getMetric(pageId, metric, since, until) {
   };
 }
 
+async function getPostMetric(postId, metric) {
+  const data = await graph(postId + '/insights', { metric, period: 'lifetime' });
+  const values = numericValues(data);
+  return {
+    metric,
+    available: values.length > 0,
+    value: values.length ? values[values.length - 1].value : null
+  };
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('cache-control', 'no-store');
 
@@ -120,7 +130,7 @@ module.exports = async function handler(req, res) {
       if (error) metricErrors[name] = error;
     }
 
-    const posts = (postsRaw.data || []).map(p => {
+    const basePosts = (postsRaw.data || []).map(p => {
       const reactions = Number(p.reactions?.summary?.total_count || 0);
       const comments = Number(p.comments?.summary?.total_count || 0);
       const shares = Number(p.shares?.count || 0);
@@ -134,7 +144,19 @@ module.exports = async function handler(req, res) {
         shares,
         engagement: reactions + comments + shares
       };
-    }).sort((a, b) => b.engagement - a.engagement);
+    });
+
+    // Page-level Insights may be unavailable on small Pages. Try the current
+    // post-level replacement metric so recent content views can still be
+    // reported without inventing a Page total.
+    const posts = (await Promise.all(basePosts.map(async p => {
+      try {
+        const m = await getPostMetric(p.id, 'post_media_view');
+        return { ...p, mediaViews: m.available ? m.value : null, mediaViewsKnown: m.available, mediaViewsError: null };
+      } catch (error) {
+        return { ...p, mediaViews: null, mediaViewsKnown: false, mediaViewsError: error.message };
+      }
+    }))).sort((a, b) => b.engagement - a.engagement);
 
     const page = {
       id: pageRaw.id,
@@ -146,6 +168,10 @@ module.exports = async function handler(req, res) {
     };
 
     const recentEngagement = posts.reduce((n, p) => n + Number(p.engagement || 0), 0);
+    const recentPostViewsKnownCount = posts.filter(p => p.mediaViewsKnown).length;
+    const recentPostViews = recentPostViewsKnownCount
+      ? posts.reduce((n, p) => n + Number(p.mediaViews || 0), 0)
+      : null;
     const viewsMetric = metrics.page_media_view?.available
       ? 'page_media_view'
       : metrics.page_views_total?.available
@@ -164,6 +190,8 @@ module.exports = async function handler(req, res) {
       engagementMetric,
       recentEngagement,
       recentPostCount: posts.length,
+      recentPostViews,
+      recentPostViewsKnownCount,
       uniqueMediaViewers28d: metrics.page_total_media_view_unique?.sum ?? null,
       follows28d: metrics.page_daily_follows?.sum ?? metrics.page_follows?.sum ?? null,
       dailyEngagedUsers: metrics.page_engaged_users?.latest ?? null,

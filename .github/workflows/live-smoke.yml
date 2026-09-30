@@ -125,6 +125,8 @@ jobs:
           print('FACEBOOK_VIEWS_28D', summary.get('views28d'))
           print('FACEBOOK_ENGAGEMENTS_28D', summary.get('engagements28d'))
           print('FACEBOOK_RECENT_ENGAGEMENT', summary.get('recentEngagement'))
+          print('FACEBOOK_RECENT_MEDIA_VIEWS', summary.get('recentPostViews'))
+          print('FACEBOOK_POST_VIEW_COVERAGE', summary.get('recentPostViewsKnownCount'), '/', summary.get('recentPostCount'))
           PY
 
       - name: Check technical audit

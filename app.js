@@ -227,23 +227,29 @@ function facebook(){
   $('#fbTokenStatus').className='tag '+(live&&d.token?.valid!==false?'good':'bad');
 
   const rpm=fbRpm();
-  const estimate=live&&summary.views28d!=null&&rpm
-    ? {low:Number(summary.views28d)/1000*rpm.low,high:Number(summary.views28d)/1000*rpm.high}
+  const usingPageViews=summary.views28d!=null;
+  const usingRecentViews=!usingPageViews&&Number(summary.recentPostViewsKnownCount||0)>0;
+  const effectiveViews=usingPageViews?summary.views28d:usingRecentViews?summary.recentPostViews:null;
+  const estimate=live&&effectiveViews!=null&&rpm
+    ? {low:Number(effectiveViews)/1000*rpm.low,high:Number(effectiveViews)/1000*rpm.high}
     : null;
   const engagementValue=summary.engagements28d!=null?summary.engagements28d:summary.recentEngagement;
   const engagementSub=summary.engagements28d!=null?'Meta · 28-day total':'Recent '+(summary.recentPostCount||0)+' posts';
-  const viewsSub=summary.views28d!=null
+  const viewLabel=usingPageViews?'Views · 28d':'Recent content views';
+  const viewsSub=usingPageViews
     ? (summary.viewsMetric==='page_media_view'?'Meta content views · 28d':summary.viewsMetric==='page_views_total'?'Meta page views · 28d':'Meta fallback metric · 28d')
-    : 'Unavailable from Meta';
+    : usingRecentViews
+      ? (summary.recentPostViewsKnownCount+'/'+summary.recentPostCount+' recent posts · lifetime')
+      : 'Unavailable from Meta';
   const earningsText=estimate?money(estimate.low)+'–'+money(estimate.high):(rpm?'Waiting for Meta views':'Set RPM');
   const earningsSub=estimate
-    ? ('Model only · $'+rpm.low.toFixed(2)+'–$'+rpm.high.toFixed(2)+' RPM')
+    ? ('Model only · '+(usingPageViews?'28-day views':'recent content views')+' · $'+rpm.low.toFixed(2)+'–$'+rpm.high.toFixed(2)+' RPM')
     : (rpm?'Needs a usable Meta views metric':'Configure RPM in Settings');
 
   const cards=[
     {label:'Followers',display:live?fmt(page.followers):'—',sub:'Meta Page API',spark:''},
-    {label:'Views · 28d',display:live&&summary.views28d!=null?fmt(summary.views28d):'—',sub:viewsSub,spark:summary.viewsMetric? sparkline(d.metrics?.[summary.viewsMetric]?.points||[]):''},
-    {label:'Engagement · 28d',display:live&&engagementValue!=null?fmt(engagementValue):'—',sub:engagementSub,spark:summary.engagementMetric?sparkline(d.metrics?.[summary.engagementMetric]?.points||[]):''},
+    {label:viewLabel,display:live&&effectiveViews!=null?fmt(effectiveViews):'—',sub:viewsSub,spark:usingPageViews&&summary.viewsMetric?sparkline(d.metrics?.[summary.viewsMetric]?.points||[]):''},
+    {label:'Engagement',display:live&&engagementValue!=null?fmt(engagementValue):'—',sub:engagementSub,spark:summary.engagementMetric?sparkline(d.metrics?.[summary.engagementMetric]?.points||[]):''},
     {label:'Recent post engagement',display:live?fmt(summary.recentEngagement):'—',sub:(summary.recentPostCount||0)+' recent posts',spark:''},
     {label:'New follows · 28d',display:live&&summary.follows28d!=null?fmt(summary.follows28d):'—',sub:summary.follows28d!=null?'Meta Page Insights':'Unavailable from Meta',spark:''},
     {label:'Estimated earnings',display:earningsText,sub:earningsSub,spark:'',estimate:true}
@@ -262,8 +268,8 @@ function facebook(){
     const when=p.createdTime?new Date(p.createdTime).toLocaleDateString():'—';
     const message=esc((p.message||'(No text)').replace(/\s+/g,' ').slice(0,120));
     const open=p.permalink?`<a class="social-link" href="${esc(p.permalink)}" target="_blank" rel="noopener">Open ↗</a>`:'—';
-    return `<tr><td>${when}</td><td class="post-message">${message}</td><td>${fmt(p.reactions)}</td><td>${fmt(p.comments)}</td><td>${fmt(p.shares)}</td><td><b>${fmt(p.engagement)}</b></td><td>${open}</td></tr>`;
-  }).join(''):`<tr><td colspan="7">${d?.postsError?'Post data is locked until the Meta permission above is enabled.':'No recent posts returned by Meta.'}</td></tr>`;
+    return `<tr><td>${when}</td><td class="post-message">${message}</td><td>${p.mediaViewsKnown?fmt(p.mediaViews):'—'}</td><td>${fmt(p.reactions)}</td><td>${fmt(p.comments)}</td><td>${fmt(p.shares)}</td><td><b>${fmt(p.engagement)}</b></td><td>${open}</td></tr>`;
+  }).join(''):`<tr><td colspan="8">${d?.postsError?'Post data is locked until the Meta permission above is enabled.':'No recent posts returned by Meta.'}</td></tr>`;
 
   const available=live?Object.keys(d.metrics||{}).filter(k=>d.metrics[k]?.available):[];
   const unavailable=live?Object.keys(d.metricErrors||{}):[];
