@@ -511,7 +511,7 @@ async function loadCrawlSample(){
  try{
   const d=await api('/api/index-coverage?sample=3',{timeoutMs:60000});
   const rows=(d.sites||[]).flatMap(s=>s.error?[{domain:s.domain,error:s.error}]:(s.rows||[]).map(r=>({...r,domain:s.domain})));
-  $('#crawlSampleTable').innerHTML=rows.length?rows.map(r=>'<tr><td class="table-domain">'+esc(r.domain)+'</td><td title="'+esc(r.url||'')+'">'+esc((r.url||'—').replace(/^https?:\\/\\//,'').slice(0,68))+'</td><td>'+esc(r.verdict||'—')+'</td><td>'+esc(r.coverageState||r.error||'—')+'</td><td>'+(r.lastCrawlTime?new Date(r.lastCrawlTime).toLocaleDateString():'—')+'</td><td>'+esc(r.pageFetchState||'—')+'</td></tr>').join(''):'<tr><td colspan="6">No sampled URL data returned.</td></tr>';
+  $('#crawlSampleTable').innerHTML=rows.length?rows.map(r=>'<tr><td class="table-domain">'+esc(r.domain)+'</td><td title="'+esc(r.url||'')+'">'+esc((r.url||'—').replace('https://','').replace('http://','').slice(0,68))+'</td><td>'+esc(r.verdict||'—')+'</td><td>'+esc(r.coverageState||r.error||'—')+'</td><td>'+(r.lastCrawlTime?new Date(r.lastCrawlTime).toLocaleDateString():'—')+'</td><td>'+esc(r.pageFetchState||'—')+'</td></tr>').join(''):'<tr><td colspan="6">No sampled URL data returned.</td></tr>';
   toast('Google crawl sample loaded');
  }catch(e){$('#crawlSampleTable').innerHTML='<tr><td colspan="6">'+esc(e.message)+'</td></tr>';toast(e.message,'bad')}
  finally{btn.disabled=false;btn.textContent='Inspect sample (up to 3 per site)'}
