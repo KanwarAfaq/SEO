@@ -39,7 +39,7 @@ module.exports=async function handler(req,res){
       const h=by(health,site.id), g=by(gsc,site.id), a=by(ga,site.id), t=by(audits,site.id), c=by(crux,site.id);
       if(h.ok===false) issues.push({site_id:site.id,fingerprint:'site-down',category:'availability',severity:'critical',title:'Website unavailable',details:{status:h.status,error:h.error}});
       if(h.sitemapOk===false) issues.push({site_id:site.id,fingerprint:'sitemap-fail',category:'indexing',severity:'high',title:'Sitemap unavailable',details:{status:h.sitemapStatus,url:h.sitemapUrl}});
-      if(Number(t.score)<80) issues.push({site_id:site.id,fingerprint:'technical-score-low',category:'technical',severity:Number(t.score)<60?'high':'medium',title:'Technical SEO audit needs attention',details:{score:t.score,issues:(t.issues||[]).slice(0,8)}});
+      if(Number.isFinite(Number(t.score)) && t.score !== null && t.score !== undefined && t.score !== '' && Number(t.score)<80) issues.push({site_id:site.id,fingerprint:'technical-score-low',category:'technical',severity:Number(t.score)<60?'high':'medium',title:'Technical SEO audit needs attention',details:{score:t.score,issues:(t.issues||[]).slice(0,8)}});
       for(const k of ['lcp','inp','cls']){
         const val=c?.[k]?.p75;
         const sev=val==null?null:severityFromCwv(k,Number(val));
@@ -72,7 +72,13 @@ module.exports=async function handler(req,res){
     try{storage.snapshots=await seoStore('snapshot',{rows:snapshots});}catch(e){storage.snapshots={error:e.message}}
     try{storage.issues=await seoStore('issues_sync',{rows:issues});}catch(e){storage.issues={error:e.message}}
     try{storage.actions=await seoStore('action_suggest',{rows:actions});}catch(e){storage.actions={error:e.message}}
+    const storageErrors = Object.entries(storage).filter(([_, value]) => value?.error).map(([key, value]) => ({step:key,error:value.error}));
+    if(storageErrors.length) {
+      try{await seoStore('agent_run',{row:{run_type:'seo_agent',status:'failed',started_at:startedAt,finished_at:new Date().toISOString(),error:'Storage operations failed',metadata:{storageErrors}}})}catch{}
+      return res.status(503).json({ok:false,error:'SEO data could not be fully persisted',storageErrors,counts:{sites:sites.length,issues:issues.length,actions:actions.length,opportunities:opps.length}});
+    }
     try{storage.run=await seoStore('agent_run',{row:{run_type:'seo_agent',status:'succeeded',started_at:startedAt,finished_at:new Date().toISOString(),summary:'Automated portfolio SEO analysis',counts:{sites:sites.length,issues:issues.length,actions:actions.length,opportunities:opps.length},metadata:{storage}}});}catch(e){storage.run={error:e.message}}
+    if(storage.run?.error) return res.status(503).json({ok:false,error:'SEO agent run could not be persisted',storageErrors:[{step:'run',error:storage.run.error}]});
     res.status(200).json({ok:true,counts:{sites:sites.length,issues:issues.length,actions:actions.length,opportunities:opps.length},issues,actions,storage});
   }catch(e){
     try{await seoStore('agent_run',{row:{run_type:'seo_agent',status:'failed',started_at:startedAt,finished_at:new Date().toISOString(),error:e.message}})}catch{}
