@@ -24,6 +24,7 @@
         <button class="nav-item" data-view="facebook"><span>f</span><b>Facebook</b></button>
         <button class="nav-item" data-view="performance"><span>◇</span><b>Core Web Vitals</b></button>
         <button class="nav-item" data-view="audit"><span>◫</span><b>Site Audit</b></button>
+        <button class="nav-item" data-view="growth"><span>↗</span><b>Growth Intelligence</b></button>
         <button class="nav-item" data-view="indexing"><span>◎</span><b>Indexing</b></button>
         <button class="nav-item" data-view="actions"><span>⚡</span><b>Actions</b><i class="pill">4</i></button>
         <button class="nav-item" data-view="alerts"><span>♢</span><b>Alerts</b></button>
@@ -183,6 +184,14 @@
         </article>
       </section>
 
+      <section class="content hidden" id="view-growth">
+        <div class="page-intro"><div><span class="eyebrow">FIRST 90 DAYS · SOURCE-BACKED</span><h1>SEO Growth Intelligence</h1><p>Track search discovery and prioritise verifiable actions for four new websites.</p></div><button class="primary-btn" onclick="window.seoGrowth.load()">Refresh signals</button></div>
+        <div class="panel"><div class="panel-head"><div><h3>Organic visibility</h3><p id="growthStatus">Load to fetch Search Console</p></div><div class="segmented"><button onclick="window.seoGrowth.setRange(7)">7D</button><button onclick="window.seoGrowth.setRange(28)">28D</button><button onclick="window.seoGrowth.setRange(90)">90D</button></div></div><div class="metric-grid" id="growthMetrics"></div><p class="panel-copy">Daily impressions (same scale within selected period)</p><div class="growth-timeline" id="growthTimeline"></div></div>
+        <article class="panel"><div class="panel-head"><h3>Site growth and baseline</h3></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Impressions vs prior period</th><th>Confidence</th></tr></thead><tbody id="growthSites"></tbody></table></div></article>
+        <article class="panel"><div class="panel-head"><h3>Verified indexing</h3><button class="text-btn" data-view-jump="indexing">Open indexing →</button></div><div class="metric-grid" id="growthIndex"></div><p class="panel-copy">Not inspected is unknown, not necessarily excluded from Google.</p></article>
+        <article class="panel"><div class="panel-head"><h3>Evidence-based recommendations</h3><button class="text-btn" data-view-jump="actions">Review SEO agent →</button></div><div class="panel-copy" id="growthRecommendations"></div></article>
+        <article class="panel"><div class="panel-head"><h3>Historical snapshots</h3></div><p class="panel-copy">Recorded snapshots, not an inferred attribution of ranking changes.</p><div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Captured at</th><th>Impressions</th><th>Clicks</th><th>Technical score</th></tr></thead><tbody id="growthHistory"></tbody></table></div></article>
+      </section>
       <section class="content hidden" id="view-actions">
         <div class="page-intro"><div><span class="eyebrow">SAFE AUTOMATION</span><h1>Action center</h1><p>Review → approve → track.</p></div><div class="hero-actions"><span class="approval-badge">Approval ON</span><button class="primary-btn" id="runAgentBtn">Run agent</button></div></div>
         <div class="action-queue" id="actionQueue"></div>
@@ -223,6 +232,7 @@
 
   <div class="toast-wrap" id="toastWrap"></div>
   <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal"><button class="modal-close" id="modalClose">×</button><div id="modalBody"></div></div></div>
+  <script src="/growth.js" defer></script>
   <script src="/app.js" defer></script>
 </body>
 </html>
