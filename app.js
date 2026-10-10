@@ -491,6 +491,19 @@ async function runDeepAudit(){
   finally{b.disabled=false;b.textContent=old}
 }
 
+
+function renderOverviewInsights(){
+ const host=$('#overviewInsights');if(!host)return;
+ const d=state.indexProgress,p=d?.portfolio;
+ if(!p){host.innerHTML='<div class="insight-item"><strong>Indexing insight</strong><span>'+esc(state.errors.indexProgress||'Loading verified indexing data…')+'</span></div>';return}
+ const inspected=Number(p.indexed||0)+Number(p.notIndexed||0);
+ const ratio=inspected?Number(p.notIndexed||0)/inspected:null;
+ const problem=ratio!==null&&ratio>.6;
+ const errors=Number(p.errors||0);
+ host.innerHTML='<div class="insight-item"><strong>'+(problem?'Indexing needs attention':'Indexing coverage')+'</strong><span>'+fmt(p.indexed)+' verified indexed of '+fmt(p.totalPages)+' sitemap URLs · '+fmt(p.remaining)+' unchecked. '+(problem?(ratio*100).toFixed(1)+'% of inspected URLs have not passed indexing.':'Latest saved Google inspection results.')+'</span></div><button class="ghost-btn" data-view-jump="crawl">See crawl status →</button>';
+ host.querySelector('button').onclick=()=>view('crawl');
+}
+
 function renderCrawlStatus(){
  const box=$('#crawlSummary');if(!box)return;
  const d=state.indexProgress,p=d?.portfolio||{},valid=Boolean(d&&!state.errors.indexProgress);
@@ -529,7 +542,7 @@ function renderIndexProgress(){
     ['Verification progress',complete?(Number(p.verifiedPercent||0).toFixed(1)+'%'):'—','Checked / total sitemap URLs']
   ];
   $('#indexProgressSummary').innerHTML=cards.map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
-  renderCrawlStatus();
+  renderCrawlStatus();renderOverviewInsights();
   $('#indexProgressTable').innerHTML=complete?(d.sites||[]).map(x=>{
     if(x.error)return `<tr><td class="table-domain">${esc(x.domain)}</td><td colspan="6"><span class="tag bad">${esc(x.error)}</span></td></tr>`;
     return `<tr><td class="table-domain">${esc(x.domain)}</td><td>${fmt(x.totalPages)}</td><td><span class="tag good">${fmt(x.indexed)}</span></td><td><span class="tag ${x.notIndexed?'warn':'good'}">${fmt(x.notIndexed)}</span></td><td>${fmt(x.remaining)}</td><td>${Number(x.verifiedPercent||0).toFixed(1)}%</td><td>${x.lastUpdated?new Date(x.lastUpdated).toLocaleString():'Not started'}</td></tr>`;
