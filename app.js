@@ -43,7 +43,8 @@ async function api(url,opt={}){
     clearTimeout(timer);
   }
 }
-function view(name){$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',audit:'Site Audit',indexing:'Indexing',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
+function view(name){
+  if(name==='growth'&&window.seoGrowth)window.seoGrowth.load();$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',audit:'Site Audit',indexing:'Indexing',growth:'Growth Intelligence',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
 $$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));
 function toggleNav(open){
   const side=$('#sidebar'),back=$('#navBackdrop');

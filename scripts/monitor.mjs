@@ -94,6 +94,15 @@ const [gscR, gaR, fbR, cwvR, oppR, indexR] = apiResults;
 if (gscR.status === 'fulfilled') {
   const valid = (gscR.value.sites || []).filter(x => !x.error);
   if (valid.length) {
+    if (valid.length === sites.length) {
+      const daily = new Map();
+      for (const site of valid) for (const row of site.series || []) if(row.date) daily.set(row.date, (daily.get(row.date)||0)+Number(row.clicks||0));
+      const values=[...daily].sort((a,b)=>a[0].localeCompare(b[0])).map(x=>x[1]);
+      if(values.length>=14){
+        const recent=values.slice(-7).reduce((a,b)=>a+b,0),prior=values.slice(-14,-7).reduce((a,b)=>a+b,0);
+        if(prior>=30 && recent<prior*0.5) incidents.push('Organic clicks fell over 50% week-over-week ('+prior+' to '+recent+').');
+      }
+    }
     signals.gsc = {
       clicks: Math.round(valid.reduce((a, x) => a + Number(x.clicks || 0), 0)),
       impressions: Math.round(valid.reduce((a, x) => a + Number(x.impressions || 0), 0)),
@@ -151,6 +160,7 @@ if (oppR.status === 'fulfilled') {
 
 if (indexR.status === 'fulfilled') {
   signals.indexing = indexR.value?.portfolio || null;
+  if(signals.indexing?.checked>=30 && signals.indexing.notIndexed/signals.indexing.checked>0.6) incidents.push('More than 60% of inspected sitemap URLs are not indexed.');
 } else signals.errors.push('Indexing: ' + indexR.reason.message);
 
 const taipeiTime = new Intl.DateTimeFormat('en-GB', {
