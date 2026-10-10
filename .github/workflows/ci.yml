@@ -19,16 +19,32 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           node --check app.js
+          node --check growth.js
           find api -type f -name '*.js' -print0 | xargs -0 -n1 node --check
           for f in scripts/*.mjs; do
             node --check "$f"
           done
       - name: Verify required project files
         run: |
+          test -f growth.js
           test -f index.html
           test -f styles.css
           test -f vercel.json
           test -f .env.example
+
+      - name: Verify growth intelligence wiring
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const html=fs.readFileSync('index.html','utf8');
+          const js=fs.readFileSync('growth.js','utf8');
+          const api=fs.readFileSync('api/gsc-overview.js','utf8');
+          for(const id of ['view-growth','growthMetrics','growthSites','growthTimeline','growthIndex','growthHistory','growthRecommendations','growthStatus']) if(!html.includes('id="'+id+'"'))throw Error('Growth view missing '+id);
+          if(!html.includes('/growth.js')||!html.includes('data-view="growth"'))throw Error('Growth navigation missing');
+          if(!js.includes('setRange')||!js.includes('seo-history')||!js.includes('index-progress'))throw Error('Growth data bindings missing');
+          if(!api.includes('[7,28,90]'))throw Error('GSC multi-range API missing');
+          console.log('GROWTH_INTELLIGENCE_WIRING_OK');
+          NODE
 
       - name: Verify live bootstrap and mobile nav
         shell: bash
