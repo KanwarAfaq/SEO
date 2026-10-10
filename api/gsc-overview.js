@@ -29,7 +29,7 @@ async function getSite(site, days = 28) {
     ctr: totals.impressions ? totals.clicks / totals.impressions : 0,
     position: totals.impressions ? totals.positionWeighted / totals.impressions : 0,
     range: { start: iso(start), end: iso(end) },
-    series: rows.map(r => ({ date: r.keys?.[0], clicks: r.clicks || 0, impressions: r.impressions || 0 }))
+    series: rows.map(r => ({ date: r.keys?.[0], clicks: r.clicks || 0, impressions: r.impressions || 0, position: r.position ?? null }))
   };
 }
 
