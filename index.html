@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand">
@@ -25,6 +25,7 @@
         <button class="nav-item" data-view="performance"><span>◇</span><b>Core Web Vitals</b></button>
         <button class="nav-item" data-view="audit"><span>◫</span><b>Site Audit</b></button>
         <button class="nav-item" data-view="growth"><span>↗</span><b>Growth Intelligence</b></button>
+        <button class="nav-item" data-view="crawl"><span>◷</span><b>Crawl status</b></button>
         <button class="nav-item" data-view="indexing"><span>◎</span><b>Indexing</b></button>
         <button class="nav-item" data-view="actions"><span>⚡</span><b>Actions</b><i class="pill">4</i></button>
         <button class="nav-item" data-view="alerts"><span>♢</span><b>Alerts</b></button>
@@ -55,11 +56,11 @@
         <div class="hero-card">
           <div>
             <span class="eyebrow">SEO COMMAND CENTER</span>
-            <h1>4 sites. <em>One cockpit.</em></h1>
-            <p>Health, search, traffic and fixes. Source-backed only — no demo fallback.</p>
+            <h1>Search visibility. <em>One overview.</em></h1>
+            <p>A clear view of search visibility, technical health, indexing and the next actions that matter.</p>
             <div class="hero-actions"><button class="primary-btn" data-view-jump="actions">Open actions</button><button class="ghost-btn" data-view-jump="performance">Web vitals</button></div>
           </div>
-          <div class="radar-wrap">
+          <div class="radar-wrap" aria-hidden="true">
             <div class="radar"><div class="radar-sweep"></div><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span><div class="radar-center">4<small>sites</small></div></div>
           </div>
         </div>
@@ -158,6 +159,13 @@
         </article>
       </section>
 
+      <section class="content hidden" id="view-crawl">
+ <div class="page-intro"><div><span class="eyebrow">GOOGLE URL INSPECTION + LIVE SITEMAPS</span><h1>Crawl & indexing status</h1><p>Understand what Google has verified, what remains unchecked, and which properties need investigation. These are inspected URL counts, not estimated sitewide Google coverage.</p></div><button class="primary-btn" id="refreshCrawlBtn">Refresh status</button></div>
+ <div class="metric-grid" id="crawlSummary"><div class="metric-card">Loading verified URL data…</div></div>
+ <article class="panel"><div class="panel-head"><div><span class="eyebrow">INSPECTION PROGRESS</span><h3>Indexed vs not indexed vs unchecked</h3></div></div><div class="crawl-bar" id="crawlPortfolioBar" role="img" aria-label="Indexed and not-indexed URL inspection progress"></div><p class="panel-copy" id="crawlExplanation">Waiting for Google inspection records.</p></article>
+ <article class="panel"><div class="panel-head"><div><span class="eyebrow">PROPERTY DETAILS</span><h3>Website crawl status</h3></div></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Site</th><th>Sitemap</th><th>URLs</th><th>Indexed</th><th>Not indexed</th><th>Unchecked</th><th>Checked</th><th>Last inspection</th></tr></thead><tbody id="crawlTable"><tr><td colspan="9">Loading…</td></tr></tbody></table></div></article>
+ <article class="panel"><div class="panel-head"><div><span class="eyebrow">LATEST GOOGLE INSPECTION</span><h3>Sampled crawl details</h3></div><button class="ghost-btn" id="crawlSampleBtn">Inspect sample (up to 3 per site)</button></div><p class="panel-copy">On-demand calls to Google URL Inspection; the most recent crawl date, coverage reason, and fetch state are returned only for this sample. Sampling does not count as full-site coverage.</p><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>URL</th><th>Google verdict</th><th>Coverage reason</th><th>Last Google crawl</th><th>Fetch status</th></tr></thead><tbody id="crawlSampleTable"><tr><td colspan="6">Select “Inspect sample” to request Google crawl details.</td></tr></tbody></table></div></article>
+ </section>
       <section class="content hidden" id="view-indexing">
         <div class="page-intro"><div><span class="eyebrow">INDEXING</span><h1>Index control</h1><p>Track verified Google coverage, inspect, submit and notify.</p></div></div>
 
