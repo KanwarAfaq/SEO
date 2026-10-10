@@ -44,7 +44,7 @@ async function api(url,opt={}){
   }
 }
 function view(name){
-  if(name==='growth'&&window.seoGrowth)window.seoGrowth.load();$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',audit:'Site Audit',indexing:'Indexing',growth:'Growth Intelligence',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
+  if(name==='growth'&&window.seoGrowth)window.seoGrowth.load();$$('.content').forEach(x=>x.classList.add('hidden'));$(`#view-${name}`)?.classList.remove('hidden');$$('.nav-item').forEach(x=>x.classList.toggle('active',x.dataset.view===name));$('#pageTitle').textContent={overview:'Overview',search:'Google Search',realtime:'Live Traffic',facebook:'Facebook',performance:'Core Web Vitals',audit:'Site Audit',indexing:'Indexing',crawl:'Crawl status',growth:'Growth Intelligence',actions:'Actions',alerts:'Alerts',integrations:'Integrations',settings:'Settings'}[name]||name;toggleNav(false);history.replaceState(null,'',`#${name}`)}
 $$('[data-view]').forEach(b=>b.onclick=()=>view(b.dataset.view));$$('[data-view-jump]').forEach(b=>b.onclick=()=>view(b.dataset.viewJump));
 function toggleNav(open){
   const side=$('#sidebar'),back=$('#navBackdrop');
@@ -345,7 +345,7 @@ async function loadHealth(show=false){
     if(show)toast(e.message,'bad');
   }
   state.lastUpdated=new Date().toISOString();
-  siteCards();status();activity();sitemaps();
+  siteCards();status();activity();sitemaps();renderCrawlStatus();
   if(show&&!state.errors.health)toast('Live website and sitemap checks completed');
   return !state.errors.health&&state.health.length===SITES.length;
 }
@@ -490,6 +490,33 @@ async function runDeepAudit(){
   }catch(e){toast(e.message,'bad')}
   finally{b.disabled=false;b.textContent=old}
 }
+
+function renderCrawlStatus(){
+ const box=$('#crawlSummary');if(!box)return;
+ const d=state.indexProgress,p=d?.portfolio||{},valid=Boolean(d&&!state.errors.indexProgress);
+ const total=Number(p.totalPages||0),indexed=Number(p.indexed||0),notIndexed=Number(p.notIndexed||0),unchecked=Number(p.remaining||0),errors=Number(p.errors||0);
+ const items=[['Sitemap URLs',total,'Across inspected properties'],['Verified indexed',indexed,'Google inspection PASS'],['Not indexed',notIndexed,'Inspected, not PASS'],['Unchecked',unchecked,'No saved inspection verdict'],['Inspection errors',errors,'Check Google API / permissions']];
+ box.innerHTML=items.map(([label,value,help])=>'<div class="metric-card"><span>'+esc(label)+'</span><strong>'+(valid?fmt(value):'—')+'</strong><small>'+esc(valid?help:(state.errors.indexProgress||'Loading Google data…'))+'</small></div>').join('');
+ const bar=$('#crawlPortfolioBar');bar.innerHTML=valid&&total?'<div class="crawl-segment indexed" style="width:'+(indexed/total*100)+'%" title="Verified indexed"></div><div class="crawl-segment excluded" style="width:'+(notIndexed/total*100)+'%" title="Verified not indexed"></div><div class="crawl-segment failed" style="width:'+(errors/total*100)+'%" title="Inspection errors"></div><div class="crawl-segment unchecked" style="width:'+(unchecked/total*100)+'%" title="Unchecked"></div>':'<div class="crawl-segment unchecked" style="width:100%"></div>';
+ $('#crawlExplanation').textContent=valid?fmt(indexed)+' indexed · '+fmt(notIndexed)+' not indexed · '+fmt(errors)+' inspection errors · '+fmt(unchecked)+' unchecked. Inspected fraction: '+(total?((total-unchecked)/total*100).toFixed(1):'0')+'%. Unchecked is unknown, not necessarily excluded.':'Data unavailable: '+(state.errors.indexProgress||'Waiting for inspection data');
+ const H=Object.fromEntries(state.health.map(x=>[x.id,x]));
+ $('#crawlTable').innerHTML=valid?(d.sites||[]).map(s=>{
+ const h=H[s.id],siteStatus=!state.loaded.health?'Unknown':!h?'Unavailable':h.ok?'Online':'Issue',sitemapStatus=!state.loaded.health?'Unknown':!h?'Unavailable':h.sitemapOk?'Healthy':'Issue';
+ if(s.error)return '<tr><td class="table-domain">'+esc(s.domain)+'</td><td colspan="8">'+esc(s.error)+'</td></tr>';
+ return '<tr><td class="table-domain">'+esc(s.domain)+'</td><td>'+esc(siteStatus)+'</td><td>'+esc(sitemapStatus)+'</td><td>'+fmt(s.totalPages)+'</td><td>'+fmt(s.indexed)+'</td><td>'+fmt(s.notIndexed)+'</td><td>'+fmt(s.remaining)+'</td><td>'+Number(s.verifiedPercent||0).toFixed(1)+'%</td><td>'+(s.lastUpdated?new Date(s.lastUpdated).toLocaleString():'Never')+'</td></tr>';
+ }).join(''):'<tr><td colspan="9">'+esc(state.errors.indexProgress||'Loading…')+'</td></tr>';
+}
+async function loadCrawlSample(){
+ const btn=$('#crawlSampleBtn');if(!btn)return;btn.disabled=true;btn.textContent='Inspecting…';
+ try{
+  const d=await api('/api/index-coverage?sample=3',{timeoutMs:60000});
+  const rows=(d.sites||[]).flatMap(s=>s.error?[{domain:s.domain,error:s.error}]:(s.rows||[]).map(r=>({...r,domain:s.domain})));
+  $('#crawlSampleTable').innerHTML=rows.length?rows.map(r=>'<tr><td class="table-domain">'+esc(r.domain)+'</td><td title="'+esc(r.url||'')+'">'+esc((r.url||'—').replace(/^https?:\\/\\//,'').slice(0,68))+'</td><td>'+esc(r.verdict||'—')+'</td><td>'+esc(r.coverageState||r.error||'—')+'</td><td>'+(r.lastCrawlTime?new Date(r.lastCrawlTime).toLocaleDateString():'—')+'</td><td>'+esc(r.pageFetchState||'—')+'</td></tr>').join(''):'<tr><td colspan="6">No sampled URL data returned.</td></tr>';
+  toast('Google crawl sample loaded');
+ }catch(e){$('#crawlSampleTable').innerHTML='<tr><td colspan="6">'+esc(e.message)+'</td></tr>';toast(e.message,'bad')}
+ finally{btn.disabled=false;btn.textContent='Inspect sample (up to 3 per site)'}
+}
+
 function renderIndexProgress(){
   const d=state.indexProgress;
   const p=d?.portfolio||{};
@@ -502,6 +529,7 @@ function renderIndexProgress(){
     ['Verification progress',complete?(Number(p.verifiedPercent||0).toFixed(1)+'%'):'—','Checked / total sitemap URLs']
   ];
   $('#indexProgressSummary').innerHTML=cards.map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
+  renderCrawlStatus();
   $('#indexProgressTable').innerHTML=complete?(d.sites||[]).map(x=>{
     if(x.error)return `<tr><td class="table-domain">${esc(x.domain)}</td><td colspan="6"><span class="tag bad">${esc(x.error)}</span></td></tr>`;
     return `<tr><td class="table-domain">${esc(x.domain)}</td><td>${fmt(x.totalPages)}</td><td><span class="tag good">${fmt(x.indexed)}</span></td><td><span class="tag ${x.notIndexed?'warn':'good'}">${fmt(x.notIndexed)}</span></td><td>${fmt(x.remaining)}</td><td>${Number(x.verifiedPercent||0).toFixed(1)}%</td><td>${x.lastUpdated?new Date(x.lastUpdated).toLocaleString():'Not started'}</td></tr>`;
@@ -558,6 +586,7 @@ async function runIndexCoverage(){
 
 async function opportunities(){if(!state.config.google)return toast('Connect Google service account first','bad');try{const rows=(await api('/api/gsc-opportunities')).opportunities||[];$('#opportunityTable').innerHTML=rows.length?rows.slice(0,25).map(x=>`<tr><td class="table-domain">${esc(x.domain)}</td><td>${esc(x.query)}</td><td>${Number(x.position).toFixed(1)}</td><td>${fmt(x.impressions)}</td><td>${(Number(x.ctr)*100).toFixed(2)}%</td><td title="${esc(x.page)}">${esc(x.page.replace(/^https?:\/\//,'').slice(0,42))}</td></tr>`).join(''):'<tr><td colspan="6">No matching opportunities found.</td></tr>';toast(`Found ${rows.length} opportunities`)}catch(e){toast(e.message,'bad')}}
 async function runAudit(){const b=$('#runAuditBtn'),old=b.innerHTML;b.innerHTML='↻ Auditing';b.disabled=true;try{const d=await api('/api/technical-audit'),rows=(d.sites||[]).map(s=>`<div class="audit-row"><div class="score-orb" style="--score:${s.score}"><b>${s.score}</b></div><div><strong>${s.domain}</strong><small>${s.latency||'—'} ms · ${s.issues?.length||0} issue(s)</small><p>${s.issues?.slice(0,4).map(i=>`• ${esc(i.message)}`).join('<br>')||'✓ No basic technical issues detected'}</p></div></div>`).join('');modal(`<h2>Technical SEO audit</h2><p>Homepage, metadata, robots.txt and sitemap checks.</p>${rows}`);toast('Technical audit completed')}catch(e){toast(e.message,'bad')}finally{b.innerHTML=old;b.disabled=false}}
+$('#refreshCrawlBtn').onclick=async()=>{await Promise.all([loadHealth(false),loadIndexProgress(true)])};$('#crawlSampleBtn').onclick=loadCrawlSample;
 $('#refreshBtn').onclick=()=>refresh(true);$('#runSearchIntelBtn').onclick=runSearchIntel;$('#runDeepAuditBtn').onclick=runDeepAudit;$('#runIndexCoverageBtn').onclick=runIndexCoverage;$('#verifyIndexBatchBtn').onclick=verifyNextIndexBatch;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
 $('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};
 $('#saveFbRpm').onclick=()=>{const low=Number($('#fbRpmLow').value),high=Number($('#fbRpmHigh').value);if(!Number.isFinite(low)||!Number.isFinite(high)||low<0||high<low||high<=0)return toast('Enter a valid RPM range','bad');localStorage.setItem('fb-rpm-low',String(low));localStorage.setItem('fb-rpm-high',String(high));facebook();toast('Facebook earnings model updated')};
