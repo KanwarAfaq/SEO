@@ -20,6 +20,15 @@ const points=[...days].sort((a,b)=>a[0].localeCompare(b[0])),high=Math.max(1,...
 $('growthTimeline').innerHTML=points.length?points.map(([date,value])=>'<div class="growth-bar" title="'+clean(date)+': '+fmt(value)+' impressions" style="height:'+Math.max(3,Math.round(value*100/high))+'%"></div>').join(''):'No impression history available';
 const p=data.index?.portfolio;
 $('growthIndex').innerHTML=p?[metric('Sitemap URLs',fmt(p.totalPages),'Discovered from live sitemaps'),metric('Verified indexed',fmt(p.indexed),'Google inspection PASS'),metric('Verified not indexed',fmt(p.notIndexed),'Checked, needs review'),metric('Unchecked',fmt(p.remaining),'Unknown indexing status')].join(''):metric('Index progress','Unavailable','See Indexing for error details');
+const reasons=(data.index?.sites||[]).flatMap(site=>(site.indexingReasons||[]).slice(0,3).map(r=>({...r,domain:site.domain})));
+$('growthIndexReasons').innerHTML=reasons.length?'<b>Indexing diagnoses (inspected URLs):</b> '+reasons.slice(0,6).map(r=>clean(r.domain+': '+r.label+' ('+r.count+')')).join(' · '):'No per-page exclusion reasons in inspected records yet.';
+const refs=data.offpage;
+$('growthReferrals').innerHTML=!refs?'<p>Enter your admin key in Settings to view source-backed referral data.</p>':(refs.sites||[]).map(s=>{
+  if(s.error)return '<p>'+clean(s.domain)+': '+clean(s.error)+'</p>';
+  if(!s.configured)return '<p>'+clean(s.domain)+': GA4 not configured</p>';
+  const top=(s.referringSources||[]).slice(0,3).map(x=>clean(x.source)+' ('+fmt(x.currentSessions)+')').join(', ')||'None reported';
+  return '<p><b>'+clean(s.domain)+'</b> · '+fmt(s.totals?.currentSessions)+' referral sessions / 28 days · '+clean(s.totals?.changePct==null?'no baseline':s.totals.changePct+'% vs prior 28 days')+'<br>Sources: '+top+'</p>';
+}).join('');
 const snapshots=(data.history?.snapshots||[]).filter(x=>x.source==='agent').slice(0,12);
 $('growthHistory').innerHTML=snapshots.length?snapshots.map(x=>'<tr><td>'+clean(x.site_id)+'</td><td>'+clean(x.captured_at||'—')+'</td><td>'+clean(x.gsc_impressions??'—')+'</td><td>'+clean(x.gsc_clicks??'—')+'</td><td>'+clean(x.technical_score??'—')+'</td></tr>').join(''):'<tr><td colspan="5">History unavailable. Add your admin key in Settings if needed.</td></tr>';
 const recommendations=[];
@@ -32,9 +41,9 @@ $('growthStatus').textContent=range+'-day Google Search Console · '+good.length
 }
 async function get(url,headers){const r=await fetch(url,{headers,cache:'no-store'}),j=await r.json();if(!r.ok)throw Error(j.error||'HTTP '+r.status);return j}
 async function load(){ $('growthStatus').textContent='Loading source data…';const key=sessionStorage.getItem('seo-admin-key');
-const [g,i,h]=await Promise.allSettled([get('/api/gsc-overview?days=90'),get('/api/index-progress'),key?get('/api/seo-history',{'x-admin-key':key}):Promise.resolve(null)]);
+const [g,i,h,ref]=await Promise.allSettled([get('/api/gsc-overview?days=90'),get('/api/index-progress'),key?get('/api/seo-history',{'x-admin-key':key}):Promise.resolve(null),key?get('/api/referral-audit',{'x-admin-key':key}):Promise.resolve(null)]);
 if(g.status==='rejected'){$('growthStatus').textContent='Search Console unavailable: '+g.reason.message;return}
-data={gsc:g.value,index:i.status==='fulfilled'?i.value:null,history:h.status==='fulfilled'?h.value:null};render();
+data={gsc:g.value,index:i.status==='fulfilled'?i.value:null,history:h.status==='fulfilled'?h.value:null,offpage:ref.status==='fulfilled'?ref.value:{sites:[{domain:'GA4',error:ref.reason.message}]}};render();
 }
 window.seoGrowth={load,setRange:n=>{if(![7,28,90].includes(n))return;range=n;if(data)render();else load()}};
 })();
