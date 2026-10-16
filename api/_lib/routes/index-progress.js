@@ -1,6 +1,7 @@
 const { getSites, requireAdmin } = require('../config');
 const { googleFetch } = require('../google');
 const { seoStore } = require('../seo-store');
+const { summarizeReasons } = require('../indexing-diagnostics');
 
 const SCOPE=['https://www.googleapis.com/auth/webmasters.readonly'];
 const UA='SEO-Control-Center-Index-Progress/1.0';
@@ -89,6 +90,7 @@ function summarize(site,urls,records,lastUpdated=null){
     totalPages:urls.length,checked,indexed,notIndexed,errors,remaining,
     verifiedPercent:urls.length?Number((checked/urls.length*100).toFixed(1)):0,
     indexedPercentOfVerified:(indexed+notIndexed)?Number((indexed/(indexed+notIndexed)*100).toFixed(1)):null,
+    indexingReasons:summarizeReasons(records,urls).slice(0,8),
     lastUpdated:lastUpdated||null
   };
 }
