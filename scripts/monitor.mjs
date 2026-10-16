@@ -1,3 +1,5 @@
+import { buildDigest } from './digest-format.mjs';
+
 const sites = JSON.parse(process.env.SITE_CONFIG_JSON || '[{"id":"anytool","domain":"anytool.online","url":"https://anytool.online","sitemap":"https://anytool.online/sitemap.xml"},{"id":"kmafaq-online","domain":"kmafaq.online","url":"https://kmafaq.online","sitemap":"https://kmafaq.online/sitemap.xml"},{"id":"kmafaq-site","domain":"kmafaq.site","url":"https://kmafaq.site","sitemap":"https://kmafaq.site/sitemap.xml"},{"id":"scholarportal","domain":"scholarportal.site","url":"https://scholarportal.site","sitemap":"https://scholarportal.site/sitemap.xml"}]');
 
 const BASE = process.env.SEO_DASHBOARD_BASE || 'https://seo-kmafaq.vercel.app';
@@ -48,7 +50,7 @@ for (const site of sites) {
     incidents.push(site.domain + ': sitemap unavailable');
   }
 
-  rows.push({ domain: site.domain, status, latency, sitemap });
+  rows.push({ id: site.id, domain: site.domain, status, latency, sitemap });
 }
 
 const signals = {
@@ -66,7 +68,7 @@ if (process.env.SEO_STORAGE_SECRET) {
   for (const site of sites) {
     if (!site.id) continue;
     try {
-      await jsonApi('/api/index-progress', 45000, {
+      const outcome = await jsonApi('/api/index-progress', 45000, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -74,10 +76,29 @@ if (process.env.SEO_STORAGE_SECRET) {
         },
         body: JSON.stringify({ site: site.id, batch: 5 })
       });
+      const failed = (outcome.sites || []).find(x=>x.error);
+      if (failed) throw new Error(String(failed.error).slice(0,120));
     } catch (e) {
       signals.errors.push('Index scan '+site.domain+': '+e.message);
     }
   }
+}
+
+// Submit only new/changed sitemaps. Google decides whether to crawl and index.
+if (process.env.ADMIN_ACTION_KEY) {
+  try {
+    const sync = await jsonApi('/api/indexing-submit', 75000, {
+      method: 'POST',
+      headers: { 'content-type':'application/json', 'x-admin-key':process.env.ADMIN_ACTION_KEY },
+      body: JSON.stringify({})
+    });
+    signals.sitemapSync = sync;
+    if (sync.counts?.failed) signals.errors.push('Sitemap sync: '+sync.counts.failed+' site(s) failed');
+  } catch (e) {
+    signals.errors.push('Sitemap sync: '+e.message);
+  }
+} else {
+  signals.errors.push('Sitemap sync disabled: ADMIN_ACTION_KEY is missing');
 }
 
 const apiResults = await Promise.allSettled([
@@ -106,9 +127,12 @@ if (gscR.status === 'fulfilled') {
     signals.gsc = {
       clicks: Math.round(valid.reduce((a, x) => a + Number(x.clicks || 0), 0)),
       impressions: Math.round(valid.reduce((a, x) => a + Number(x.impressions || 0), 0)),
-      properties: valid.length
+      properties: valid.length,
+      days: 28,
+      sites: gscR.value.sites
     };
-  }
+    if (valid.length !== sites.length) signals.errors.push('GSC: only '+valid.length+'/'+sites.length+' properties returned data');
+  } else signals.errors.push('GSC: no property returned usable data');
 } else signals.errors.push('GSC: ' + gscR.reason.message);
 
 if (gaR.status === 'fulfilled') {
@@ -160,7 +184,7 @@ if (oppR.status === 'fulfilled') {
 
 if (indexR.status === 'fulfilled') {
   signals.indexing = indexR.value?.portfolio || null;
-  if(signals.indexing?.checked>=30 && signals.indexing.notIndexed/signals.indexing.checked>0.6) incidents.push('More than 60% of inspected sitemap URLs are not indexed.');
+  if(signals.indexing?.checked>=30 && signals.indexing.notIndexed/signals.indexing.checked>0.6) incidents.push('Over 60% of the inspected URL sample did not pass GSC indexing inspection.');
 } else signals.errors.push('Indexing: ' + indexR.reason.message);
 
 const taipeiTime = new Intl.DateTimeFormat('en-GB', {
@@ -175,47 +199,11 @@ const taipeiTime = new Intl.DateTimeFormat('en-GB', {
 const healthy = rows.filter(r => r.status === 'OK' && r.sitemap === 'OK').length;
 const symbol = incidents.length ? '⚠️' : '✅';
 
-const metricLines = [];
-if (signals.gsc) metricLines.push('🔎 Search 28d: ' + signals.gsc.clicks.toLocaleString() + ' clicks · ' + signals.gsc.impressions.toLocaleString() + ' impressions');
-if (signals.ga4) metricLines.push('◉ GA4 now: ' + signals.ga4.activeUsers.toLocaleString() + ' active users');
-if (signals.cwv?.known) metricLines.push('⚡ CWV: ' + signals.cwv.good + ' good · ' + signals.cwv.attention + ' attention');
-if (signals.facebook) {
-  const engagement = signals.facebook.engagements28d ?? signals.facebook.recentEngagement;
-  metricLines.push('f Facebook: ' + (signals.facebook.followers ?? '—') + ' followers · ' + (signals.facebook.views28d ?? '—') + ' views · ' + (engagement ?? '—') + ' engagements');
-}
-if (signals.indexing) metricLines.push('📚 Indexing: ' + signals.indexing.indexed + ' verified indexed / ' + signals.indexing.totalPages + ' total · ' + signals.indexing.remaining + ' unchecked');
-if (signals.opportunities) metricLines.push('🎯 SEO opportunities: ' + signals.opportunities.count);
-
-const topOpportunity = signals.opportunities?.top
-  ? [
-      '',
-      'Top opportunity:',
-      '• ' + signals.opportunities.top.query +
-        ' · pos ' + Number(signals.opportunities.top.position || 0).toFixed(1) +
-        ' · ' + Number(signals.opportunities.top.impressions || 0).toLocaleString() + ' impressions'
-    ]
-  : [];
-
-const summaryLines = rows.map(r => {
-  const speed = r.latency == null ? '—' : r.latency + 'ms';
-  const icon = r.status === 'OK' && r.sitemap === 'OK' ? '🟢' : '🔴';
-  return icon + ' ' + r.domain + ' · ' + r.status + ' · ' + speed + ' · sitemap ' + r.sitemap;
+const digestCard = buildDigest({
+  stamp: taipeiTime, rows, gsc: signals.gsc,
+  indexing: signals.indexing, submission: signals.sitemapSync,
+  incidents, errors: signals.errors, base: BASE
 });
-
-const message = [
-  symbol + ' SEO Control Center · ' + taipeiTime,
-  'Sites: ' + healthy + '/' + rows.length + ' healthy · Issues: ' + incidents.length,
-  '',
-  ...metricLines,
-  ...topOpportunity,
-  '',
-  'Site health:',
-  ...summaryLines,
-  ...(incidents.length ? ['', 'Needs attention:', ...incidents.slice(0, 6).map(x => '• ' + x)] : []),
-  ...(signals.errors.length ? ['', 'Data notes: ' + signals.errors.slice(0, 2).join(' | ')] : []),
-  '',
-  'Market: Worldwide · Priority: Asia + Europe'
-].join('\n');
 
 console.log(JSON.stringify({
   healthy,
@@ -237,7 +225,7 @@ const lineResponse = await fetch('https://api.line.me/v2/bot/message/push', {
   },
   body: JSON.stringify({
     to: process.env.LINE_USER_ID,
-    messages: [{ type: 'text', text: message.slice(0, 4900) }]
+    messages: [digestCard]
   })
 });
 

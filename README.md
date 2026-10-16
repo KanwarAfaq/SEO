@@ -17,6 +17,18 @@ A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**,
 - 5-minute GitHub Actions uptime/sitemap monitor (independent of Vercel).
 - Integration-status screen and secure action-key protection.
 
+## GSC accuracy and indexing workflow
+
+- The daily LINE digest is a **single visual Flex card** scheduled at **08:00 Asia/Taipei**. It includes health, per-site clicks and impressions, verified **URL Inspection sample** results, and sitemap submissions; it does not enumerate page links.
+- GSC figures come from the **Web search**, **property-level aggregated**, **finalized** Search Analytics API. The dashboard and notification must be compared with the **exact date range** shown in the digest (Pacific calendar, 28 days ending 3 days before the run). GSC's last-24-hours view and GA4 Realtime are different metrics.
+- Indexing progress is a URL-by-URL inspection of pages found in live sitemaps; it is **not the same as the GSC Pages index coverage total**. Errors are not counted as checked and are eligible for retry after six hours.
+- During the digest, the secure `POST /api/indexing-submit` operation checks each configured HTTPS sitemap against the GSC Sitemaps API. It submits when Google does not have the sitemap or when a trustworthy sitemap `lastmod` is newer than the recorded submission. It does **not** spam unchanged sitemaps or auto-resubmit an unresolved error.
+- Authorized manual resubmission for a configured site is `POST /api/indexing-submit` with `{"site":"scholarportal","force":true}` and an `x-admin-key` header. The GSC response confirms **submission, not indexing**.
+- Google's direct Indexing API only supports qualifying `JobPosting` and livestream `BroadcastEvent` pages. Ordinary scholarship, blog, and tool URLs must use sitemaps, internal links and regular crawling. See https://developers.google.com/search/apis/indexing-api/v3/using-api
+- Run `node --test tests/*.test.mjs` to test reconciliation and submission safeguards.
+
+**GitHub Actions secrets required for daily digest:** `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_USER_ID`, `ADMIN_ACTION_KEY` (the same key configured on Vercel), and optionally `SITE_CONFIG_JSON`, `SEO_STORAGE_SECRET`, `VERCEL_AUTOMATION_BYPASS_SECRET`. Google's service account remains in **Vercel**, never in the repository or LINE message.
+
 ## Security model
 
 Secrets are server-side only. Never add credentials to `index.html`, `app.js`, or commit an `.env` file. Use Vercel Environment Variables and GitHub Actions Secrets.

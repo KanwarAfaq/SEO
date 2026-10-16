@@ -81,7 +81,8 @@ function summarize(site,urls,records,lastUpdated=null){
     else if(r.verdict==='PASS')indexed++;
     else notIndexed++;
   }
-  const checked=indexed+notIndexed+errors;
+  // Inspection API errors are not completed inspections and must be retried.
+  const checked=indexed+notIndexed;
   const remaining=Math.max(0,urls.length-checked);
   return {
     id:site.id,domain:site.domain,repository:site.repository,
@@ -130,7 +131,7 @@ module.exports=async function handler(req,res){
       if(method==='POST'){
         const now=Date.now();
         const staleMs=7*86400000;
-        let candidates=urls.filter(u=>!records[u]);
+        let candidates=urls.filter(u=>!records[u] || (records[u].error && now-Date.parse(records[u].checkedAt||0)>6*3600000));
         if(!candidates.length){
           candidates=urls
             .filter(u=>records[u])
@@ -182,7 +183,7 @@ module.exports=async function handler(req,res){
 
   res.status(200).json({
     source:'Google URL Inspection API + live sitemaps',
-    counting:'Verified URL-by-URL; Search Console sitemap indexed total is not used',
+    counting:'Inspected URL-by-URL; indexed is PASS among those URLs, NOT GSC sitewide indexed count; errors are not checked',
     batchSize:method==='POST'?batch:0,
     portfolio,
     sites:results
