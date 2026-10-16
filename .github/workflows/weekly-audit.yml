@@ -1,0 +1,44 @@
+name: Weekly SEO growth audit
+
+on:
+  schedule:
+    # Every Sunday 09:30 Asia/Taipei (01:30 UTC)
+    - cron: '30 1 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-growth-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  site-audit:
+    name: Audit ${{ matrix.site }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        site: [anytool, kmafaq-online, kmafaq-site, scholarportal]
+    env:
+      SEO_SITE_ID: ${{ matrix.site }}
+      SEO_DASHBOARD_BASE: https://seo-kmafaq.vercel.app
+      ADMIN_ACTION_KEY: ${{ secrets.ADMIN_ACTION_KEY }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit on-page, indexing and referral traffic
+        run: node scripts/weekly-audit.mjs
+      - name: Save audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-audit-${{ matrix.site }}
+          path: reports/
+          retention-days: 60
+          if-no-files-found: warn
