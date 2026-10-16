@@ -3,15 +3,22 @@ const { googleFetch } = require('./_lib/google');
 
 const SCOPE = ['https://www.googleapis.com/auth/webmasters.readonly'];
 const iso = d => d.toISOString().slice(0, 10);
+// GSC calendar dates follow Pacific Time, not the GitHub runner's UTC date.
+function pacificDate(offset = 0) {
+  const parts = new Intl.DateTimeFormat('en-US', {timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const part = key => Number(parts.find(p=>p.type===key).value);
+  return new Date(Date.UTC(part('year'), part('month')-1, part('day')+offset));
+}
 
 async function getSite(site, days = 28) {
-  const end = new Date(Date.now() - 2 * 86400000);
+  // Allow a conservative three-day processing buffer and state the exact comparison period.
+  const end = pacificDate(-3);
   const start = new Date(end.getTime() - (days - 1) * 86400000);
   const url = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(site.gscProperty)}/searchAnalytics/query`;
   const r = await googleFetch(url, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ startDate: iso(start), endDate: iso(end), dimensions: ['date'], rowLimit: 1000 })
+    body: JSON.stringify({ startDate: iso(start), endDate: iso(end), dimensions: ['date'], rowLimit: 1000, type: 'web', dataState: 'final', aggregationType: 'byProperty' })
   }, SCOPE);
   const data = await r.json();
   if (!r.ok) throw new Error(data?.error?.message || `GSC ${r.status}`);
@@ -28,7 +35,10 @@ async function getSite(site, days = 28) {
     impressions: Math.round(totals.impressions),
     ctr: totals.impressions ? totals.clicks / totals.impressions : 0,
     position: totals.impressions ? totals.positionWeighted / totals.impressions : 0,
+    domain: site.domain,
     range: { start: iso(start), end: iso(end) },
+    searchType: 'web', dataState: 'final', aggregationType: 'byProperty',
+    note: 'GSC Search results > Web; final data, exact Pacific calendar date range; not a today metric',
     series: rows.map(r => ({ date: r.keys?.[0], clicks: r.clicks || 0, impressions: r.impressions || 0, position: r.position ?? null }))
   };
 }
