@@ -136,6 +136,10 @@ jobs:
           curl -fsSL "$base/api/search-intelligence?site=anytool" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/intel.json
           curl -fsSL "$base/api/index-coverage?site=anytool&sample=2" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/index.json
           curl -fsSL "$base/api/index-progress?site=anytool" -H "x-vercel-protection-bypass: $BYPASS" > /tmp/index-progress.json
+          test -n "${{ secrets.ADMIN_ACTION_KEY }}"
+          curl -fsSL "$base/api/referral-audit?site=anytool" \
+            -H "x-vercel-protection-bypass: $BYPASS" \
+            -H "x-admin-key: ${{ secrets.ADMIN_ACTION_KEY }}" > /tmp/referral.json
 
           python - <<'PY'
           import json
@@ -157,6 +161,12 @@ jobs:
           assert sites[0].get('sampleSize',0)>=2, idx
           print('INDEX_COVERAGE_OK', sites[0].get('sampleSize'), sites[0].get('pass'))
 
+          referral=json.load(open('/tmp/referral.json'))
+          assert referral.get('source')=='GA4 Data API', referral
+          assert len(referral.get('sites',[]))==1, referral
+          assert 'error' not in referral['sites'][0], referral
+          print('REFERRAL_AUDIT_OK', referral['sites'][0].get('configured'), referral['sites'][0].get('totals',{}).get('currentSessions'))
+          
           progress=json.load(open('/tmp/index-progress.json'))
           sites=progress.get('sites',[])
           assert len(sites)==1 and not sites[0].get('error'), progress
