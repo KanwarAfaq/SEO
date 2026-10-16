@@ -1,4 +1,5 @@
 const { getSites } = require('../config');
+const { extendedChecks } = require('../onpage-extras');
 
 const UA = 'SEO-Control-Center-Deep-Audit/1.0';
 const clean = s => String(s || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -88,6 +89,9 @@ async function crawlPage(url, origin) {
       return {url,status:r.status,finalUrl:r.url,latency,bytes:Buffer.byteLength(text),issues:r.ok?[]:[{severity:'critical',code:'http',message:'HTTP '+r.status}],links:[]};
     }
     const a=analyzeHtml(url,text,r);
+    const extra=extendedChecks({url,html:text,canonical:a.canonical,headers:r.headers});
+    a.issues.push(...extra.issues);
+    a.extended=extra.checks;
     return {url,status:r.status,finalUrl:r.url,latency,bytes:Buffer.byteLength(text),...a,internalLinks:a.links.filter(x=>sameOrigin(x,origin)).length,externalLinks:a.links.filter(x=>!sameOrigin(x,origin)).length};
   } catch(e) {
     return {url,status:null,latency:Date.now()-start,error:e.message,issues:[{severity:'critical',code:'unreachable',message:e.message}],links:[]};
@@ -130,12 +134,31 @@ module.exports=async function handler(req,res){
 
     const internal=[...new Set(pages.flatMap(p=>(p.links||[]).filter(x=>sameOrigin(x,origin))))].filter(x=>!urls.includes(x)).slice(0,30);
     const checkedLinks=await mapLimit(internal,6,checkLink);
-    const brokenLinks=checkedLinks.filter(x=>!x.ok);
+    // Timeouts, 403 and rate limiting do not prove a broken link; only 404/410 are confirmed.
+    const brokenLinks=checkedLinks.filter(x=>[404,410].includes(x.status));
+    const inconclusiveLinkChecks=checkedLinks.filter(x=>!x.ok && ![404,410].includes(x.status));
 
     const issueRows=pages.flatMap(p=>(p.issues||[]).map(i=>({...i,url:p.url})));
     duplicateTitles.forEach(d=>issueRows.push({severity:'medium',code:'duplicate_title',message:'Duplicate title on '+d.urls.length+' pages',url:d.urls[0]}));
     duplicateDescriptions.forEach(d=>issueRows.push({severity:'low',code:'duplicate_description',message:'Duplicate description on '+d.urls.length+' pages',url:d.urls[0]}));
     brokenLinks.forEach(b=>issueRows.push({severity:'high',code:'broken_internal_link',message:'Broken internal link'+(b.status?' HTTP '+b.status:''),url:b.url}));
+    const priority={critical:100,high:75,medium:50,low:25};
+    const suggestedFixes={
+      http:'Repair the failing URL or redirect to its correct canonical destination',
+      noindex:'Remove unintended noindex directives before requesting recrawl',
+      canonical_missing:'Publish an absolute, correct rel=canonical',
+      title_missing:'Write a unique descriptive title for this page',
+      description_missing:'Add a useful and distinct meta description',
+      duplicate_title:'Differentiate the page topic and title from other pages',
+      duplicate_description:'Write a page-specific search snippet description',
+      h1_missing:'Add one clear page topic heading in server-rendered HTML',
+      broken_internal_link:'Update or remove broken internal link targets',
+      schema_missing:'Add relevant valid structured data only where appropriate'
+    };
+    for(const issue of issueRows){
+      issue.priority=priority[issue.severity]||10;
+      issue.fix=issue.fix||suggestedFixes[issue.code]||'Review this signal and fix only if it impacts users or crawling';
+    }
 
     const severity={critical:4,high:3,medium:2,low:1};
     issueRows.sort((a,b)=>(severity[b.severity]||0)-(severity[a.severity]||0));
@@ -143,6 +166,7 @@ module.exports=async function handler(req,res){
 
     res.status(200).json({
       source:'Live crawl',
+      scope:'Sample of sitemap pages; checks initial HTML, not the browser-rendered DOM. Broken internal links are sampled.',
       checkedAt:new Date().toISOString(),
       site:{id:site.id,domain:site.domain,url:site.url,repository:site.repository,market:site.market,priorityRegions:site.priorityRegions},
       sitemapUrlsFound:urls.length,
@@ -155,12 +179,15 @@ module.exports=async function handler(req,res){
         medium:issueRows.filter(x=>x.severity==='medium').length,
         low:issueRows.filter(x=>x.severity==='low').length,
         brokenLinks:brokenLinks.length,
+        inconclusiveLinkChecks:inconclusiveLinkChecks.length,
         duplicateTitles:duplicateTitles.length,
         duplicateDescriptions:duplicateDescriptions.length
       },
       issues:issueRows.slice(0,100),
+      topFixes:issueRows.slice(0,8).map(x=>({url:x.url,severity:x.severity,code:x.code,priority:x.priority,fix:x.fix})),
       pages:pages.map(({links,...p})=>p),
-      brokenLinks
+      brokenLinks,
+      inconclusiveLinkChecks
     });
   }catch(e){res.status(500).json({error:e.message});}
 };

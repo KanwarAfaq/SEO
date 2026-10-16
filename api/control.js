@@ -11,7 +11,8 @@ const routes = {
   'search-intelligence': require('./_lib/routes/search-intelligence'),
   'index-coverage': require('./_lib/routes/index-coverage'),
   'index-progress': require('./_lib/routes/index-progress'),
-  'indexing-submit': require('./_lib/routes/indexing-submit')
+  'indexing-submit': require('./_lib/routes/indexing-submit'),
+  'referral-audit': require('./_lib/routes/referral-audit')
 };
 
 module.exports = async function handler(req, res) {

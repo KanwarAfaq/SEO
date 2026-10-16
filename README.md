@@ -29,6 +29,26 @@ A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**,
 
 **GitHub Actions secrets required for daily digest:** `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_USER_ID`, `ADMIN_ACTION_KEY` (the same key configured on Vercel), and optionally `SITE_CONFIG_JSON`, `SEO_STORAGE_SECRET`, `VERCEL_AUTOMATION_BYPASS_SECRET`. Google's service account remains in **Vercel**, never in the repository or LINE message.
 
+## Growth audit agents (new)
+
+### Weekly technical and off-page review
+
+Every Sunday at **09:30 Asia/Taipei**, `.github/workflows/weekly-audit.yml` runs separate audits across **four sites** and publishes a human-readable GitHub Actions job summary plus downloadable Markdown/JSON reports.
+
+- **On-page SEO (sampled HTML):** titles and descriptions, canonical mismatch, noindex meta and HTTP header, JSON-LD syntax, hreflang-ready language tag, social metadata, mixed content, duplicate snippets, sampled internal 404/410 links, and prioritized fixes. The audit checks **fetched source HTML**, not the fully rendered DOM; 403/timeout link checks are treated as *inconclusive*.
+- **Indexability triage:** Groups Search Console URL Inspection results by noindex, robots.txt, server/404, canonical conflict, discovered-but-not-indexed, and crawled-but-not-indexed; provides top fixes. Data remains an **inspected sitemap sample**, not the complete Search Console Pages report.
+- **Off-page signals:** Admin-only `GET /api/referral-audit?site=scholarportal` uses existing GA4 read permissions to compare the last 28 days against the previous 28 days of **Referral** sessions, and shows which referring sources send visitors. Referral traffic is **not** a backlink inventory or third-party domain-authority score; an export from Search Console **Links** or an Ahrefs/Semrush/Moz integration is required for a complete backlink audit.
+- **Actions:** `topFixes` and `indexingReasons` identify highest-priority issues, without buying links, building automated spam backlinks, or deploying edits into a website without review.
+- **Report-only:** The weekly workflow stores reports as GitHub Actions artifacts for **60 days** and adds a short run summary. It does not send four more LINE notifications.
+
+### Inspect manually
+
+Go to **GitHub → Actions → Weekly SEO growth audit → Run workflow** or open the latest scheduled run and download `seo-audit-<site>`. This workflow reuses `ADMIN_ACTION_KEY` and `VERCEL_AUTOMATION_BYPASS_SECRET` from your existing GitHub Secrets. GA4 property IDs and Google access remain in Vercel.
+
+### What is not automated
+
+Google chooses whether/when to crawl or index; forcing ordinary content with the restricted Google Indexing API is not supported. Backlink outreach should involve useful content, legitimate publishers and human approval, not bulk backlink creation or paid link schemes.
+
 ## Security model
 
 Secrets are server-side only. Never add credentials to `index.html`, `app.js`, or commit an `.env` file. Use Vercel Environment Variables and GitHub Actions Secrets.
