@@ -12,7 +12,8 @@ function summarize(rows){
   const groups=new Map();
   for(const row of rows||[]){
     const source=sanitizeSource(row.dimensionValues?.[0]?.value);
-    const period=row.dimensionValues?.[1]?.value;
+    const periodValue=row.dimensionValues?.[1]?.value;
+    const period=periodValue==='date_range_0'?'current':periodValue==='date_range_1'?'previous':periodValue;
     if(!source||!['current','previous'].includes(period))continue;
     const sessions=Number(row.metricValues?.[0]?.value||0);
     const engaged=Number(row.metricValues?.[1]?.value||0);
@@ -48,7 +49,8 @@ async function runSite(site){
         {name:'current',startDate:currentStart,endDate:currentEnd},
         {name:'previous',startDate:previousStart,endDate:previousEnd}
       ],
-      dimensions:[{name:'sessionSource'},{name:'dateRange'}],
+      // With two date ranges GA4 automatically adds the dateRange dimension to rows.
+      dimensions:[{name:'sessionSource'}],
       metrics:[{name:'sessions'},{name:'engagedSessions'}],
       dimensionFilter:{filter:{fieldName:'sessionDefaultChannelGroup',
         stringFilter:{matchType:'EXACT',value:'Referral'}}},
