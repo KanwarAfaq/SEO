@@ -77,6 +77,10 @@
     {
       "source": "/api/indexing-submit",
       "destination": "/api/control?op=indexing-submit"
+    },
+    {
+      "source": "/api/referral-audit",
+      "destination": "/api/control?op=referral-audit"
     }
   ]
 }
