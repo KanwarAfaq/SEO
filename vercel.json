@@ -73,6 +73,10 @@
     {
       "source": "/api/index-progress",
       "destination": "/api/control?op=index-progress"
+    },
+    {
+      "source": "/api/indexing-submit",
+      "destination": "/api/control?op=indexing-submit"
     }
   ]
 }
