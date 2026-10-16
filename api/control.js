@@ -10,7 +10,8 @@ const routes = {
   'deep-audit': require('./_lib/routes/deep-audit'),
   'search-intelligence': require('./_lib/routes/search-intelligence'),
   'index-coverage': require('./_lib/routes/index-coverage'),
-  'index-progress': require('./_lib/routes/index-progress')
+  'index-progress': require('./_lib/routes/index-progress'),
+  'indexing-submit': require('./_lib/routes/indexing-submit')
 };
 
 module.exports = async function handler(req, res) {
