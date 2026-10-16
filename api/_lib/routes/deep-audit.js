@@ -134,7 +134,9 @@ module.exports=async function handler(req,res){
 
     const internal=[...new Set(pages.flatMap(p=>(p.links||[]).filter(x=>sameOrigin(x,origin))))].filter(x=>!urls.includes(x)).slice(0,30);
     const checkedLinks=await mapLimit(internal,6,checkLink);
-    const brokenLinks=checkedLinks.filter(x=>!x.ok);
+    // Timeouts, 403 and rate limiting do not prove a broken link; only 404/410 are confirmed.
+    const brokenLinks=checkedLinks.filter(x=>[404,410].includes(x.status));
+    const inconclusiveLinkChecks=checkedLinks.filter(x=>!x.ok && ![404,410].includes(x.status));
 
     const issueRows=pages.flatMap(p=>(p.issues||[]).map(i=>({...i,url:p.url})));
     duplicateTitles.forEach(d=>issueRows.push({severity:'medium',code:'duplicate_title',message:'Duplicate title on '+d.urls.length+' pages',url:d.urls[0]}));
@@ -177,13 +179,15 @@ module.exports=async function handler(req,res){
         medium:issueRows.filter(x=>x.severity==='medium').length,
         low:issueRows.filter(x=>x.severity==='low').length,
         brokenLinks:brokenLinks.length,
+        inconclusiveLinkChecks:inconclusiveLinkChecks.length,
         duplicateTitles:duplicateTitles.length,
         duplicateDescriptions:duplicateDescriptions.length
       },
       issues:issueRows.slice(0,100),
       topFixes:issueRows.slice(0,8).map(x=>({url:x.url,severity:x.severity,code:x.code,priority:x.priority,fix:x.fix})),
       pages:pages.map(({links,...p})=>p),
-      brokenLinks
+      brokenLinks,
+      inconclusiveLinkChecks
     });
   }catch(e){res.status(500).json({error:e.message});}
 };
