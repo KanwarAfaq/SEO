@@ -2,17 +2,14 @@ name: SEO digest monitor
 
 on:
   schedule:
-    # Taiwan (UTC+8): 08:00, 12:00, 18:00, 22:00
+    # One concise daily digest at 08:00 Taiwan time (00:00 UTC).
     - cron: '0 0 * * *'
-    - cron: '0 4 * * *'
-    - cron: '0 10 * * *'
-    - cron: '0 14 * * *'
   workflow_dispatch:
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,6 +21,7 @@ jobs:
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
           SITE_CONFIG_JSON: ${{ secrets.SITE_CONFIG_JSON }}
           SEO_STORAGE_SECRET: ${{ secrets.SEO_STORAGE_SECRET }}
+          ADMIN_ACTION_KEY: ${{ secrets.ADMIN_ACTION_KEY }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           SEO_DASHBOARD_BASE: https://seo-kmafaq.vercel.app
         run: node scripts/monitor.mjs
