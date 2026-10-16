@@ -24,6 +24,9 @@ jobs:
           for f in scripts/*.mjs; do
             node --check "$f"
           done
+      - name: Unit test GSC digest and sitemap submission safety
+        run: node --test tests/*.test.mjs
+
       - name: Verify required project files
         run: |
           test -f growth.js
