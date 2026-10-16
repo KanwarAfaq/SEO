@@ -62,3 +62,50 @@ test('GSC missing properties do not silently count as zero',()=>{
   assert.match(msg.altText,/— clicks \/ — impressions/);
   assert.match(msg.altText,/NEEDS REVIEW/);
 });
+
+
+const { reason, summarizeReasons }=require('../api/_lib/indexing-diagnostics.js');
+const { extendedChecks }=require('../api/_lib/onpage-extras.js');
+const { summarize:referralSummarize }=require('../api/_lib/routes/referral-audit.js')._test;
+
+test('classifies noindex, canonical conflicts and not-indexed states correctly',()=>{
+  assert.equal(reason({verdict:'FAIL',indexingState:'BLOCKED_BY_META_TAG'}).key,'noindex');
+  assert.equal(reason({verdict:'FAIL',coverageState:'Crawled - currently not indexed'}).key,'crawled');
+  assert.equal(reason({verdict:'FAIL',googleCanonical:'https://a.test/x',userCanonical:'https://a.test/y'}).key,'canonical');
+  assert.equal(reason({verdict:'PASS'}).key,'indexed');
+  const records={
+    a:{verdict:'FAIL',coverageState:'Crawled - currently not indexed'},
+    b:{verdict:'FAIL',indexingState:'BLOCKED_BY_META_TAG'},
+    c:{verdict:'PASS'},d:{error:'API quota exceeded'}
+  };
+  const groups=summarizeReasons(records,['a','b','c','d']);
+  assert.equal(groups.length,2);
+  assert.equal(groups[0].reason,'noindex');
+  assert.equal(groups.reduce((n,x)=>n+x.count,0),2);
+});
+
+test('extended on-page checks catch canonical conflicts, headers and invalid schema',()=>{
+  const html='<html><head><script type="application/ld+json">{invalid}</script></head><body></body></html>';
+  const r=extendedChecks({url:'https://sample.test/a',canonical:'https://sample.test/b',
+    headers:{get:name=>name==='x-robots-tag'?'noindex,follow':''},html});
+  for(const code of ['noindex_header','canonical_mismatch','invalid_jsonld','html_lang_missing']){
+    assert.ok(r.issues.some(x=>x.code===code),'expected '+code);
+  }
+  const valid=extendedChecks({url:'https://sample.test/a',canonical:'https://www.sample.test/a/',
+    html:'<html lang="en"><meta property="og:title" content="Test"><meta property="og:image" content="test"><script type="application/ld+json">{"@context":"https://schema.org"}</script></html>',
+    headers:{get:()=>''}});
+  assert.equal(valid.issues.some(x=>x.code==='canonical_mismatch'),false);
+  assert.equal(valid.issues.some(x=>x.code==='invalid_jsonld'),false);
+});
+
+test('referral audit aggregates GA4 auto-added period rows without calling them backlinks',()=>{
+  const mk=(source,period,sessions,engaged=0)=>({dimensionValues:[{value:source},{value:period}],metricValues:[{value:String(sessions)},{value:String(engaged)}]});
+  const d=referralSummarize([
+    mk('example.com','date_range_0',10,7),mk('example.com','date_range_1',5),
+    mk('another.net','date_range_0',6,3),mk('(direct)','date_range_0',200)
+  ]);
+  assert.equal(d.totals.currentSessions,16);
+  assert.equal(d.totals.previousSessions,5);
+  assert.equal(d.totals.changePct,220);
+  assert.equal(d.referringSourcesCount,2);
+});
