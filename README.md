@@ -17,6 +17,13 @@ A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**,
 - Four-times-daily GitHub Actions uptime/sitemap monitor (independent of Vercel).
 - Integration-status screen and secure action-key protection.
 
+## Visual digest and dashboard (new)
+
+- **LINE digest, 4× daily** (08:15 / 12:15 / 18:15 / 22:15 Taipei) is labelled Morning / Midday / Evening / Night. The summary card shows a 14-day clicks sparkline and, per site, a **0–100 health score bar** with the week-over-week click change. Each site card adds colour-coded check dots (HTTP, Sitemap, Robots, GSC, Index, CWV, Issues). Checks with no data are grey and are never counted as a pass; GSC dates and the "inspection is a sample" caveats are unchanged.
+- **Visual report per run:** every digest run also saves `reports/digest-preview.html` (standalone, light/dark) next to `digest.md/json` and `line-payload.json` in the workflow artifact. Open it to see exactly what the digest says, including on dry runs.
+- **Dashboard:** site cards show a health-score ring, a 14-day sparkline and the 7-day change; a "Next LINE digest" countdown with today's four slots; CSV export on Google Search; an optional 5-minute auto-refresh (remembered per browser); five-site layout (3+2) and fixes for old "4/4" labels.
+- Health score weights: HTTP 25, Sitemap 15, Robots 10, GSC 15, Index sample ≥50% indexed 15, CWV 10, no open issues 10 — normalised over the checks that have data.
+
 ## GSC accuracy and indexing workflow
 
 - The LINE digest is a **single Flex carousel (summary + five site cards)** scheduled at **08:15, 12:15, 18:15 and 22:15 Asia/Taipei**. It includes health, per-site clicks and impressions, verified **URL Inspection sample** results, and sitemap submissions; it does not enumerate page links.

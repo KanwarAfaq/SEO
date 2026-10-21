@@ -3,7 +3,8 @@ import { randomUUID } from 'node:crypto';
 import config from '../api/_lib/config.js';
 import { buildDigest, buildDetailedDigest } from './digest-format.mjs';
 import { checkSite } from './monitor-health.mjs';
-import { cwvGood, perSiteSignals } from './site-signals.mjs';
+import { cwvGood, perSiteSignals, digestSlot } from './site-signals.mjs';
+import { renderPreview } from './digest-preview.mjs';
 
 const sites = config.getSites();
 const BASE = process.env.SEO_DASHBOARD_BASE || 'https://seo-kmafaq.vercel.app';
@@ -73,15 +74,16 @@ for (const site of details) if (site.trend?.prior >= 30 && site.trend.changePct 
 const now = new Date();
 const stamp = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Taipei', dateStyle: 'short', timeStyle: 'short', hour12: false }).format(now) + ' Taipei';
 const healthy = rows.filter(r => r.status === 'OK' && r.sitemap === 'OK' && r.robots === 'OK').length;
-const summary = buildDigest({ stamp, rows, gsc: signals.gsc, indexing: signals.indexing, submission: signals.sitemapSync, incidents, errors: signals.errors, base: BASE });
+const slot = digestSlot(now);
+const summary = buildDigest({ stamp, slot, rows, details, gsc: signals.gsc, indexing: signals.indexing, submission: signals.sitemapSync, incidents, errors: signals.errors, base: BASE });
 const digestCard = buildDetailedDigest(summary, details, BASE);
 const report = { checkedAt: now.toISOString(), dryRun: DRY_RUN, healthy, total: sites.length, incidentCount: incidents.length, incidents, rows, sites: details, signals };
 const markdown = [
-  '# SEO portfolio report — ' + stamp,
+  '# ' + slot + ' SEO portfolio report — ' + stamp,
   `${healthy}/${sites.length} sites have reachable homepage, valid sitemap and passing robots checks.`,
   'GSC is finalized 28-day Web data, not real-time; URL Inspection counts are a sample, not sitewide indexing totals.',
   ...details.flatMap(s => [
-    '\n## ' + s.domain,
+    '\n## ' + s.domain + (s.score == null ? '' : ' — health ' + s.score + '/100'),
     `Homepage: ${s.status} · ${s.latency ?? 'unknown'} ms · Robots: ${s.robots} · Sitemap: ${s.sitemap}`,
     `Sitemap entries: ${s.sitemapInfo ? s.sitemapInfo.entries + ' ' + s.sitemapInfo.kind : 'unavailable'}`,
     s.gsc && !s.gsc.error ? `GSC ${s.gsc.range?.start}–${s.gsc.range?.end}: ${s.gsc.clicks} clicks / ${s.gsc.impressions} impressions` : 'GSC: unavailable',
@@ -96,6 +98,7 @@ await mkdir('reports', { recursive: true });
 await writeFile('reports/digest.json', JSON.stringify(report, null, 2));
 await writeFile('reports/digest.md', markdown);
 await writeFile('reports/line-payload.json', JSON.stringify(digestCard, null, 2));
+await writeFile('reports/digest-preview.html', renderPreview(report, stamp, slot));
 if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, markdown);
 console.log(JSON.stringify({ healthy, sites: sites.length, issues: incidents.length, dataGaps: signals.errors.length, dryRun: DRY_RUN }));
 if (DRY_RUN) { console.log('DRY_RUN_OK — report saved; no writes or notifications'); process.exit(0); }

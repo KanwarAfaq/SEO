@@ -56,6 +56,34 @@ function toggleNav(open){
 $('#menuBtn').onclick=()=>toggleNav(!$('#sidebar').classList.contains('open'));
 $('#navBackdrop').onclick=()=>toggleNav(false);
 const by=(arr,id)=>arr.find(x=>x.id===id)||{};
+const SCORE_TONE=n=>n==null?'#94a3b8':n>=80?'#07866b':n>=50?'#af6b0b':'#c2414d';
+// 0-100 over checks that actually have data; unknown is skipped, never counted as a pass.
+function siteScore(s){
+  const h=by(state.health,s.id),g=by(state.gsc,s.id),c=by(state.cwv,s.id),parts=[];
+  if(state.loaded.health&&h.id){parts.push([h.ok?1:0,40]);parts.push([h.sitemapOk?1:0,25]);}
+  if(g.id)parts.push([g.error?0:1,20]);
+  const v=c.id&&!c.error?[c.lcp?.p75,c.inp?.p75,c.cls?.p75].map(x=>x==null||x===''?NaN:Number(x)):[];
+  if(v.length===3&&v.every(Number.isFinite))parts.push([v[0]<=2500&&v[1]<=200&&v[2]<=0.1?1:0,15]);
+  const total=parts.reduce((n,p)=>n+p[1],0);
+  return total?Math.round(parts.reduce((n,p)=>n+p[0]*p[1],0)/total*100):null;
+}
+// Calendar-day clicks ending on the GSC range end (GSC omits zero-traffic days, so gaps count as 0).
+function clickSeries(g,days=14){
+  if(!g||g.error||!g.range?.end||!Array.isArray(g.series))return null;
+  const end=Date.parse(g.range.end+'T00:00:00Z');if(!Number.isFinite(end))return null;
+  const by_=new Map(g.series.map(r=>[r.date,Number(r.clicks||0)]));
+  return Array.from({length:days},(_,i)=>by_.get(new Date(end-(days-1-i)*864e5).toISOString().slice(0,10))||0);
+}
+function sparkBars(series,tone='#245bdb'){
+  if(!series||series.length<2)return '<span class="spark-na">Trend unavailable</span>';
+  const max=Math.max(...series,1),w=100/series.length;
+  return `<svg class="spark-bars" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Clicks, last ${series.length} days">${series.map((v,i)=>`<rect x="${(i*w+w*.12).toFixed(2)}" y="${(100-Math.max(4,v/max*100)).toFixed(2)}" width="${(w*.76).toFixed(2)}" height="${Math.max(4,v/max*100).toFixed(2)}" rx="1.5" fill="${v>0?tone:'#e2e8f0'}"><title>${v} clicks</title></rect>`).join('')}</svg>`;
+}
+function weekDelta(series){
+  if(!series||series.length<14)return null;
+  const a=series.slice(7).reduce((n,v)=>n+v,0),b=series.slice(0,7).reduce((n,v)=>n+v,0);
+  return b?Math.round((a-b)/b*100):null;
+}
 function siteCards(){
   const H=Object.fromEntries(state.health.map(x=>[x.id,x]));
   $('#siteGrid').innerHTML=SITES.map(s=>{
@@ -64,7 +92,9 @@ function siteCards(){
     const healthText=!healthKnown?'UNKNOWN':h.ok?'ONLINE':'ISSUE';
     const healthClass=!healthKnown?'warn':h.ok?'':'bad';
     const gscLive=g&&g.clicks!=null&&!g.error;
-    return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
+    const score=siteScore(s),tone=SCORE_TONE(score),series=clickSeries(g),delta=weekDelta(series);
+    const deltaHtml=delta==null?'<span class="delta n">no baseline</span>':`<span class="delta ${delta>=0?'up':'down'}">${delta>=0?'▲ +':'▼ '}${delta}% vs prior 7d</span>`;
+    return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><div class="site-top-right"><span class="health-badge ${healthClass}"><i></i>${healthText}</span><div class="score-ring" style="--score:${score??0};--tone:${tone}" title="Health score${score==null?': not enough data':''}"><b>${score??'—'}</b></div></div></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-spark"><div class="spark-head"><span>Clicks · 14d</span>${deltaHtml}</div>${sparkBars(series,gscLive&&score!=null&&score<50?'#c2414d':'#245bdb')}</div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
 }
 function status(){
