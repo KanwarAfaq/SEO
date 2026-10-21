@@ -5,7 +5,9 @@
   "description": "Multi-site SEO operations dashboard with GSC, GA4, technical monitoring, actions, and LINE alerts.",
   "scripts": {
     "dev": "vercel dev",
-    "monitor": "node scripts/monitor.mjs"
+    "monitor": "node scripts/monitor.mjs",
+    "monitor:dry": "node scripts/monitor.mjs --dry-run",
+    "test": "node --test tests/*.test.mjs"
   },
   "engines": {
     "node": ">=20"

@@ -20,7 +20,7 @@ LINE_USER_ID=
 
 ## 2) Google Search Console + GA4
 
-Recommended: use **one Google Cloud service account** for the four websites.
+Recommended: use **one Google Cloud service account** for the five websites.
 
 ### Create the service account
 1. Open Google Cloud Console.
@@ -57,6 +57,7 @@ anytool.online GA4_PROPERTY_ID=
 kmafaq.online GA4_PROPERTY_ID=
 kmafaq.site GA4_PROPERTY_ID=
 scholarportal.site GA4_PROPERTY_ID=
+worksheet.live GA4_PROPERTY_ID=
 ```
 
 ## 3) GitHub repository
@@ -87,7 +88,7 @@ After the GitHub repo exists:
 
 Do not paste secrets into frontend code.
 
-## 5) GitHub Actions secrets (for the independent 5-minute monitor)
+## 5) GitHub Actions secrets (for the independent Four-times-daily monitor)
 
 Repository → Settings → Secrets and variables → Actions → New repository secret:
 
@@ -139,9 +140,9 @@ same values already configured in Vercel/Supabase.
 
 LINE digests are scheduled at:
 
-- 08:00 Asia/Taipei
-- 12:00 Asia/Taipei
-- 18:00 Asia/Taipei
-- 22:00 Asia/Taipei
+- 08:15 Asia/Taipei
+- 12:15 Asia/Taipei
+- 18:15 Asia/Taipei
+- 22:15 Asia/Taipei
 
 The daily SEO analysis agent runs separately and does not send an extra LINE message.

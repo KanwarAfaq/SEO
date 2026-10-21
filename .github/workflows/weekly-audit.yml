@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        site: [anytool, kmafaq-online, kmafaq-site, scholarportal]
+        site: [anytool, kmafaq-online, kmafaq-site, scholarportal, worksheet]
     env:
       SEO_SITE_ID: ${{ matrix.site }}
       SEO_DASHBOARD_BASE: https://seo-kmafaq.vercel.app

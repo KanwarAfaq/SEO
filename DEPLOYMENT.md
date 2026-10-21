@@ -52,7 +52,7 @@ Add these repository secrets under **Settings → Secrets and variables → Acti
 ```text
 LINE_CHANNEL_ACCESS_TOKEN
 LINE_USER_ID
-SITE_CONFIG_JSON    # optional; the known four sites are defaults
+SITE_CONFIG_JSON    # optional; the known five sites are defaults
 ```
 
 The independent monitor is scheduled every 5 minutes.

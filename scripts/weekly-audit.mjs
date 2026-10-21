@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const BASE=(process.env.SEO_DASHBOARD_BASE||'https://seo-kmafaq.vercel.app').replace(/\/$/,'');
 const SITE=process.env.SEO_SITE_ID||'anytool';
-const IDS=['anytool','kmafaq-online','kmafaq-site','scholarportal'];
+const IDS=['anytool','kmafaq-online','kmafaq-site','scholarportal','worksheet'];
 if(!IDS.includes(SITE))throw new Error('Unknown configured site ID');
 if(!process.env.ADMIN_ACTION_KEY)throw new Error('ADMIN_ACTION_KEY required for secure referral analytics');
 

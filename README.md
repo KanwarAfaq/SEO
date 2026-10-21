@@ -1,10 +1,10 @@
 # SEO Control Center
 
-A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**, **kmafaq.site**, and **scholarportal.site**.
+A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**, **kmafaq.site**, **scholarportal.site**, and **worksheet.live**.
 
 ## What is already implemented
 
-- Modern responsive visual dashboard for all four sites.
+- Modern responsive visual dashboard for all five sites.
 - Live website and sitemap health checks.
 - Google Search Console 28-day overview endpoint.
 - GA4 Realtime endpoint.
@@ -14,12 +14,12 @@ A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**,
 - Google sitemap submission action endpoint.
 - IndexNow submission endpoint.
 - LINE Messaging API test and monitoring alerts.
-- 5-minute GitHub Actions uptime/sitemap monitor (independent of Vercel).
+- Four-times-daily GitHub Actions uptime/sitemap monitor (independent of Vercel).
 - Integration-status screen and secure action-key protection.
 
 ## GSC accuracy and indexing workflow
 
-- The daily LINE digest is a **single visual Flex card** scheduled at **08:00 Asia/Taipei**. It includes health, per-site clicks and impressions, verified **URL Inspection sample** results, and sitemap submissions; it does not enumerate page links.
+- The LINE digest is a **single Flex carousel (summary + five site cards)** scheduled at **08:15, 12:15, 18:15 and 22:15 Asia/Taipei**. It includes health, per-site clicks and impressions, verified **URL Inspection sample** results, and sitemap submissions; it does not enumerate page links.
 - GSC figures come from the **Web search**, **property-level aggregated**, **finalized** Search Analytics API. The dashboard and notification must be compared with the **exact date range** shown in the digest (Pacific calendar, 28 days ending 3 days before the run). GSC's last-24-hours view and GA4 Realtime are different metrics.
 - Indexing progress is a URL-by-URL inspection of pages found in live sitemaps; it is **not the same as the GSC Pages index coverage total**. Errors are not counted as checked and are eligible for retry after six hours.
 - During the digest, the secure `POST /api/indexing-submit` operation checks each configured HTTPS sitemap against the GSC Sitemaps API. It submits when Google does not have the sitemap or when a trustworthy sitemap `lastmod` is newer than the recorded submission. It does **not** spam unchanged sitemaps or auto-resubmit an unresolved error.
@@ -27,19 +27,19 @@ A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**,
 - Google's direct Indexing API only supports qualifying `JobPosting` and livestream `BroadcastEvent` pages. Ordinary scholarship, blog, and tool URLs must use sitemaps, internal links and regular crawling. See https://developers.google.com/search/apis/indexing-api/v3/using-api
 - Run `node --test tests/*.test.mjs` to test reconciliation and submission safeguards.
 
-**GitHub Actions secrets required for daily digest:** `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_USER_ID`, `ADMIN_ACTION_KEY` (the same key configured on Vercel), and optionally `SITE_CONFIG_JSON`, `SEO_STORAGE_SECRET`, `VERCEL_AUTOMATION_BYPASS_SECRET`. Google's service account remains in **Vercel**, never in the repository or LINE message.
+**GitHub Actions secrets required for scheduled digests:** `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_USER_ID`, `ADMIN_ACTION_KEY` (the same key configured on Vercel), and optionally `SITE_CONFIG_JSON`, `SEO_STORAGE_SECRET`, `VERCEL_AUTOMATION_BYPASS_SECRET`. Google's service account remains in **Vercel**, never in the repository or LINE message.
 
 ## Growth audit agents (new)
 
 ### Weekly technical and off-page review
 
-Every Sunday at **09:30 Asia/Taipei**, `.github/workflows/weekly-audit.yml` runs separate audits across **four sites** and publishes a human-readable GitHub Actions job summary plus downloadable Markdown/JSON reports.
+Every Sunday at **09:30 Asia/Taipei**, `.github/workflows/weekly-audit.yml` runs separate audits across **five sites** and publishes a human-readable GitHub Actions job summary plus downloadable Markdown/JSON reports.
 
 - **On-page SEO (sampled HTML):** titles and descriptions, canonical mismatch, noindex meta and HTTP header, JSON-LD syntax, hreflang-ready language tag, social metadata, mixed content, duplicate snippets, sampled internal 404/410 links, and prioritized fixes. The audit checks **fetched source HTML**, not the fully rendered DOM; 403/timeout link checks are treated as *inconclusive*.
 - **Indexability triage:** Groups Search Console URL Inspection results by noindex, robots.txt, server/404, canonical conflict, discovered-but-not-indexed, and crawled-but-not-indexed; provides top fixes. Data remains an **inspected sitemap sample**, not the complete Search Console Pages report.
 - **Off-page signals:** Admin-only `GET /api/referral-audit?site=scholarportal` uses existing GA4 read permissions to compare the last 28 days against the previous 28 days of **Referral** sessions, and shows which referring sources send visitors. Referral traffic is **not** a backlink inventory or third-party domain-authority score; an export from Search Console **Links** or an Ahrefs/Semrush/Moz integration is required for a complete backlink audit.
 - **Actions:** `topFixes` and `indexingReasons` identify highest-priority issues, without buying links, building automated spam backlinks, or deploying edits into a website without review.
-- **Report-only:** The weekly workflow stores reports as GitHub Actions artifacts for **60 days** and adds a short run summary. It does not send four more LINE notifications.
+- **Report-only:** The weekly workflow stores reports as GitHub Actions artifacts for **60 days** and adds a short run summary. It does not send additional LINE notifications.
 
 ### Inspect manually
 
@@ -79,3 +79,17 @@ This repository is intentionally dependency-light: static frontend + native Node
 4. GitHub PR actions for SEO fixes.
 5. Change-impact tracking before/after SEO edits.
 6. AI-assisted content and internal-link recommendations with approval queue.
+
+## Four daily per-site reports (October 2026 upgrade)
+
+- Schedule: **08:15, 12:15, 18:15, 22:15 Asia/Taipei**, cron `15 0,4,10,14 * * *` in UTC. GitHub schedules can be delayed; these are target start times, not guaranteed delivery times.
+- One LINE notification per run, containing a summary and five swipeable site cards. Each includes homepage response time, robots/sitemap checks, canonical conflict warnings, dated GSC clicks/impressions/CTR/position, calendar-week click changes, GA4 realtime availability, CrUX field metrics, inspection sample counts and up to three prioritized next actions. Search-query opportunities are suggestions to review, not automatic content edits or ranking promises.
+- Missing GSC/GA4/CrUX data is explicitly unavailable, never interpreted as healthy zero. A successfully fetched sitemap is checked for XML and entries; sitemap-index child counts are not called page totals. Inspection results display the last saved scan timestamp.
+- All five default sites are merged with `SITE_CONFIG_JSON` overrides, preserving existing property IDs. This upgrades older four-site secrets automatically. Set `{"id":"worksheet","enabled":false}` as an override only if you intentionally want to exclude it. Add Worksheet's actual GA4 property ID and grant the existing service account access to `sc-domain:worksheet.live` for its private Google metrics; public checks work without these.
+- Each scheduled run attempts up to five new/stale URL inspections per site (20 per site daily), and submits only new/changed sitemaps using the existing protected API. This does **not** force Google indexing. The separate daily SEO agent and Sunday deep audit remain unchanged in frequency; the weekly audit now includes Worksheet.
+- Transient LINE failures have bounded retries with an unchanged payload and a retry key to prevent duplicate retry delivery. Concurrent workflow runs are serialized. Independent manual reruns can send a new notification.
+- `reports/digest.md`, `reports/digest.json` and `reports/line-payload.json` are retained as Actions artifacts for 30 days. The Markdown report is also in the workflow summary. Reports contain site metrics; respect repository/artifact access when sharing them.
+- Test without sending or changing remote state: `npm run monitor:dry`, or **Actions → SEO digest monitor → Run workflow → dry_run**. Dry run reads live data and writes local reports only. `npm test` runs isolated transport tests without real credentials or network.
+- The existing LINE recipient and channel secrets are reused. A successful API acceptance does not prove device delivery (for example if the bot is blocked). Check the workflow log for `LINE_DIGEST_OK`; missing/invalid secrets cause a visible failed run, not silent success.
+
+References: [GitHub schedule behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule), [LINE retry semantics](https://developers.line.biz/en/docs/messaging-api/retrying-api-request/).

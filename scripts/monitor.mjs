@@ -1,275 +1,136 @@
-import { buildDigest } from './digest-format.mjs';
+import { mkdir, writeFile, appendFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import config from '../api/_lib/config.js';
+import { buildDigest, buildDetailedDigest } from './digest-format.mjs';
+import { checkSite } from './monitor-health.mjs';
+import { cwvGood, perSiteSignals } from './site-signals.mjs';
 
-const sites = JSON.parse(process.env.SITE_CONFIG_JSON || '[{"id":"anytool","domain":"anytool.online","url":"https://anytool.online","sitemap":"https://anytool.online/sitemap.xml"},{"id":"kmafaq-online","domain":"kmafaq.online","url":"https://kmafaq.online","sitemap":"https://kmafaq.online/sitemap.xml"},{"id":"kmafaq-site","domain":"kmafaq.site","url":"https://kmafaq.site","sitemap":"https://kmafaq.site/sitemap.xml"},{"id":"scholarportal","domain":"scholarportal.site","url":"https://scholarportal.site","sitemap":"https://scholarportal.site/sitemap.xml"}]');
-
+const sites = config.getSites();
 const BASE = process.env.SEO_DASHBOARD_BASE || 'https://seo-kmafaq.vercel.app';
-const BYPASS = process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '';
-
-async function jsonApi(path, timeout = 15000, options = {}) {
-  const headers = { 'user-agent': 'SEO-Control-Center-GitHub-Monitor/3.0', ...(options.headers || {}) };
-  if (BYPASS) headers['x-vercel-protection-bypass'] = BYPASS;
+const DRY_RUN = process.argv.includes('--dry-run') || process.env.SEO_DRY_RUN === 'true';
+const UA = 'SEO-Control-Center-GitHub-Monitor/4.0';
+async function jsonApi(path, timeout = 45000, options = {}) {
+  const headers = { 'user-agent': UA, ...options.headers };
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) headers['x-vercel-protection-bypass'] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  if (process.env.ADMIN_ACTION_KEY) headers['x-admin-key'] = process.env.ADMIN_ACTION_KEY;
   const r = await fetch(BASE + path, { ...options, headers, signal: AbortSignal.timeout(timeout) });
   const text = await r.text();
-  let data = {};
-  try { data = text ? JSON.parse(text) : {}; } catch {}
-  if (!r.ok) throw new Error(path + ' HTTP ' + r.status + (data?.error ? ': ' + data.error : ''));
+  let data;
+  try { data = JSON.parse(text); } catch { throw new Error(path + ': expected JSON, received HTTP ' + r.status + ' (check deployment protection)'); }
+  if (!r.ok || data?.error) throw new Error(path + ' HTTP ' + r.status + ': ' + (data?.error || 'request failed'));
   return data;
 }
+const rows = await Promise.all(sites.map(site => checkSite(site)));
+const signals = { errors: [] };
+const incidents = rows.flatMap(row => row.issues.map(issue => row.domain + ': ' + issue));
 
-const rows = [];
-const incidents = [];
-
-for (const site of sites) {
-  let status = 'DOWN';
-  let latency = null;
-  let sitemap = 'FAIL';
-  const start = Date.now();
-
-  try {
-    const r = await fetch(site.url, {
-      redirect: 'follow',
-      signal: AbortSignal.timeout(8000),
-      headers: { 'user-agent': 'SEO-Control-Center-GitHub-Monitor/3.0' }
-    });
-    latency = Date.now() - start;
-    status = r.ok ? 'OK' : 'HTTP ' + r.status;
-    if (!r.ok) incidents.push(site.domain + ': HTTP ' + r.status);
-    if (r.ok && latency > 4000) incidents.push(site.domain + ': slow (' + latency + ' ms)');
-  } catch {
-    incidents.push(site.domain + ': unavailable');
-  }
-
-  try {
-    const r = await fetch(site.sitemap, {
-      signal: AbortSignal.timeout(8000),
-      headers: { 'user-agent': 'SEO-Control-Center-GitHub-Monitor/3.0' }
-    });
-    sitemap = r.ok ? 'OK' : 'HTTP ' + r.status;
-    if (!r.ok) incidents.push(site.domain + ': sitemap HTTP ' + r.status);
-  } catch {
-    incidents.push(site.domain + ': sitemap unavailable');
-  }
-
-  rows.push({ id: site.id, domain: site.domain, status, latency, sitemap });
-}
-
-const signals = {
-  gsc: null,
-  ga4: null,
-  facebook: null,
-  cwv: null,
-  opportunities: null,
-  indexing: null,
-  errors: []
-};
-
-// Advance verified indexing coverage in a small quota-friendly batch on each scheduled digest.
-if (process.env.SEO_STORAGE_SECRET) {
+// Dry runs never submit sitemaps, advance inspections, send LINE, or write remote history.
+if (!DRY_RUN && process.env.SEO_STORAGE_SECRET) {
   for (const site of sites) {
-    if (!site.id) continue;
     try {
       const outcome = await jsonApi('/api/index-progress', 45000, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'x-seo-storage-secret': process.env.SEO_STORAGE_SECRET
-        },
+        method: 'POST', headers: { 'content-type': 'application/json', 'x-seo-storage-secret': process.env.SEO_STORAGE_SECRET },
         body: JSON.stringify({ site: site.id, batch: 5 })
       });
-      const failed = (outcome.sites || []).find(x=>x.error);
-      if (failed) throw new Error(String(failed.error).slice(0,120));
-    } catch (e) {
-      signals.errors.push('Index scan '+site.domain+': '+e.message);
-    }
+      const failed = (outcome.sites || []).find(x => x.error || x.errors > 0);
+      if (failed) signals.errors.push('Index scan ' + site.domain + ': ' + (failed.error || failed.errors + ' inspection errors'));
+    } catch (e) { signals.errors.push('Index scan ' + site.domain + ': ' + e.message); }
   }
-}
+} else if (!DRY_RUN) signals.errors.push('New URL inspections disabled: SEO_STORAGE_SECRET missing');
 
-// Submit only new/changed sitemaps. Google decides whether to crawl and index.
-if (process.env.ADMIN_ACTION_KEY) {
+if (!DRY_RUN && process.env.ADMIN_ACTION_KEY) {
   try {
-    const sync = await jsonApi('/api/indexing-submit', 75000, {
-      method: 'POST',
-      headers: { 'content-type':'application/json', 'x-admin-key':process.env.ADMIN_ACTION_KEY },
-      body: JSON.stringify({})
-    });
-    signals.sitemapSync = sync;
-    if (sync.counts?.failed) signals.errors.push('Sitemap sync: '+sync.counts.failed+' site(s) failed');
-  } catch (e) {
-    signals.errors.push('Sitemap sync: '+e.message);
-  }
-} else {
-  signals.errors.push('Sitemap sync disabled: ADMIN_ACTION_KEY is missing');
-}
+    signals.sitemapSync = await jsonApi('/api/indexing-submit', 75000, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' });
+    if (signals.sitemapSync.counts?.failed) signals.errors.push('Sitemap sync: ' + signals.sitemapSync.counts.failed + ' site(s) failed');
+  } catch (e) { signals.errors.push('Sitemap sync: ' + e.message); }
+} else if (!DRY_RUN) signals.errors.push('Sitemap sync disabled: ADMIN_ACTION_KEY missing');
 
-const apiResults = await Promise.allSettled([
-  jsonApi('/api/gsc-overview'),
-  jsonApi('/api/ga4-realtime'),
-  jsonApi('/api/facebook-insights'),
-  jsonApi('/api/crux'),
-  jsonApi('/api/gsc-opportunities'),
-  jsonApi('/api/index-progress', 30000)
-]);
-
-const [gscR, gaR, fbR, cwvR, oppR, indexR] = apiResults;
-
-if (gscR.status === 'fulfilled') {
-  const valid = (gscR.value.sites || []).filter(x => !x.error);
-  if (valid.length) {
-    if (valid.length === sites.length) {
-      const daily = new Map();
-      for (const site of valid) for (const row of site.series || []) if(row.date) daily.set(row.date, (daily.get(row.date)||0)+Number(row.clicks||0));
-      const values=[...daily].sort((a,b)=>a[0].localeCompare(b[0])).map(x=>x[1]);
-      if(values.length>=14){
-        const recent=values.slice(-7).reduce((a,b)=>a+b,0),prior=values.slice(-14,-7).reduce((a,b)=>a+b,0);
-        if(prior>=30 && recent<prior*0.5) incidents.push('Organic clicks fell over 50% week-over-week ('+prior+' to '+recent+').');
+const endpoints = { gsc: '/api/gsc-overview', ga4: '/api/ga4-realtime', cwv: '/api/crux', opportunities: '/api/gsc-opportunities', indexing: '/api/index-progress' };
+await Promise.all(Object.entries(endpoints).map(async ([key, path]) => {
+  try {
+    const data = await jsonApi(path);
+    if (key === 'opportunities') {
+      if (!Array.isArray(data.opportunities)) throw new Error('Missing opportunities response');
+      signals.opportunities = { items: data.opportunities, errors: data.errors || [], count: data.opportunities.length };
+      signals.errors.push(...(data.errors || []).map(x => (x.domain || x.siteId) + ' query data: ' + x.error));
+    } else {
+      if (!Array.isArray(data.sites)) throw new Error('Missing sites response');
+      if (key === 'indexing') { signals.indexing = data.portfolio; signals.indexingSites = data.sites; }
+      else signals[key] = { sites: data.sites, ...(key === 'gsc' ? { days: 28 } : {}) };
+      for (const site of sites) {
+        const result = data.sites.find(x => x.id === site.id);
+        if (!result || result.error) signals.errors.push(site.domain + ' ' + key + ': ' + (result?.error || 'missing site data'));
       }
     }
-    signals.gsc = {
-      clicks: Math.round(valid.reduce((a, x) => a + Number(x.clicks || 0), 0)),
-      impressions: Math.round(valid.reduce((a, x) => a + Number(x.impressions || 0), 0)),
-      properties: valid.length,
-      days: 28,
-      sites: gscR.value.sites
-    };
-    if (valid.length !== sites.length) signals.errors.push('GSC: only '+valid.length+'/'+sites.length+' properties returned data');
-  } else signals.errors.push('GSC: no property returned usable data');
-} else signals.errors.push('GSC: ' + gscR.reason.message);
-
-if (gaR.status === 'fulfilled') {
-  const valid = (gaR.value.sites || []).filter(x => x.configured !== false && !x.error);
-  if (valid.length) {
-    signals.ga4 = {
-      activeUsers: Math.round(valid.reduce((a, x) => a + Number(x.activeUsers || 0), 0)),
-      properties: valid.length
-    };
-  }
-} else signals.errors.push('GA4: ' + gaR.reason.message);
-
-if (fbR.status === 'fulfilled') {
-  signals.facebook = {
-    followers: fbR.value?.page?.followers ?? null,
-    posts: Array.isArray(fbR.value?.posts) ? fbR.value.posts.length : null,
-    views28d: fbR.value?.summary?.views28d ?? null,
-    engagements28d: fbR.value?.summary?.engagements28d ?? null,
-    recentEngagement: fbR.value?.summary?.recentEngagement ?? null,
-    metrics: fbR.value?.metrics ? Object.keys(fbR.value.metrics).filter(k => fbR.value.metrics[k]?.available).length : 0
-  };
-} else signals.errors.push('Facebook: ' + fbR.reason.message);
-
-function cwvGood(site) {
-  if (site?.error) return null;
-  const lcp = Number(site?.lcp?.p75);
-  const inp = Number(site?.inp?.p75);
-  const cls = Number(site?.cls?.p75);
-  if (![lcp, inp, cls].every(Number.isFinite)) return null;
-  return lcp <= 2500 && inp <= 200 && cls <= 0.1;
+  } catch (e) { signals.errors.push(key + ': ' + e.message); }
+}));
+if (signals.cwv) {
+  const known = signals.cwv.sites.map(cwvGood).filter(x => x !== null);
+  Object.assign(signals.cwv, { good: known.filter(Boolean).length, attention: known.filter(x => !x).length, known: known.length });
 }
-if (cwvR.status === 'fulfilled') {
-  const list = cwvR.value.sites || [];
-  const known = list.map(cwvGood).filter(x => x !== null);
-  signals.cwv = {
-    good: known.filter(Boolean).length,
-    attention: known.filter(x => !x).length,
-    known: known.length
-  };
-} else signals.errors.push('CrUX: ' + cwvR.reason.message);
+const details = perSiteSignals(rows, signals);
+for (const site of details) if (site.trend?.prior >= 30 && site.trend.changePct <= -30) incidents.push(site.domain + ': organic clicks ' + site.trend.changePct + '% week over week');
+const now = new Date();
+const stamp = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Taipei', dateStyle: 'short', timeStyle: 'short', hour12: false }).format(now) + ' Taipei';
+const healthy = rows.filter(r => r.status === 'OK' && r.sitemap === 'OK' && r.robots === 'OK').length;
+const summary = buildDigest({ stamp, rows, gsc: signals.gsc, indexing: signals.indexing, submission: signals.sitemapSync, incidents, errors: signals.errors, base: BASE });
+const digestCard = buildDetailedDigest(summary, details, BASE);
+const report = { checkedAt: now.toISOString(), dryRun: DRY_RUN, healthy, total: sites.length, incidentCount: incidents.length, incidents, rows, sites: details, signals };
+const markdown = [
+  '# SEO portfolio report — ' + stamp,
+  `${healthy}/${sites.length} sites have reachable homepage, valid sitemap and passing robots checks.`,
+  'GSC is finalized 28-day Web data, not real-time; URL Inspection counts are a sample, not sitewide indexing totals.',
+  ...details.flatMap(s => [
+    '\n## ' + s.domain,
+    `Homepage: ${s.status} · ${s.latency ?? 'unknown'} ms · Robots: ${s.robots} · Sitemap: ${s.sitemap}`,
+    `Sitemap entries: ${s.sitemapInfo ? s.sitemapInfo.entries + ' ' + s.sitemapInfo.kind : 'unavailable'}`,
+    s.gsc && !s.gsc.error ? `GSC ${s.gsc.range?.start}–${s.gsc.range?.end}: ${s.gsc.clicks} clicks / ${s.gsc.impressions} impressions` : 'GSC: unavailable',
+    s.trend ? `Clicks: last 7 finalized days ${s.trend.recent}, previous 7 days ${s.trend.prior}` : 'Weekly comparison: unavailable',
+    s.indexing && !s.indexing.error ? `Inspected: ${s.indexing.checked}; indexed in sample: ${s.indexing.indexed}; not indexed: ${s.indexing.notIndexed}; errors: ${s.indexing.errors}; last scan: ${s.indexing.lastUpdated || 'none'}` : 'URL inspection: unavailable',
+    ...s.actions.map(a => '- ' + a),
+    ...(s.actions.length ? [] : ['No priority action detected by these checks.'])
+  ]),
+  '\n## Data gaps', ...(signals.errors.length ? signals.errors.map(e => '- ' + e) : ['None reported.'])
+].join('\n\n');
+await mkdir('reports', { recursive: true });
+await writeFile('reports/digest.json', JSON.stringify(report, null, 2));
+await writeFile('reports/digest.md', markdown);
+await writeFile('reports/line-payload.json', JSON.stringify(digestCard, null, 2));
+if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, markdown);
+console.log(JSON.stringify({ healthy, sites: sites.length, issues: incidents.length, dataGaps: signals.errors.length, dryRun: DRY_RUN }));
+if (DRY_RUN) { console.log('DRY_RUN_OK — report saved; no writes or notifications'); process.exit(0); }
+if (!process.env.LINE_CHANNEL_ACCESS_TOKEN || !process.env.LINE_USER_ID) throw new Error('LINE_CHANNEL_ACCESS_TOKEN or LINE_USER_ID missing');
 
-if (oppR.status === 'fulfilled') {
-  const opps = oppR.value.opportunities || [];
-  signals.opportunities = {
-    count: opps.length,
-    top: opps[0] || null
-  };
-} else signals.errors.push('Opportunities: ' + oppR.reason.message);
-
-if (indexR.status === 'fulfilled') {
-  signals.indexing = indexR.value?.portfolio || null;
-  if(signals.indexing?.checked>=30 && signals.indexing.notIndexed/signals.indexing.checked>0.6) incidents.push('Over 60% of the inspected URL sample did not pass GSC indexing inspection.');
-} else signals.errors.push('Indexing: ' + indexR.reason.message);
-
-const taipeiTime = new Intl.DateTimeFormat('en-GB', {
-  timeZone: 'Asia/Taipei',
-  month: '2-digit',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false
-}).format(new Date());
-
-const healthy = rows.filter(r => r.status === 'OK' && r.sitemap === 'OK').length;
-const symbol = incidents.length ? '⚠️' : '✅';
-
-const digestCard = buildDigest({
-  stamp: taipeiTime, rows, gsc: signals.gsc,
-  indexing: signals.indexing, submission: signals.sitemapSync,
-  incidents, errors: signals.errors, base: BASE
-});
-
-console.log(JSON.stringify({
-  healthy,
-  total: rows.length,
-  incidentCount: incidents.length,
-  rows,
-  signals
-}, null, 2));
-
-if (!process.env.LINE_CHANNEL_ACCESS_TOKEN || !process.env.LINE_USER_ID) {
-  throw new Error('LINE_CHANNEL_ACCESS_TOKEN or LINE_USER_ID is missing');
+// Reuse one key and unchanged payload for retries of this send only (LINE's 24h window).
+const retryKey = randomUUID();
+let sent = false;
+for (let attempt = 0; attempt < 3; attempt++) {
+  try {
+    const r = await fetch('https://api.line.me/v2/bot/message/push', {
+      method: 'POST', signal: AbortSignal.timeout(15000),
+      headers: { authorization: 'Bearer ' + process.env.LINE_CHANNEL_ACCESS_TOKEN, 'content-type': 'application/json', 'x-line-retry-key': retryKey },
+      body: JSON.stringify({ to: process.env.LINE_USER_ID, messages: [digestCard] })
+    });
+    if (r.ok || (r.status === 409 && r.headers.get('x-line-accepted-request-id'))) { sent = true; break; }
+    if (r.status < 500 && r.status !== 429) throw Object.assign(new Error('LINE push rejected: HTTP ' + r.status), { permanent: true });
+    throw new Error('LINE push temporarily failed: HTTP ' + r.status);
+  } catch (e) { if (e.permanent || attempt === 2) throw e; }
+  await new Promise(resolve => setTimeout(resolve, (2 ** attempt) * 1500));
 }
-
-const lineResponse = await fetch('https://api.line.me/v2/bot/message/push', {
-  method: 'POST',
-  headers: {
-    authorization: 'Bearer ' + process.env.LINE_CHANNEL_ACCESS_TOKEN,
-    'content-type': 'application/json'
-  },
-  body: JSON.stringify({
-    to: process.env.LINE_USER_ID,
-    messages: [digestCard]
-  })
-});
-
-if (!lineResponse.ok) {
-  throw new Error('LINE push failed: ' + lineResponse.status + ' ' + (await lineResponse.text()).slice(0, 500));
-}
+if (!sent) throw new Error('LINE delivery not accepted');
 console.log('LINE_DIGEST_OK');
-
 if (process.env.SEO_STORAGE_SECRET) {
   try {
-    const taipeiParts = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Asia/Taipei',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      hour12: false
-    }).formatToParts(new Date()).reduce((a,p)=>(a[p.type]=p.value,a),{});
-
-    const windowKey = taipeiParts.year + '-' + taipeiParts.month + '-' + taipeiParts.day + 'T' + taipeiParts.hour;
-    const sr = await fetch('https://wikbbpvhvevcbqkpnikj.supabase.co/functions/v1/seo-store-v2', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-seo-storage-secret': process.env.SEO_STORAGE_SECRET
-      },
-      body: JSON.stringify({
-        action: 'digest',
-        row: {
-          window_key: windowKey,
-          scheduled_for: new Date().toISOString(),
-          sent_at: new Date().toISOString(),
-          channel: 'line',
-          status: 'sent',
-          healthy_sites: healthy,
-          issue_count: incidents.length,
-          summary: incidents.length ? incidents.slice(0,6).join(' | ') : 'All monitored sites healthy',
-          details: { rows, signals, market: 'Worldwide', priority_regions: ['Asia', 'Europe'] }
-        }
-      })
+    const sr = await fetch(process.env.SEO_STORE_URL || 'https://wikbbpvhvevcbqkpnikj.supabase.co/functions/v1/seo-store-v2', {
+      method: 'POST', signal: AbortSignal.timeout(15000),
+      headers: { 'content-type': 'application/json', 'x-seo-storage-secret': process.env.SEO_STORAGE_SECRET },
+      body: JSON.stringify({ action: 'digest', row: {
+        window_key: now.toISOString().slice(0, 13), scheduled_for: now.toISOString(), sent_at: new Date().toISOString(),
+        channel: 'line', status: 'sent', healthy_sites: healthy, issue_count: incidents.length + signals.errors.length,
+        summary: [...incidents, ...signals.errors].slice(0, 6).join(' | ') || 'No priority issues detected', details: { rows, signals }
+      } })
     });
-    if (!sr.ok) console.warn('SEO digest persistence failed', sr.status);
-    else console.log('SEO_DIGEST_STORED');
-  } catch (e) {
-    console.warn('SEO digest persistence error', e?.message || e);
-  }
+    if (!sr.ok) throw new Error('HTTP ' + sr.status);
+    console.log('SEO_DIGEST_STORED');
+  } catch (e) { console.warn('SEO digest history unavailable: ' + e.message); }
 }

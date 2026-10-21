@@ -1,5 +1,11 @@
 const DEFAULT_SITES = [
   {
+    id: 'worksheet', name: 'Worksheet', domain: 'worksheet.live',
+    url: 'https://worksheet.live', sitemap: 'https://worksheet.live/sitemap.xml',
+    gscProperty: 'sc-domain:worksheet.live', ga4PropertyId: '',
+    repository: 'KanwarAfaq/worksheet', market: 'Worldwide', priorityRegions: ['Asia', 'Europe']
+  },
+  {
     id: 'anytool',
     name: 'AnyTool',
     domain: 'anytool.online',
@@ -66,7 +72,12 @@ function getSites() {
   if (!process.env.SITE_CONFIG_JSON) return DEFAULT_SITES.map(enrichSite);
   try {
     const parsed = JSON.parse(process.env.SITE_CONFIG_JSON);
-    return Array.isArray(parsed) && parsed.length ? parsed.map(enrichSite) : DEFAULT_SITES.map(enrichSite);
+    if (!Array.isArray(parsed) || !parsed.length) return DEFAULT_SITES.map(enrichSite);
+    // Merge portfolio additions without losing configured GSC/GA4 property IDs.
+    // An explicit enabled:false entry opts a site out of all server-side monitors.
+    const merged = DEFAULT_SITES.map(d => enrichSite(parsed.find(s => s.id === d.id || s.domain === d.domain) || d));
+    for (const site of parsed) if (!DEFAULT_SITES.some(d => d.id === site.id || d.domain === site.domain)) merged.push(enrichSite(site));
+    return merged.filter(s => s.enabled !== false);
   } catch {
     return DEFAULT_SITES.map(enrichSite);
   }

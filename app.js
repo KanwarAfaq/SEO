@@ -1,4 +1,5 @@
 const SITES=[
+{id:'worksheet',name:'Worksheet',domain:'worksheet.live',url:'https://worksheet.live',sitemap:'https://worksheet.live/sitemap.xml',gscProperty:'sc-domain:worksheet.live',repo:'KanwarAfaq/worksheet',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#eab308'},
 {id:'anytool',name:'AnyTool',domain:'anytool.online',url:'https://anytool.online',sitemap:'https://anytool.online/sitemap.xml',gscProperty:'sc-domain:anytool.online',repo:'KanwarAfaq/anytool-online',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#32c9e8'},
 {id:'kmafaq-online',name:'KMAFAQ Online',domain:'kmafaq.online',url:'https://kmafaq.online',sitemap:'https://kmafaq.online/sitemap.xml',gscProperty:'sc-domain:kmafaq.online',repo:'KanwarAfaq/kmafaq_blog',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#8b6cff'},
 {id:'kmafaq-site',name:'KMAFAQ Site',domain:'kmafaq.site',url:'https://kmafaq.site',sitemap:'https://kmafaq.site/sitemap.xml',gscProperty:'sc-domain:kmafaq.site',repo:'KanwarAfaq/kmafaq',market:'Worldwide',priorityRegions:['Asia','Europe'],c:'#35d2a0'},

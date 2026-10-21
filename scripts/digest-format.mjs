@@ -1,3 +1,4 @@
+import { cwvGood, finite } from './site-signals.mjs';
 // One compact LINE Flex card; intentionally does not list page links or claim API acceptance means indexed.
 const number = n => n == null || !Number.isFinite(Number(n)) ? '—' : Math.round(Number(n)).toLocaleString('en-US');
 const cut = (s, max=50) => String(s || '').slice(0, max);
@@ -13,8 +14,8 @@ function bar(value, total) {
 }
 
 export function buildDigest({ stamp, rows=[], gsc=null, indexing=null, submission=null, incidents=[], errors=[], base='' }) {
-  const valid = gsc?.sites?.filter(s => !s.error) || [];
-  const complete = rows.length > 0 && valid.length === rows.length;
+  const valid = rows.map(row => gsc?.sites?.find(s => s.id === row.id || s.domain === row.domain)).filter(s => s && !s.error && finite(s.clicks) && finite(s.impressions));
+  const complete = rows.length > 0 && valid.length === rows.length && valid.every(s => s.range?.start === valid[0]?.range?.start && s.range?.end === valid[0]?.range?.end);
   const clicks = complete ? valid.reduce((n,s)=>n+Number(s.clicks||0),0) : null;
   const impressions = complete ? valid.reduce((n,s)=>n+Number(s.impressions||0),0) : null;
   const range = valid[0]?.range;
@@ -60,7 +61,7 @@ export function buildDigest({ stamp, rows=[], gsc=null, indexing=null, submissio
   ].join('\n').slice(0,380);
   const contents=[
     txt(statusText,{size:'xs',color:statusColor,weight:'bold'}),
-    txt('SEO DAILY PULSE',{size:'xl',color:color.ink,weight:'bold',margin:'sm'}),
+    txt('SEO PORTFOLIO PULSE',{size:'xl',color:color.ink,weight:'bold',margin:'sm'}),
     txt(stamp,{color:color.muted,margin:'xs'}),
     {type:'separator',margin:'lg'},
     txt('GOOGLE SEARCH · WEB · '+(gsc?.days||28)+' DAYS',{size:'xxs',color:color.muted,weight:'bold',margin:'lg'}),
@@ -91,4 +92,41 @@ export function buildDigest({ stamp, rows=[], gsc=null, indexing=null, submissio
     ]};
   }catch{}
   return {type:'flex',altText:summary,contents:bubble};
+}
+
+// One push message, with a summary plus one swipeable detail card per site.
+export function buildDetailedDigest(summary, sites, base) {
+  const cards = sites.slice(0, 11).map(s => {
+    const g = s.gsc && !s.gsc.error ? s.gsc : null;
+    const ga = s.ga4 && !s.ga4.error && s.ga4.configured !== false ? s.ga4 : null;
+    const idx = s.indexing && !s.indexing.error ? s.indexing : null;
+    const vitals = cwvGood(s.cwv);
+    const body = [
+      txt(s.domain, { size: 'lg', weight: 'bold', color: color.ink, wrap: true }),
+      txt(s.actions.length ? 'REVIEW · ' + s.actions.length + ' actions' : 'NO PRIORITY ISSUE DETECTED', { color: s.actions.length ? color.red : color.green, weight: 'bold', margin: 'sm' }),
+      txt(`HTTP ${s.status} · ${number(s.latency)} ms`, { margin: 'md' }),
+      txt(`Robots ${s.robots} · Sitemap ${s.sitemap}`, { wrap: true }),
+      txt(s.sitemapInfo ? `${number(s.sitemapInfo.entries)} ${s.sitemapInfo.kind} in sitemap` : 'Sitemap entries unavailable', { color: color.muted }),
+      { type: 'separator', margin: 'md' },
+      txt('GOOGLE SEARCH · FINAL 28 DAYS', { weight: 'bold', margin: 'md', size: 'xxs' }),
+      txt(g ? `${number(g.clicks)} clicks / ${number(g.impressions)} impressions` : 'GSC unavailable — verify property access', { wrap: true, margin: 'xs' }),
+      txt(g?.range ? `${g.range.start}–${g.range.end} · Pacific dates` : 'Date range unavailable', { color: color.muted, size: 'xxs' }),
+      txt(g && g.impressions > 0 ? `CTR ${(Number(g.ctr) * 100).toFixed(1)}% · avg position ${Number(g.position).toFixed(1)}` : 'CTR / position: no measured impressions', { wrap: true }),
+      txt(s.trend ? `7d clicks ${s.trend.recent} vs ${s.trend.prior} prior${s.trend.changePct === null ? ' · no baseline' : ' (' + s.trend.changePct + '%)'}` : 'Weekly trend unavailable', { wrap: true }),
+      txt(ga ? `GA4 realtime: ${number(ga.activeUsers)} active users` : 'GA4 realtime unavailable / not configured', { wrap: true, margin: 'md' }),
+      txt(vitals === null ? 'Core Web Vitals: insufficient/unavailable field data' : `Core Web Vitals: ${vitals ? 'GOOD' : 'NEEDS WORK'} · LCP ${s.cwv.lcp.p75}ms · INP ${s.cwv.inp.p75}ms · CLS ${s.cwv.cls.p75}`, { wrap: true }),
+      { type: 'separator', margin: 'md' },
+      txt('URL INSPECTION SAMPLE', { size: 'xxs', weight: 'bold', margin: 'md' }),
+      txt(idx ? `${number(idx.indexed)} indexed / ${number(idx.checked)} checked · ${number(idx.notIndexed)} not indexed · ${number(idx.errors)} errors` : 'Inspection unavailable', { wrap: true }),
+      txt(idx?.lastUpdated ? `Last scan: ${idx.lastUpdated.slice(0, 16)} UTC` : 'No saved scan yet', { size: 'xxs', color: color.muted, wrap: true }),
+      txt('Sample only; not sitewide indexed totals.', { size: 'xxs', color: color.muted }),
+      txt('PRIORITY NEXT STEPS', { size: 'xxs', weight: 'bold', margin: 'md' }),
+      ...s.actions.slice(0, 3).map((a, i) => txt((i + 1) + '. ' + cut(a, 240), { wrap: true, margin: 'sm' })),
+      ...(s.actions.length ? [] : [txt('Keep monitoring; review relevant search queries and helpful content.', { wrap: true, margin: 'sm' })])
+    ];
+    const card = { type: 'bubble', size: 'mega', body: { type: 'box', layout: 'vertical', paddingAll: '18px', contents: body } };
+    try { const u = new URL(base); if (u.protocol === 'https:') card.footer = { type: 'box', layout: 'vertical', contents: [{ type: 'button', style: 'link', action: { type: 'uri', label: 'Open dashboard', uri: u.origin + '/#growth' } }] }; } catch {}
+    return card;
+  });
+  return { ...summary, contents: { type: 'carousel', contents: [summary.contents, ...cards] } };
 }

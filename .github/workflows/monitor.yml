@@ -2,14 +2,27 @@ name: SEO digest monitor
 
 on:
   schedule:
-    # One concise daily digest at 08:00 Taiwan time (00:00 UTC).
-    - cron: '0 0 * * *'
+    # Four digests: 08:15, 12:15, 18:15, 22:15 Asia/Taipei. UTC cron; avoid top-of-hour load.
+    - cron: '15 0,4,10,14 * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Read-only report; no LINE, sitemap submissions or inspection writes'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-digest-${{ github.ref }}
+  cancel-in-progress: false
+
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,5 +36,15 @@ jobs:
           SEO_STORAGE_SECRET: ${{ secrets.SEO_STORAGE_SECRET }}
           ADMIN_ACTION_KEY: ${{ secrets.ADMIN_ACTION_KEY }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+          SEO_DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          SEO_STORE_URL: ${{ vars.SEO_STORE_URL }}
           SEO_DASHBOARD_BASE: https://seo-kmafaq.vercel.app
         run: node scripts/monitor.mjs
+      - name: Save per-site reports and LINE preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-digest-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/
+          retention-days: 30
+          if-no-files-found: warn
