@@ -20,6 +20,7 @@ jobs:
         run: |
           node --check app.js
           node --check growth.js
+          node --check growth-model.js
           find api -type f -name '*.js' -print0 | xargs -0 -n1 node --check
           for f in scripts/*.mjs; do
             node --check "$f"

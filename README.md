@@ -93,3 +93,19 @@ This repository is intentionally dependency-light: static frontend + native Node
 - The existing LINE recipient and channel secrets are reused. A successful API acceptance does not prove device delivery (for example if the bot is blocked). Check the workflow log for `LINE_DIGEST_OK`; missing/invalid secrets cause a visible failed run, not silent success.
 
 References: [GitHub schedule behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule), [LINE retry semantics](https://developers.line.biz/en/docs/messaging-api/retrying-api-request/).
+
+## Visual portfolio intelligence
+
+Open **Growth Intelligence** (or **Explore portfolio** on Overview) for:
+
+- All-site or individual-site filters and 7/28/90-day date ranges.
+- Current and previous period search charts, exact daily data tables, website contribution bars, CTR and weighted average position.
+- Per-site stacked indexing progress with unknown/error counts kept separate from confirmed exclusions.
+- Prioritized actions, real API connection checks, referral traffic, historical snapshots and recorded LINE digest history (history/referrals require the session admin key).
+- A CSV export of the selected websites and date range, including missing-data status and spreadsheet-formula escaping.
+
+The GSC endpoint accepts `compare=1` to fetch two equal calendar periods in one Google request, while its default response remains current-period-only. Zero-traffic dates are included in charts; missing API data is not zero. Ninety-day comparisons use 180 days of input, rather than comparing an incomplete prior range. All values come from the APIs; no demo dataset is shown on the production dashboard.
+
+The data-source table distinguishes configuration from successful access. When a property is newly added, verify the matching GA4 property ID in Vercel's `SITE_CONFIG_JSON`, service-account access in GA4 and Search Console, and redeploy. Public `config-status` exposes only site metadata/boolean flags and the deployed commit SHA, never credentials.
+
+Validation includes model tests for date boundaries, missing data, weighting and CSV safety, plus a DOM-controller integration test for charts, filters, exports and partial failures. The existing production smoke workflow waits for the matching deployed commit and then verifies all five properties. A successful smoke test verifies API access and response shapes; it does not prove a complete browser visual review, indexing, traffic growth, or notification delivery to a device.

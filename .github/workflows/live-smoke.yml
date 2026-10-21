@@ -10,7 +10,7 @@ on:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     env:
       BASE: https://seo-kmafaq.vercel.app
       BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
@@ -22,6 +22,22 @@ jobs:
             echo "VERCEL_AUTOMATION_BYPASS_SECRET is missing in GitHub Actions secrets"
             exit 1
           fi
+
+      - name: Wait for this production revision
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          for attempt in $(seq 1 18); do
+            curl --max-time 15 -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/config-status" > /tmp/revision.json || true
+            if python -c 'import json,os; assert json.load(open("/tmp/revision.json")).get("deploymentSha")==os.environ["EXPECTED_SHA"]' 2>/dev/null; then
+              echo "PRODUCTION_REVISION_OK"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Production did not expose the expected commit before timeout"
+          exit 1
 
       - name: Check production homepage
         shell: bash
@@ -48,7 +64,7 @@ jobs:
               raise SystemExit("Missing configuration: "+", ".join(missing))
           PY
 
-      - name: Check all four websites and sitemaps
+      - name: Check all five websites and sitemaps
         shell: bash
         run: |
           set -e
@@ -60,29 +76,34 @@ jobs:
           print("HEALTH_COUNT", len(sites))
           for s in sites:
               print(s.get("domain"), "site_ok=", bool(s.get("ok")), "sitemap_ok=", bool(s.get("sitemapOk")))
-          if len(sites)!=4:
-              raise SystemExit("Expected 4 sites")
+          if len(sites)!=5:
+              raise SystemExit("Expected 5 sites")
           PY
 
       - name: Check Google Search Console authentication and property access
         shell: bash
         run: |
           set -e
-          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/gsc-overview" > /tmp/gsc.json
+          curl -fsSL -H "x-vercel-protection-bypass: $BYPASS" "$BASE/api/gsc-overview?days=28&compare=1" > /tmp/gsc.json
           python - <<'PY'
           import json
           d=json.load(open('/tmp/gsc.json'))
           sites=d.get("sites",[])
           errs=[(s.get("id"),s.get("error")) for s in sites if s.get("error")]
           print("GSC_PROPERTY_COUNT", len(sites), "ERROR_COUNT", len(errs))
+          for site in sites:
+              print("GSC_SITE",site.get("id"),"ready=",not bool(site.get("error")),"comparison=",bool(site.get("comparison")))
+              if not site.get("error") and not site.get("comparison"):
+                  raise SystemExit("Missing prior-period comparison")
           if errs:
               print("GSC_ERRORS", errs)
               raise SystemExit("GSC access failed")
-          if len(sites)!=4:
-              raise SystemExit("Expected 4 GSC properties")
+          if len(sites)!=5:
+              raise SystemExit("Expected 5 GSC properties")
           PY
 
       - name: Check GA4 realtime authentication and property access
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -e
@@ -94,14 +115,16 @@ jobs:
           errs=[(s.get("id"),s.get("error")) for s in sites if s.get("error")]
           missing=[s.get("id") for s in sites if s.get("configured") is False]
           print("GA4_PROPERTY_COUNT", len(sites), "ERROR_COUNT", len(errs), "UNCONFIGURED_COUNT", len(missing))
+          for site in sites:
+              print("GA4_SITE",site.get("id"),"configured=",site.get("configured"),"error=",site.get("error"))
           if errs:
               print("GA4_ERRORS", errs)
               raise SystemExit("GA4 access failed")
           if missing:
               print("GA4_UNCONFIGURED", missing)
               raise SystemExit("GA4 properties missing")
-          if len(sites)!=4:
-              raise SystemExit("Expected 4 GA4 properties")
+          if len(sites)!=5:
+              raise SystemExit("Expected 5 GA4 properties")
           PY
 
       - name: Check Facebook Page Insights
@@ -141,8 +164,8 @@ jobs:
           print("AUDIT_SITE_COUNT", len(sites))
           for s in sites:
               print(s.get("domain"), "audit_ok=", not bool(s.get("error")), "issue_count=", len(s.get("issues") or []))
-          if len(sites)!=4:
-              raise SystemExit("Expected 4 audit results")
+          if len(sites)!=5:
+              raise SystemExit("Expected 5 audit results")
           PY
 
       - name: Check deep site audit and search intelligence
@@ -175,10 +198,10 @@ jobs:
 
           progress=json.load(open('/tmp/index-progress.json'))
           sites=progress.get('sites',[])
-          assert len(sites)==4, progress
+          assert len(sites)==5, progress
           assert all((not s.get('error')) and s.get('totalPages',0)>=1 for s in sites), progress
           p=progress.get('portfolio',{})
-          assert p.get('totalPages',0)>=4, progress
+          assert p.get('totalPages',0)>=5, progress
           print('INDEX_PROGRESS_TOTAL', p.get('totalPages'))
           print('INDEX_PROGRESS_INDEXED', p.get('indexed'))
           print('INDEX_PROGRESS_NOT_INDEXED', p.get('notIndexed'))

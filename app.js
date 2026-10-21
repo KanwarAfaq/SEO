@@ -63,7 +63,7 @@ function siteCards(){
     const healthKnown=state.loaded.health&&h;
     const healthText=!healthKnown?'UNKNOWN':h.ok?'ONLINE':'ISSUE';
     const healthClass=!healthKnown?'warn':h.ok?'':'bad';
-    const gscLive=g&&!g.error;
+    const gscLive=g&&g.clicks!=null&&!g.error;
     return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
 }
@@ -109,9 +109,9 @@ function activity(){
     rows.push(...(bad.length?bad.map(x=>['!',x.domain+' needs attention','HTTP '+(x.status||'—')+' · sitemap '+(x.sitemapStatus||'—')]):[['✓','All sites responding','Live HTTP + sitemap checks passed']]));
   }
   const gscOk=state.gsc.filter(x=>!x.error).length;
-  rows.push([gscOk===SITES.length?'⌕':'!',gscOk===SITES.length?'Search Console connected':'Search Console unavailable',gscOk===SITES.length?'4/4 properties loaded from Google API':(state.errors.gsc||gscOk+'/4 properties loaded')]);
+  rows.push([gscOk===SITES.length?'⌕':'!',gscOk===SITES.length?'Search Console connected':'Search Console unavailable',gscOk===SITES.length?SITES.length+'/'+SITES.length+' properties loaded from Google API':(state.errors.gsc||gscOk+'/'+SITES.length+' properties loaded')]);
   const gaOk=state.ga.filter(x=>x.configured!==false&&!x.error).length;
-  rows.push([gaOk===SITES.length?'◉':'!',gaOk===SITES.length?'GA4 realtime live':'GA4 realtime unavailable',gaOk===SITES.length?'4/4 properties loaded from Google API':(state.errors.ga||gaOk+'/4 properties loaded')]);
+  rows.push([gaOk===SITES.length?'◉':'!',gaOk===SITES.length?'GA4 realtime live':'GA4 realtime unavailable',gaOk===SITES.length?SITES.length+'/'+SITES.length+' properties loaded from Google API':(state.errors.ga||gaOk+'/'+SITES.length+' properties loaded')]);
   rows.push(['⚡','Safe action mode','Write actions require your admin key']);
   $('#activityList').innerHTML=rows.slice(0,5).map(r=>`<div class="activity"><span class="activity-icon">${r[0]}</span><div><b>${esc(r[1])}</b><span>${esc(r[2])}</span></div><time>API</time></div>`).join('');
 }
@@ -134,7 +134,7 @@ function ga(){
   const complete=valid.length===SITES.length;
   const total=complete?valid.reduce((sum,x)=>sum+Number(x.activeUsers||0),0):null;
   $('#liveTotal').textContent=fmt(total);
-  const coverage=$('#liveCoverage');if(coverage)coverage.textContent=complete?'4/4 properties · Google Analytics Realtime':valid.length+'/4 properties available';
+  const coverage=$('#liveCoverage');if(coverage)coverage.textContent=complete?SITES.length+'/'+SITES.length+' properties · Google Analytics Realtime':valid.length+'/'+SITES.length+' properties available';
   if(valid.length){
     const max=Math.max(1,...valid.map(x=>Number(x.activeUsers||0)));
     $('#liveBars').innerHTML=valid.map(x=>`<i title="${esc(by(SITES,x.id).domain)}: ${Number(x.activeUsers||0)} active" style="height:${Number(x.activeUsers||0)/max*100}%"></i>`).join('');
@@ -163,6 +163,10 @@ function integrations(){const cards=[['google','G','Google Search + Analytics','
 async function loadConfig(){
   try{
     state.config=await api('/api/config-status');
+    if (Array.isArray(state.config.sites)) {
+      const configured=state.config.sites.map(s=>({...by(SITES,s.id),...s,repo:s.repository,c:by(SITES,s.id).c||'#245bdb',market:'Worldwide',priorityRegions:['Asia','Europe']}));
+      SITES.splice(0,SITES.length,...configured);
+    }
     state.errors.config=null;
     integrations();
     return true;
@@ -311,9 +315,16 @@ function cwvStatus(type,val){
   return ['—','warn'];
 }
 function renderCwv(){
-  const good=state.cwv.filter(x=>!x.error&&cwvStatus('lcp',Number(x.lcp?.p75))[0]==='Good'&&cwvStatus('inp',Number(x.inp?.p75))[0]==='Good'&&cwvStatus('cls',Number(x.cls?.p75))[0]==='Good').length;
-  $('#cwvSummary').innerHTML=[['Origins with CrUX',state.cwv.filter(x=>!x.error).length+'/4'],['All CWV good',good+'/4'],['PageSpeed scans',state.pagespeed.filter(x=>!x.error).length+'/4'],['History storage',state.config.seoStorage?'Connected':'Needs secret']].map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>SEO performance monitoring</small></div>`).join('');
-  $('#cwvTable').innerHTML=state.cwv.length?state.cwv.map(x=>{if(x.error)return `<tr><td class="table-domain">${x.domain}</td><td colspan="3">No CrUX data</td><td><span class="tag warn">${esc(x.error).slice(0,80)}</span></td></tr>`;const l=Number(x.lcp?.p75),i=Number(x.inp?.p75),cl=Number(x.cls?.p75),st=[cwvStatus('lcp',l),cwvStatus('inp',i),cwvStatus('cls',cl)];const worst=st.some(s=>s[0]==='Poor')?['Poor','bad']:st.some(s=>s[0]==='Needs improvement')?['Needs improvement','warn']:['Good','good'];return `<tr><td class="table-domain">${x.domain}</td><td>${l?Math.round(l)+' ms':'—'}</td><td>${i?Math.round(i)+' ms':'—'}</td><td>${cl?cl.toFixed(3):'—'}</td><td><span class="tag ${worst[1]}">${worst[0]}</span></td></tr>`}).join(''):'<tr><td colspan="5">CrUX data not loaded yet.</td></tr>';
+  const value=v=>v==null||v===''||!Number.isFinite(Number(v))?null:Number(v);
+  const valid=x=>!x.error&&[x.lcp?.p75,x.inp?.p75,x.cls?.p75].every(v=>value(v)!==null);
+  const good=state.cwv.filter(x=>valid(x)&&cwvStatus('lcp',value(x.lcp.p75))[0]==='Good'&&cwvStatus('inp',value(x.inp.p75))[0]==='Good'&&cwvStatus('cls',value(x.cls.p75))[0]==='Good').length;
+  $('#cwvSummary').innerHTML=[['Origins with complete field data',state.cwv.filter(valid).length+'/'+SITES.length],['All CWV good',good+'/'+SITES.length],['PageSpeed scans',state.pagespeed.filter(x=>!x.error).length+'/'+SITES.length],['History storage',state.config.seoStorage?'Configured':'Needs configuration']].map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>SEO performance monitoring</small></div>`).join('');
+  $('#cwvTable').innerHTML=state.cwv.length?state.cwv.map(x=>{
+    if(!valid(x))return `<tr><td class="table-domain">${esc(x.domain)}</td><td colspan="3">Incomplete or unavailable field data</td><td><span class="tag warn">${esc(x.error||'Unknown')}</span></td></tr>`;
+    const l=value(x.lcp.p75),i=value(x.inp.p75),cl=value(x.cls.p75),st=[cwvStatus('lcp',l),cwvStatus('inp',i),cwvStatus('cls',cl)];
+    const worst=st.some(s=>s[0]==='Poor')?['Poor','bad']:st.some(s=>s[0]==='Needs improvement')?['Needs improvement','warn']:['Good','good'];
+    return `<tr><td class="table-domain">${esc(x.domain)}</td><td>${Math.round(l)} ms</td><td>${Math.round(i)} ms</td><td>${cl.toFixed(3)}</td><td><span class="tag ${worst[1]}">${worst[0]}</span></td></tr>`;
+  }).join(''):'<tr><td colspan="5">CrUX data not loaded yet.</td></tr>';
 }
 async function loadCrux(show=false){
   state.loaded.crux=true;
@@ -398,7 +409,7 @@ async function refresh(show=true){
   const configOk=await loadConfig();
   const results=await Promise.allSettled([loadHealth(false),loadGsc(false),loadGa(false),loadFacebook(false),loadCrux(false),loadIndexProgress(false)]);
   await loadHistory();
-  const coreOk=configOk&&state.health.length===SITES.length&&state.gsc.length===SITES.length&&state.ga.length===SITES.length&&Boolean(state.facebook);
+  const coreOk=configOk&&state.health.length===SITES.length&&state.gsc.length===SITES.length&&state.ga.length===SITES.length&&!state.errors.health&&!state.errors.gsc&&!state.errors.ga&&state.health.every(x=>x.ok&&x.sitemapOk);
   sourceState(coreOk?'Live sources connected':'Some sources unavailable',coreOk?'good':'warn');
   if(show)toast(coreOk?'Live data refreshed':'Refresh completed with unavailable sources',coreOk?'good':'bad');
   return coreOk;
@@ -609,6 +620,7 @@ siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart
 $('#auditSiteSelect').innerHTML=options();$('#indexProgressSite').innerHTML=options();
 const storedRpm=fbRpm();if(storedRpm){$('#fbRpmLow').value=storedRpm.low;$('#fbRpmHigh').value=storedRpm.high}
 renderIndexProgress();
+window.seoPortfolioSites=()=>SITES.map(s=>({...s}));
 const hash=location.hash.slice(1);if(hash&&$(`#view-${hash}`))view(hash);
 bootstrap();
 window.addEventListener('pageshow',e=>{if(e.persisted||!state.health.length||!state.gsc.length||!state.ga.length||!state.facebook)bootstrap()});

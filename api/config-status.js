@@ -4,6 +4,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('cache-control', 'no-store');
   const sites = getSites();
   res.status(200).json({
+    deploymentSha: process.env.VERCEL_GIT_COMMIT_SHA || null,
     google: Boolean(process.env.GOOGLE_SERVICE_ACCOUNT_JSON || (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY)),
     googleApiKey: Boolean(process.env.GOOGLE_API_KEY),
     facebook: Boolean(process.env.FACEBOOK_PAGE_ID && process.env.FACEBOOK_PAGE_ACCESS_TOKEN),
@@ -18,6 +19,9 @@ module.exports = async function handler(req, res) {
       market: 'Worldwide',
       priorityRegions: ['Asia', 'Europe']
     },
+    sites: sites.map(s => ({ id: s.id, name: s.name, domain: s.domain, url: s.url,
+      sitemap: s.sitemap, repository: s.repository, gscProperty: s.gscProperty,
+      ga4Configured: Boolean(s.ga4PropertyId) })),
     repositories: sites.map(s => ({ id: s.id, domain: s.domain, repository: s.repository }))
   });
 };

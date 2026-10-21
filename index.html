@@ -58,10 +58,10 @@
             <span class="eyebrow">SEO COMMAND CENTER</span>
             <h1>Search visibility. <em>One overview.</em></h1>
             <p>A clear view of search visibility, technical health, indexing and the next actions that matter.</p>
-            <div class="hero-actions"><button class="primary-btn" data-view-jump="actions">Open actions</button><button class="ghost-btn" data-view-jump="performance">Web vitals</button></div>
+            <div class="hero-actions"><button class="primary-btn" data-view-jump="growth">Explore portfolio</button><button class="ghost-btn" data-view-jump="performance">Web vitals</button></div>
           </div>
           <div class="radar-wrap" aria-hidden="true">
-            <div class="radar"><div class="radar-sweep"></div><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span><div class="radar-center">4<small>sites</small></div></div>
+            <div class="radar"><div class="radar-sweep"></div><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span><div class="radar-center">5<small>sites</small></div></div>
           </div>
         </div>
 
@@ -79,7 +79,7 @@
 
         <div class="two-col">
           <article class="panel performance-panel">
-            <div class="panel-head"><div><span class="eyebrow">ORGANIC PERFORMANCE</span><h3>Search clicks</h3></div><div class="segmented"><button class="active">28D</button><button>7D</button></div></div>
+            <div class="panel-head"><div><span class="eyebrow">ORGANIC PERFORMANCE</span><h3>Search clicks</h3></div><button class="text-btn" data-view-jump="growth">Compare periods →</button></div>
             <div class="performance-summary"><div><b id="chartClicks">—</b><span class="trend" id="chartSource">GSC API · 28D</span></div><span>Combined Google Search clicks · no demo fallback</span></div>
             <svg class="chart" id="clickChart" viewBox="0 0 800 230" preserveAspectRatio="none" aria-label="Search clicks trend"></svg>
           </article>
@@ -194,13 +194,21 @@
       </section>
 
       <section class="content hidden" id="view-growth">
-        <div class="page-intro"><div><span class="eyebrow">FIRST 90 DAYS · SOURCE-BACKED</span><h1>SEO Growth Intelligence</h1><p>Track search discovery and prioritise verifiable actions for all five websites.</p></div><button class="primary-btn" onclick="window.seoGrowth.load()">Refresh signals</button></div>
-        <div class="panel"><div class="panel-head"><div><h3>Organic visibility</h3><p id="growthStatus">Load to fetch Search Console</p></div><div class="segmented"><button onclick="window.seoGrowth.setRange(7)">7D</button><button onclick="window.seoGrowth.setRange(28)">28D</button><button onclick="window.seoGrowth.setRange(90)">90D</button></div></div><div class="metric-grid" id="growthMetrics"></div><p class="panel-copy">Daily impressions (same scale within selected period)</p><div class="growth-timeline" id="growthTimeline"></div></div>
-        <article class="panel"><div class="panel-head"><h3>Site growth and baseline</h3></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Impressions vs prior period</th><th>Confidence</th></tr></thead><tbody id="growthSites"></tbody></table></div></article>
-        <article class="panel"><div class="panel-head"><h3>Verified indexing</h3><button class="text-btn" data-view-jump="indexing">Open indexing →</button></div><div class="metric-grid" id="growthIndex"></div><p class="panel-copy">Not inspected is unknown, not necessarily excluded from Google. Inspection samples are not GSC sitewide coverage.</p><div class="panel-copy" id="growthIndexReasons"></div></article>
-        <article class="panel"><div class="panel-head"><h3>Off-page traffic signals</h3><p>GA4 referral sessions, not backlinks</p></div><div id="growthReferrals" class="panel-copy">Set your session admin key to load referral signals.</div></article>
-        <article class="panel"><div class="panel-head"><h3>Evidence-based recommendations</h3><button class="text-btn" data-view-jump="actions">Review SEO agent →</button></div><div class="panel-copy" id="growthRecommendations"></div></article>
-        <article class="panel"><div class="panel-head"><h3>Historical snapshots</h3></div><p class="panel-copy">Recorded snapshots, not an inferred attribution of ranking changes.</p><div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Captured at</th><th>Impressions</th><th>Clicks</th><th>Technical score</th></tr></thead><tbody id="growthHistory"></tbody></table></div></article>
+        <div class="page-intro"><div><span class="eyebrow">YOUR SEARCH OPERATIONS</span><h1>Portfolio intelligence</h1><p>See what changed, what needs attention, and where to focus next.</p></div><div class="hero-actions"><button class="ghost-btn" id="growthExport">Export CSV</button><button class="primary-btn" id="growthRefresh">Refresh signals</button></div></div>
+        <div class="growth-controls"><label>Website<select id="growthSite"><option value="all">All websites</option></select></label><div class="segmented" role="group" aria-label="Search date range"><button data-growth-range="7">7 days</button><button data-growth-range="28" class="active" aria-pressed="true">28 days</button><button data-growth-range="90">90 days</button></div><span id="growthUpdated">Not refreshed yet</span></div>
+        <div id="growthSummary" class="growth-summary" aria-live="polite">Load signals to see your portfolio summary.</div>
+        <div class="metric-grid growth-metrics" id="growthMetrics"></div>
+        <div class="growth-two-col">
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">SEARCH MOMENTUM</span><h3>Current vs previous period</h3></div><label class="growth-metric-label">Metric<select id="growthMetric"><option value="impressions">Impressions</option><option value="clicks">Clicks</option></select></label></div><p id="growthStatus" role="status">Waiting for Google Search data</p><div id="growthTimeline" class="growth-chart"></div><div class="growth-legend"><span><i class="current"></i>Current period</span><span><i class="previous"></i>Previous period, aligned by day</span></div><details class="growth-data"><summary>View accessible daily data</summary><div class="data-table-wrap"><table><thead><tr><th>Current date</th><th>Value</th><th>Previous date</th><th>Value</th></tr></thead><tbody id="growthDaily"></tbody></table></div></details></article>
+          <article class="panel"><div class="panel-head"><div><span class="eyebrow">WHERE VISIBILITY COMES FROM</span><h3>Website contribution</h3></div></div><div id="growthShare"></div><p class="panel-copy">Measured contribution to the selected metric, not an SEO score.</p></article>
+        </div>
+        <article class="panel"><div class="panel-head"><h3>Website performance</h3><span class="panel-copy">Google Web search · finalized data</span></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Click change</th><th>Data status</th></tr></thead><tbody id="growthSites"></tbody></table></div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">CRAWL &amp; DISCOVERY</span><h3>Verified indexing progress</h3></div><button class="text-btn" data-view-jump="indexing">Inspect URLs →</button></div><div class="metric-grid" id="growthIndex"></div><div id="growthIndexBars"></div><p class="panel-copy">Indexed means PASS in saved URL inspections, not GSC sitewide totals. Unchecked URLs and inspection errors remain unknown. Previous inspections may be up to seven days old.</p><div class="panel-copy" id="growthIndexReasons"></div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">FOCUS NEXT</span><h3>Priority actions</h3></div><button class="text-btn" data-view-jump="actions">Review agent actions →</button></div><div id="growthRecommendations" class="growth-actions"></div></article>
+        <article class="panel"><div class="panel-head"><div><span class="eyebrow">CONNECTION CONFIDENCE</span><h3>Data source checks</h3></div></div><div class="data-table-wrap"><table><thead><tr><th>Website</th><th>HTTP / Sitemap</th><th>GSC</th><th>GA4 realtime</th><th>Field performance</th></tr></thead><tbody id="growthConnections"></tbody></table></div><p class="panel-copy">“Ready” means the API returned usable data on this refresh. Configuration alone does not prove access. GA4 zero active users is valid when the API succeeds.</p><div id="growthErrors" class="growth-errors"></div></article>
+        <article class="panel"><div class="panel-head"><h3>Referral traffic</h3><p>GA4 referral sessions, not backlinks</p></div><div id="growthReferrals" class="panel-copy">Use your session admin key for protected referral data.</div></article>
+        <article class="panel"><div class="panel-head"><h3>Recent LINE reports</h3><span class="tag">4 daily · Taiwan time</span></div><p class="panel-copy">08:15 · 12:15 · 18:15 · 22:15. History confirms recorded API acceptance, not delivery to a device.</p><div id="growthDigests"></div></article>
+        <article class="panel"><div class="panel-head"><h3>Historical snapshots</h3></div><div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Captured at</th><th>Impressions</th><th>Clicks</th><th>Technical score</th></tr></thead><tbody id="growthHistory"></tbody></table></div></article>
       </section>
       <section class="content hidden" id="view-actions">
         <div class="page-intro"><div><span class="eyebrow">SAFE AUTOMATION</span><h1>Action center</h1><p>Review → approve → track.</p></div><div class="hero-actions"><span class="approval-badge">Approval ON</span><button class="primary-btn" id="runAgentBtn">Run agent</button></div></div>
@@ -208,7 +216,7 @@
       </section>
 
       <section class="content hidden" id="view-alerts">
-        <div class="page-intro"><div><span class="eyebrow">LINE DIGESTS</span><h1>Alerts</h1><p>One concise visual summary each day.</p></div><button class="primary-btn" id="testLineBtn">Test LINE</button></div>
+        <div class="page-intro"><div><span class="eyebrow">LINE DIGESTS</span><h1>Alerts</h1><p>Four daily summaries, with details for each website.</p></div><button class="primary-btn" id="testLineBtn">Test LINE</button></div>
         <div class="three-col">
           <article class="panel stat-panel"><span class="stat-kicker">LINE DIGESTS</span><strong>4 / day</strong><p>08:15 · 12:15 · 18:15 · 22:15 Taiwan</p></article>
           <article class="panel stat-panel"><span class="stat-kicker">ALERT CHANNEL</span><strong>LINE</strong><p id="lineStatusText">Waiting for credentials</p></article>
@@ -221,7 +229,7 @@
         <div class="page-intro"><div><span class="eyebrow">CONNECTIONS</span><h1>Integrations</h1><p>Your data sources.</p></div></div>
         <div class="integration-grid" id="integrationGrid"></div>
         <article class="panel opportunity-panel"><div class="panel-head"><div><span class="eyebrow">ANALYTICS ADMIN</span><h3>Discovered Google properties</h3></div><button class="text-btn" id="discoverAnalyticsBtn">Discover →</button></div><div id="analyticsDiscovery" class="panel-copy">Run discovery to verify all GA4 properties through the Analytics Admin API.</div></article>
-        <article class="panel setup-panel compact-setup"><div class="panel-head"><div><span class="eyebrow">GOOGLE</span><h3>Connection checklist</h3></div></div><div class="steps"><div><span>1</span><p><b>Cloud APIs</b><small>Enabled</small></p></div><div><span>2</span><p><b>Search Console</b><small>4 properties</small></p></div><div><span>3</span><p><b>GA4</b><small>4 properties</small></p></div><div><span>4</span><p><b>Vercel secrets</b><small>Protected</small></p></div></div></article>
+        <article class="panel setup-panel compact-setup"><div class="panel-head"><div><span class="eyebrow">GOOGLE</span><h3>Connection checklist</h3></div></div><div class="steps"><div><span>1</span><p><b>Cloud APIs</b><small>Enabled</small></p></div><div><span>2</span><p><b>Search Console</b><small>Check live access below</small></p></div><div><span>3</span><p><b>GA4</b><small>Check live access below</small></p></div><div><span>4</span><p><b>Vercel secrets</b><small>Protected</small></p></div></div></article>
       </section>
 
       <section class="content hidden" id="view-settings">
@@ -242,6 +250,7 @@
 
   <div class="toast-wrap" id="toastWrap"></div>
   <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal"><button class="modal-close" id="modalClose">×</button><div id="modalBody"></div></div></div>
+  <script src="/growth-model.js" defer></script>
   <script src="/growth.js" defer></script>
   <script src="/app.js" defer></script>
 </body>
