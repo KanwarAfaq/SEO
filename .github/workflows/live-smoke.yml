@@ -128,6 +128,7 @@ jobs:
           PY
 
       - name: Check Facebook Page Insights
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -e
@@ -153,6 +154,7 @@ jobs:
           PY
 
       - name: Check technical audit
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -e
@@ -169,6 +171,7 @@ jobs:
           PY
 
       - name: Check deep site audit and search intelligence
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -e
