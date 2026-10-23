@@ -68,6 +68,25 @@ function siteCards(){
     return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
 }
+function renderOverviewVisuals(){
+  const healthHost=$('#overviewHealthVisual');if(!healthHost)return;
+  const health=SITES.map(s=>by(state.health,s.id));
+  const known=health.filter(h=>typeof h.ok==='boolean');
+  const online=known.filter(h=>h.ok).length,issues=known.filter(h=>!h.ok||!h.sitemapOk).length;
+  const angle=online/SITES.length*360;
+  healthHost.innerHTML=`<div class="health-visual"><div class="health-donut" style="--sweep:${angle}deg" role="img" aria-label="${online} of ${SITES.length} websites confirmed online"><div><strong>${known.length?online:'—'}<small>/ ${SITES.length}</small></strong><span>sites online</span></div></div><div class="health-key"><span><i class="visual-dot green"></i><b>${online}</b> Online</span><span><i class="visual-dot amber"></i><b>${issues}</b> Need attention</span><span><i class="visual-dot neutral"></i><b>${SITES.length-known.length}</b> Not checked</span></div></div><p class="visual-footnote">Attention includes unreachable homepages or sitemaps.</p>`;
+  const valid=state.gsc.filter(g=>!g.error&&g.clicks!=null),max=Math.max(1,...valid.map(g=>Number(g.clicks))),total=valid.reduce((n,g)=>n+Number(g.clicks),0);
+  $('#overviewSearchVisual').innerHTML=`<div class="visual-total"><strong>${valid.length?fmt(total):'—'}</strong><span>clicks · ${valid.length}/${SITES.length} properties reporting</span></div><div class="visual-bars">${SITES.map(site=>{const g=by(state.gsc,site.id),ok=!g.error&&g.clicks!=null;return `<div class="visual-bar-row"><span>${esc(site.name)}</span><div class="visual-bar-track"><i style="width:${ok?Math.min(100,Math.max(0,Number(g.clicks)/max*100)):0}%;background:${site.c}"></i></div><b>${ok?fmt(g.clicks):'—'}</b></div>`}).join('')}</div><p class="visual-footnote">${valid.length?'Available properties only; bar lengths compare clicks.':'Connect Search Console to see real search performance.'}</p>`;
+  const portfolio=state.indexProgress?.portfolio;
+  const n=v=>Math.max(0,Number(v)||0);
+  const segments=portfolio?[['Indexed',n(portfolio.indexed),'green'],['Not indexed',n(portfolio.notIndexed),'amber'],['Unchecked',n(portfolio.remaining),'neutral'],['Errors',n(portfolio.errors),'red']]:[];
+  const sum=segments.reduce((a,x)=>a+x[1],0);
+  $('#overviewIndexVisual').innerHTML=`<div class="visual-total"><strong>${portfolio?fmt(portfolio.totalPages):'—'}</strong><span>sitemap URLs discovered</span></div><div class="visual-stack" role="img" aria-label="${portfolio?segments.map(x=>x[0]+': '+x[1]).join(', '):'Indexing data unavailable'}">${segments.map(x=>`<i class="${x[2]}" style="width:${sum?x[1]/sum*100:0}%"></i>`).join('')}</div><div class="index-key">${(segments.length?segments:[['Indexed',null,'green'],['Not indexed',null,'amber'],['Unchecked',null,'neutral'],['Errors',null,'red']]).map(x=>`<div><span><i class="visual-dot ${x[2]}"></i>${x[0]}</span><b>${fmt(x[1])}</b></div>`).join('')}</div><p class="visual-footnote">${portfolio?'Saved inspection sample, not total Google index coverage.':esc(state.errors.indexProgress||'Waiting for saved URL inspection data.')}</p>`;
+  const gaValid=state.ga.filter(g=>!g.error&&g.configured!==false&&g.activeUsers!=null).length;
+  const sources=[['Search Console',valid.length===SITES.length,valid.length+' / '+SITES.length+' properties','search'],['Google Analytics',gaValid===SITES.length,gaValid+' / '+SITES.length+' properties','realtime'],['Core Web Vitals',state.cwv.some(x=>!x.error&&x.lcp?.p75!=null),'Real-user field data','performance'],['Facebook',Boolean(state.facebook&&!state.errors.facebook),'Page insights','facebook']];
+  $('#overviewSourcesVisual').innerHTML=sources.map(([name,ok,detail,target])=>`<button class="source-pulse" data-target="${target}"><span class="source-symbol">${name[0]}</span><span><b>${name}</b><small>${detail}</small></span><span class="source-state ${ok?'connected':''}">${ok?'Live data':'Unavailable'}</span><span aria-hidden="true">↗</span></button>`).join('');
+  $$('#overviewSourcesVisual [data-target]').forEach(b=>b.onclick=()=>view(b.dataset.target));
+}
 function renderPortfolioDetails(){
   const host=$('#portfolioDetails');if(!host)return;
   const attentionOnly=$('#portfolioFilter')?.value==='attention';
@@ -91,6 +110,7 @@ function renderPortfolioDetails(){
 $('#portfolioFilter').onchange=renderPortfolioDetails;
 function status(){
   renderPortfolioDetails();
+  renderOverviewVisuals();
   const healthComplete=state.loaded.health&&state.health.length===SITES.length;
   const gscValid=state.gsc.filter(x=>!x.error);
   const gaValid=state.ga.filter(x=>x.configured!==false&&!x.error);
@@ -361,7 +381,7 @@ async function loadCrux(show=false){
     state.errors.crux=e.message;
     if(show)toast(e.message,'bad');
   }
-  renderCwv();
+  renderCwv();renderOverviewVisuals();
 }
 async function loadPageSpeed(){const b=$('#runPagespeedBtn'),old=b.textContent;b.textContent='Running…';b.disabled=true;try{const d=await api('/api/pagespeed');state.pagespeed=d.sites||[];$('#pagespeedTable').innerHTML=state.pagespeed.flatMap(x=>{if(x.error)return [`<tr><td class="table-domain">${x.domain}</td><td colspan="5">${esc(x.error)}</td></tr>`];return ['mobile','desktop'].map(k=>{const r=x[k]||{};return `<tr><td class="table-domain">${x.domain}</td><td>${k}</td><td>${r.performance??'—'}</td><td>${r.accessibility??'—'}</td><td>${r.bestPractices??'—'}</td><td>${r.seo??'—'}</td></tr>`})}).join('');renderCwv();toast('PageSpeed diagnostics completed')}catch(e){toast(e.message,'bad')}finally{b.textContent=old;b.disabled=false}}
 async function showCruxHistory(){try{const d=await api('/api/crux?history=1');const rows=(d.sites||[]).map(x=>{const periods=x.collectionPeriods?.length||0;const last=x.collectionPeriods?.at(-1);return `<div class="audit-row"><div class="score-orb" style="--score:${Math.min(100,periods*2.5)}"><b>${periods}</b></div><div><strong>${x.domain}</strong><small>${periods} historical periods</small><p>${last?'Latest period ends '+last.lastDate.year+'-'+String(last.lastDate.month).padStart(2,'0')+'-'+String(last.lastDate.day).padStart(2,'0'):'No historical CrUX data'}</p></div></div>`}).join('');modal(`<h2>CrUX History</h2><p>Rolling 28-day field-data history for each origin.</p>${rows}`)}catch(e){toast(e.message,'bad')}}
@@ -434,6 +454,7 @@ async function refresh(show=true){
   await loadHistory();
   const coreOk=configOk&&state.health.length===SITES.length&&state.gsc.length===SITES.length&&state.ga.length===SITES.length&&!state.errors.health&&!state.errors.gsc&&!state.errors.ga&&state.health.every(x=>x.ok&&x.sitemapOk);
   sourceState(coreOk?'Live sources connected':'Some sources unavailable',coreOk?'good':'warn');
+  renderOverviewVisuals();
   if(show)toast(coreOk?'Live data refreshed':'Refresh completed with unavailable sources',coreOk?'good':'bad');
   return coreOk;
 }
@@ -529,6 +550,7 @@ async function runDeepAudit(){
 
 function renderOverviewInsights(){
  renderPortfolioDetails();
+ renderOverviewVisuals();
  const host=$('#overviewInsights');if(!host)return;
  const d=state.indexProgress,p=d?.portfolio;
  if(!p){host.innerHTML='<div class="insight-item"><strong>Indexing insight</strong><span>'+esc(state.errors.indexProgress||'Loading verified indexing data…')+'</span></div>';return}

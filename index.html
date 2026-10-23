@@ -56,13 +56,11 @@
         <div class="hero-card">
           <div>
             <span class="eyebrow">SEO COMMAND CENTER</span>
-            <h1>Search visibility. <em>One overview.</em></h1>
-            <p>A clear view of search visibility, technical health, indexing and the next actions that matter.</p>
+            <h1>Your portfolio.<br><em>The whole picture.</em></h1>
+            <p>From first impression to indexed page. Your websites, performance and next moves in one workspace.</p>
             <div class="hero-actions"><button class="primary-btn" data-view-jump="growth">Explore portfolio</button><button class="ghost-btn" data-view-jump="performance">Web vitals</button></div>
           </div>
-          <div class="radar-wrap" aria-hidden="true">
-            <div class="radar"><div class="radar-sweep"></div><span class="node n1"></span><span class="node n2"></span><span class="node n3"></span><span class="node n4"></span><div class="radar-center">5<small>sites</small></div></div>
-          </div>
+          <div class="overview-hero-note"><span class="hero-orbit">↗</span><b>One workspace. Every signal.</b><span>Search · Health · Traffic · Indexing</span></div>
         </div>
 
         <div class="status-strip" id="statusStrip">
@@ -71,6 +69,14 @@
           <div class="strip-item"><span class="status-icon purple">⌕</span><div><b id="searchClicks">—</b><small>Search clicks · 28d</small></div></div>
           <div class="strip-item"><span class="status-icon amber">!</span><div><b id="issueCount">—</b><small>Issues detected</small></div></div>
           <div class="strip-item"><span class="status-icon cyan">↻</span><div><b id="lastUpdated">—</b><small>Last API refresh</small></div></div>
+        </div>
+
+        <div class="overview-section-label"><div><span class="eyebrow">YOUR DAILY BRIEFING</span><h2>See the signals. Find your next move.</h2></div><span>Source-backed metrics</span></div>
+        <div class="overview-bento">
+          <article class="panel overview-health"><div class="panel-head"><div><span class="eyebrow">AVAILABILITY</span><h3>Portfolio health</h3></div><button class="text-btn" data-view-jump="crawl">Details ↗</button></div><div id="overviewHealthVisual" aria-live="polite"></div></article>
+          <article class="panel overview-search"><div class="panel-head"><div><span class="eyebrow">ORGANIC REACH · 28 DAYS</span><h3>Where clicks come from</h3></div><button class="text-btn" data-view-jump="growth">Explore ↗</button></div><div id="overviewSearchVisual"></div></article>
+          <article class="panel overview-index"><div class="panel-head"><div><span class="eyebrow">GOOGLE URL INSPECTION</span><h3>The indexing picture</h3></div><button class="text-btn" data-view-jump="indexing">Inspect ↗</button></div><div id="overviewIndexVisual"></div></article>
+          <article class="panel overview-connections"><div class="panel-head"><div><span class="eyebrow">YOUR DATA SOURCES</span><h3>Connection pulse</h3></div><button class="text-btn" data-view-jump="integrations">Manage ↗</button></div><div id="overviewSourcesVisual"></div></article>
         </div>
 
         <div id="overviewInsights" class="insight-summary" aria-live="polite"></div>
