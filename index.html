@@ -15,7 +15,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-mark">S</div>
-        <div><strong>SEO Control</strong><span>4-site command center</span></div>
+        <div><strong>SEO Control</strong><span>Portfolio command center</span></div>
       </div>
       <nav class="nav" id="nav">
         <button class="nav-item active" data-view="overview"><span>⌂</span><b>Overview</b></button>
@@ -35,7 +35,7 @@
       </nav>
       <div class="side-foot">
         <div class="agent-dot"></div>
-        <div><b>SEO Agent</b><small>Active</small></div>
+        <div><b>SEO Workspace</b><small>Manual & scheduled checks</small></div>
       </div>
     </aside>
 
@@ -43,7 +43,7 @@
 
     <main class="main">
       <header class="topbar">
-        <button class="menu-btn" id="menuBtn">☰</button>
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
         <div class="crumb"><span>Workspace</span><b id="pageTitle">Overview</b></div>
         <div class="top-actions">
           <div class="live-chip" id="sourceChip" data-state="loading"><i></i><span id="sourceChipText">Loading live sources…</span></div>
@@ -76,6 +76,17 @@
         <div id="overviewInsights" class="insight-summary" aria-live="polite"></div>
         <div class="section-head"><div><span class="eyebrow">PORTFOLIO HEALTH</span><h2>Your websites</h2></div><button class="text-btn" id="checkSitesBtn">Check all sites →</button></div>
         <div class="site-grid" id="siteGrid"></div>
+
+        <article class="panel portfolio-detail">
+          <div class="panel-head"><div><span class="eyebrow">THE COMPLETE PICTURE</span><h3>Portfolio at a glance</h3><p class="panel-copy">Compare each website. Missing metrics stay unavailable until their source is connected.</p></div><label class="portfolio-filter">Show websites<select id="portfolioFilter"><option value="all">All websites</option><option value="attention">Needs attention</option></select></label></div>
+          <div class="data-table-wrap"><table><caption class="portfolio-caption">Current health · 28-day search data · realtime visitors · saved URL inspection sample</caption><thead><tr><th scope="col">Website</th><th scope="col">Health / sitemap</th><th scope="col">Search clicks</th><th scope="col">Impressions</th><th scope="col">Active users</th><th scope="col">Verified indexing</th></tr></thead><tbody id="portfolioDetails"></tbody></table></div>
+          <div class="portfolio-legend"><span><i class="legend-dot good"></i>Verified data</span><span><i class="legend-dot warn"></i>Needs attention or setup</span><span>Indexing covers inspected sitemap URLs, not all Google indexed pages.</span></div>
+        </article>
+        <div class="dashboard-shortcuts" aria-label="Detailed reports">
+          <button data-view-jump="growth"><span>↗</span><b>Search & growth</b><small>Trends, comparisons and CSV export</small><i>→</i></button>
+          <button data-view-jump="crawl"><span>◎</span><b>Crawl & indexing</b><small>Sitemaps, inspections and next steps</small><i>→</i></button>
+          <button data-view-jump="integrations"><span>⛓</span><b>Data connections</b><small>See what is connected and what is missing</small><i>→</i></button>
+        </div>
 
         <div class="two-col">
           <article class="panel performance-panel">

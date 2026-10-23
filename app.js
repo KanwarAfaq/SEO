@@ -52,6 +52,7 @@ function toggleNav(open){
   side?.classList.toggle('open',open);
   back?.classList.toggle('hidden',!open);
   document.body.classList.toggle('nav-open',open);
+  $('#menuBtn')?.setAttribute('aria-expanded',String(open));
 }
 $('#menuBtn').onclick=()=>toggleNav(!$('#sidebar').classList.contains('open'));
 $('#navBackdrop').onclick=()=>toggleNav(false);
@@ -67,7 +68,29 @@ function siteCards(){
     return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
 }
+function renderPortfolioDetails(){
+  const host=$('#portfolioDetails');if(!host)return;
+  const attentionOnly=$('#portfolioFilter')?.value==='attention';
+  const rows=SITES.map(site=>{
+    const h=by(state.health,site.id),g=by(state.gsc,site.id),ga=by(state.ga,site.id);
+    const idx=(state.indexProgress?.sites||[]).find(x=>x.id===site.id);
+    const healthKnown=state.loaded.health&&typeof h.ok==='boolean';
+    const gscKnown=!g.error&&g.clicks!=null;
+    const gaKnown=!ga.error&&ga.configured!==false&&ga.activeUsers!=null;
+    const indexKnown=idx&&!idx.error&&idx.totalPages!=null;
+    const attention=!healthKnown||!h.ok||!h.sitemapOk||!gscKnown||!gaKnown||!indexKnown||Number(idx?.notIndexed)>0;
+    if(attentionOnly&&!attention)return '';
+    const health=healthKnown?(h.ok?'Online':'HTTP issue'):'Unavailable';
+    const sitemap=healthKnown?(h.sitemapOk?'Sitemap reachable':'Sitemap issue'):'Health check pending';
+    const missing='<span class="metric-unavailable">Not available</span>';
+    const indexing=indexKnown?Math.min(100,Math.max(0,Number(idx.indexed||0)/Math.max(1,Number(idx.totalPages))*100)):0;
+    return `<tr><th scope="row"><a class="portfolio-domain" href="${esc(site.url)}" target="_blank" rel="noopener">${esc(site.domain)} ↗</a><small class="portfolio-sub">${esc(site.name)}</small></th><td><span class="tag ${healthKnown&&h.ok&&h.sitemapOk?'good':'warn'}">${health}</span><small class="portfolio-sub">${sitemap}${healthKnown&&h.latency!=null?' · '+fmt(h.latency)+' ms':''}</small></td><td>${gscKnown?fmt(g.clicks):missing}</td><td>${gscKnown?fmt(g.impressions):missing}</td><td>${gaKnown?fmt(ga.activeUsers):missing}</td><td>${indexKnown?`<span>${fmt(idx.indexed)} / ${fmt(idx.totalPages)} URLs</span><meter class="index-meter" min="0" max="100" value="${indexing}" aria-label="${esc(site.name)} verified indexing">${indexing.toFixed(1)}%</meter><small class="portfolio-sub">${fmt(idx.notIndexed)} not indexed · ${fmt(idx.remaining)} unchecked</small>`:missing}</td></tr>`;
+  }).filter(Boolean);
+  host.innerHTML=rows.join('')||'<tr><td colspan="6">No websites need attention in the current results.</td></tr>';
+}
+$('#portfolioFilter').onchange=renderPortfolioDetails;
 function status(){
+  renderPortfolioDetails();
   const healthComplete=state.loaded.health&&state.health.length===SITES.length;
   const gscValid=state.gsc.filter(x=>!x.error);
   const gaValid=state.ga.filter(x=>x.configured!==false&&!x.error);
@@ -505,6 +528,7 @@ async function runDeepAudit(){
 
 
 function renderOverviewInsights(){
+ renderPortfolioDetails();
  const host=$('#overviewInsights');if(!host)return;
  const d=state.indexProgress,p=d?.portfolio;
  if(!p){host.innerHTML='<div class="insight-item"><strong>Indexing insight</strong><span>'+esc(state.errors.indexProgress||'Loading verified indexing data…')+'</span></div>';return}
