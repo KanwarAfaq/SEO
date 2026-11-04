@@ -57,6 +57,51 @@ function toggleNav(open){
 $('#menuBtn').onclick=()=>toggleNav(!$('#sidebar').classList.contains('open'));
 $('#navBackdrop').onclick=()=>toggleNav(false);
 const by=(arr,id)=>arr.find(x=>x.id===id)||{};
+function renderGrowthCommand(){
+  const metrics=$('#growthCommandMetrics'),sites=$('#growthCommandSites');
+  if(!metrics||!sites)return;
+  const valid=state.gsc.filter(x=>x&&!x.error&&x.clicks!=null&&x.impressions!=null);
+  const clicks=valid.reduce((sum,x)=>sum+Number(x.clicks||0),0);
+  const impressions=valid.reduce((sum,x)=>sum+Number(x.impressions||0),0);
+  const ctr=impressions?100*clicks/impressions:0;
+  const weightedPosition=impressions?valid.reduce((sum,x)=>sum+Number(x.position||0)*Number(x.impressions||0),0)/impressions:null;
+  const metricsList=[
+    {symbol:'↗',label:'Organic clicks',value:valid.length?fmt(clicks):'—',info:'Search Console · 28 days',tone:'blue'},
+    {symbol:'◉',label:'Search impressions',value:valid.length?fmt(impressions):'—',info:'Google Search · 28 days',tone:'purple'},
+    {symbol:'%',label:'Weighted CTR',value:valid.length?ctr.toFixed(2)+'%':'—',info:'Clicks / impressions',tone:'mint'},
+    {symbol:'⌕',label:'Average position',value:weightedPosition==null?'—':weightedPosition.toFixed(1),info:valid.length+'/'+SITES.length+' properties reporting',tone:'amber'}
+  ];
+  metrics.innerHTML=metricsList.map(m=>'<article class="command-stat '+m.tone+'"><span class="command-stat-icon" aria-hidden="true">'+m.symbol+'</span><small>'+m.label+'</small><strong>'+m.value+'</strong><span>'+m.info+'</span></article>').join('');
+  const maxImpressions=Math.max(1,...valid.map(x=>Number(x.impressions||0)));
+  sites.innerHTML=SITES.map(site=>{
+    const item=by(state.gsc,site.id),h=by(state.health,site.id);
+    const available=item&&!item.error&&item.clicks!=null&&item.impressions!=null;
+    const imp=available?Number(item.impressions||0):0;
+    const clk=available?Number(item.clicks||0):0;
+    const rate=imp?100*clk/imp:0;
+    const position=available&&item.position!=null?Number(item.position):null;
+    let next='Connect Search Console or resolve property access to measure this website.';
+    let type='setup';
+    if(available){
+      if(imp>=100&&rate<2){next='High visibility but low CTR: review top query/page titles and descriptions.';type='opportunity';}
+      else if(imp>=100&&position!=null&&position>10&&position<=25){next='Near page one: improve page intent match, content usefulness and relevant links.';type='opportunity';}
+      else if(imp===0){next='No measured search impressions: review discovery, sitemap and indexing diagnostics.';type='attention';}
+      else{next='Review pages gaining impressions, then improve their answers and internal navigation.';type='healthy';}
+    }
+    if(state.loaded.health&&h&&(!h.ok||!h.sitemapOk)){next='Site or sitemap needs attention. Check the crawl monitor before content changes.';type='attention';}
+    const intensity=available?Math.max(imp>0?3:0,Math.round(100*imp/maxImpressions)):0;
+    return '<article class="command-site" style="--site-accent:'+site.c+'">'+
+      '<div class="command-site-top"><span class="command-site-mark" aria-hidden="true">'+esc(site.name[0])+'</span>'+
+      '<div><strong>'+esc(site.name)+'</strong><small>'+esc(site.domain)+'</small></div>'+
+      '<a href="'+esc(site.url)+'" target="_blank" rel="noopener noreferrer" aria-label="Open '+esc(site.name)+' website">Visit ↗</a></div>'+
+      '<div class="command-site-numbers"><div><strong>'+(available?fmt(clk):'—')+'</strong><span>Clicks</span></div>'+
+      '<div><strong>'+(available?fmt(imp):'—')+'</strong><span>Impressions</span></div>'+
+      '<div><strong>'+(available?rate.toFixed(2)+'%':'—')+'</strong><span>CTR</span></div></div>'+
+      '<div class="command-reach-track" role="img" aria-label="'+(available?'Relative search impressions':'Search Console data unavailable')+'"><i style="width:'+intensity+'%"></i></div>'+
+      '<p class="command-next '+type+'"><span aria-hidden="true">✦</span>'+esc(next)+'</p>'+
+    '</article>';
+  }).join('');
+}
 function siteCards(){
   const H=Object.fromEntries(state.health.map(x=>[x.id,x]));
   $('#siteGrid').innerHTML=SITES.map(s=>{
@@ -67,6 +112,7 @@ function siteCards(){
     const gscLive=g&&g.clicks!=null&&!g.error;
     return `<article class="site-card" style="--accent:${s.c}"><div class="site-top"><div class="site-avatar">${s.name[0]}</div><span class="health-badge ${healthClass}"><i></i>${healthText}</span></div><div class="site-name">${esc(s.name)}</div><div class="site-domain">${s.domain}</div><div class="site-context"><span>${s.market}</span><span>${s.priorityRegions.join(' + ')}</span></div><div class="site-bottom"><div class="tiny-metric"><b>${healthKnown&&h.latency!=null?h.latency+' ms':'—'}</b><span>response</span></div><div class="tiny-metric"><b>${gscLive?fmt(g.clicks):'—'}</b><span>GSC clicks</span></div><div class="tiny-metric"><b>${gscLive&&g.position!=null?Number(g.position).toFixed(1):'—'}</b><span>GSC position</span></div></div></article>`;
   }).join('');
+  renderGrowthCommand();
 }
 function renderOverviewVisuals(){
   const healthHost=$('#overviewHealthVisual');if(!healthHost)return;
