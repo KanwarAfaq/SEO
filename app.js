@@ -64,11 +64,13 @@ function renderGrowthCommand(){
   const clicks=valid.reduce((sum,x)=>sum+Number(x.clicks||0),0);
   const impressions=valid.reduce((sum,x)=>sum+Number(x.impressions||0),0);
   const ctr=impressions?100*clicks/impressions:0;
-  const weightedPosition=impressions?valid.reduce((sum,x)=>sum+Number(x.position||0)*Number(x.impressions||0),0)/impressions:null;
+  const positioned=valid.filter(x=>x.position!=null&&Number.isFinite(Number(x.position))&&Number(x.impressions)>0);
+  const positionedImpressions=positioned.reduce((sum,x)=>sum+Number(x.impressions),0);
+  const weightedPosition=positionedImpressions?positioned.reduce((sum,x)=>sum+Number(x.position)*Number(x.impressions),0)/positionedImpressions:null;
   const metricsList=[
     {symbol:'↗',label:'Organic clicks',value:valid.length?fmt(clicks):'—',info:'Search Console · 28 days',tone:'blue'},
     {symbol:'◉',label:'Search impressions',value:valid.length?fmt(impressions):'—',info:'Google Search · 28 days',tone:'purple'},
-    {symbol:'%',label:'Weighted CTR',value:valid.length?ctr.toFixed(2)+'%':'—',info:'Clicks / impressions',tone:'mint'},
+    {symbol:'%',label:'Weighted CTR',value:valid.length&&impressions?ctr.toFixed(2)+'%':'—',info:'Clicks / impressions',tone:'mint'},
     {symbol:'⌕',label:'Average position',value:weightedPosition==null?'—':weightedPosition.toFixed(1),info:valid.length+'/'+SITES.length+' properties reporting',tone:'amber'}
   ];
   metrics.innerHTML=metricsList.map(m=>'<article class="command-stat '+m.tone+'"><span class="command-stat-icon" aria-hidden="true">'+m.symbol+'</span><small>'+m.label+'</small><strong>'+m.value+'</strong><span>'+m.info+'</span></article>').join('');
@@ -96,7 +98,7 @@ function renderGrowthCommand(){
       '<a href="'+esc(site.url)+'" target="_blank" rel="noopener noreferrer" aria-label="Open '+esc(site.name)+' website">Visit ↗</a></div>'+
       '<div class="command-site-numbers"><div><strong>'+(available?fmt(clk):'—')+'</strong><span>Clicks</span></div>'+
       '<div><strong>'+(available?fmt(imp):'—')+'</strong><span>Impressions</span></div>'+
-      '<div><strong>'+(available?rate.toFixed(2)+'%':'—')+'</strong><span>CTR</span></div></div>'+
+      '<div><strong>'+(available&&imp?rate.toFixed(2)+'%':'—')+'</strong><span>CTR</span></div></div>'+
       '<div class="command-reach-track" role="img" aria-label="'+(available?'Relative search impressions':'Search Console data unavailable')+'"><i style="width:'+intensity+'%"></i></div>'+
       '<p class="command-next '+type+'"><span aria-hidden="true">✦</span>'+esc(next)+'</p>'+
     '</article>';
