@@ -1,0 +1,53 @@
+name: SEO event-only LINE alerts
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Check without sending or storing a new state
+        type: boolean
+        default: false
+  schedule:
+    # Every two hours at minute 23 UTC. No LINE push if state is unchanged.
+    - cron: '23 */2 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: seo-urgent-health-alerts
+  cancel-in-progress: false
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify alert script
+        run: node --check scripts/urgent-health.mjs
+      - name: Double-check five site health and notify on changes only
+        env:
+          SITE_CONFIG_JSON: ${{ secrets.SITE_CONFIG_JSON }}
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+          SEO_ALERT_DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        run: node scripts/urgent-health.mjs
+      - name: Persist last confirmed health state
+        if: ${{ success() && inputs.dry_run != true }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/urgent-health-state.json || true
+          if ! git diff --staged --quiet; then
+            git commit -m "data(monitor): update confirmed five-site alert state"
+            git pull --rebase origin main
+            git push origin main
+          fi
+      - name: Save check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-urgent-health-${{ github.run_id }}
+          path: reports/urgent-health.json
+          retention-days: 30
+          if-no-files-found: warn
