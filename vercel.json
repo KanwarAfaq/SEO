@@ -75,6 +75,10 @@
       "destination": "/api/control?op=index-progress"
     },
     {
+      "source": "/api/indexing-monitor",
+      "destination": "/api/control?op=indexing-monitor"
+    },
+    {
       "source": "/api/indexing-submit",
       "destination": "/api/control?op=indexing-submit"
     },
