@@ -1,5 +1,6 @@
 const { getSites } = require('./_lib/config');
 const { sendLine } = require('./_lib/line');
+const { buildHealthAlert } = require('./_lib/line-cards');
 
 function authorized(req) {
   const supplied = req.headers['x-monitor-secret'] || req.query?.secret;
@@ -24,7 +25,7 @@ module.exports = async function handler(req, res) {
   }
   let lineSent = false;
   if (incidents.length && process.env.LINE_CHANNEL_ACCESS_TOKEN && process.env.LINE_USER_ID) {
-    await sendLine(`🚨 SEO Monitor Alert\n\n${incidents.join('\n')}\n\nChecked: ${new Date().toISOString()}`);
+    await sendLine(buildHealthAlert(incidents, getSites(), new Date().toISOString()));
     lineSent = true;
   }
   res.status(200).json({ ok: incidents.length === 0, incidents, lineSent, checkedAt: new Date().toISOString() });
