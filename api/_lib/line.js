@@ -8,7 +8,7 @@ async function sendLine(message) {
       authorization: `Bearer ${token}`,
       'content-type': 'application/json'
     },
-    body: JSON.stringify({ to, messages: [{ type: 'text', text: String(message).slice(0, 4900) }] })
+    body: JSON.stringify({ to, messages: [message?.type === 'flex' ? message : { type: 'text', text: String(message).slice(0, 4900) }] })
   });
   if (!response.ok) {
     const body = await response.text();
