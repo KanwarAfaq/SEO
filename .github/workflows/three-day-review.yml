@@ -40,7 +40,7 @@ jobs:
           node --check scripts/three-day-review.mjs
           node --check scripts/refresh-indexing.mjs
           node --check indexing-monitor-ui.js
-          node --test tests/indexing-monitor.test.mjs
+          node --test tests/indexing-monitor.test.mjs tests/line-three-day-visual.test.mjs
       - name: Refresh five-site Google URL Inspection evidence
         if: steps.cadence.outputs.due == 'true'
         env:
