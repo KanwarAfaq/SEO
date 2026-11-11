@@ -73,7 +73,7 @@ function buildIndexingMonitor(baseline,refresh={}) {
  const totals=output.reduce((a,s)=>{a.tracked+=s.totalTracked;a.indexed+=s.indexed;a.notIndexed+=s.notIndexed;a.pending+=s.pending;a.errors+=s.errors;return a},{tracked:0,indexed:0,notIndexed:0,pending:0,errors:0});
  return {source:'Google Search Console URL Inspection: GSC Wizard baseline + SEO Control Center re-inspections',
   baselineAt:baseline.capturedAt,refreshAt:refresh.capturedAt||null,
-  lastSuccessfulRefreshAt:refresh.sites?.some(s=>s.sweepCompletedAt)?refresh.capturedAt:null,
+  lastSuccessfulRefreshAt:(refresh.sites||[]).map(s=>s.sweepCompletedAt).filter(Boolean).sort().at(-1)||null,
   statusNote:'Counts cover monitored/tracked URLs only, not Google Search Console sitewide Page Indexing totals. Pending means uninspected and may be indexed. This dashboard is a three-day snapshot, not live Google coverage.',
   counts:totals,sites:output};
 }
