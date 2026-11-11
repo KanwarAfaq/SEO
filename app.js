@@ -116,6 +116,30 @@ function siteCards(){
   }).join('');
   renderGrowthCommand();
 }
+function renderDailyBoard(){
+  const body=$('#dailySeoTable');if(!body)return;
+  const fmtMetric=(v,unit='')=>v==null?'—':Number(v).toLocaleString()+unit;
+  body.innerHTML=SITES.map(s=>{
+    const h=by(state.health,s.id),g=by(state.gsc,s.id),i=(state.indexProgress?.sites||[]).find(x=>x.id===s.id);
+    const validHealth=state.loaded.health&&typeof h.ok==='boolean';
+    const validGsc=state.loaded.gsc&&g&&!g.error&&g.clicks!=null;
+    const validIndex=i&&!i.error&&i.totalPages!=null;
+    const reason=validIndex&&i.indexingReasons?.length?i.indexingReasons[0].label+' ('+i.indexingReasons[0].count+')':validIndex?'No exclusion reason in saved sample':'Inspections unavailable';
+    const health=validHealth?(h.ok?(h.sitemapOk?'Online · sitemap OK':'Online · sitemap issue'):'HTTP issue'):'Unavailable';
+    return '<tr><td class="table-domain">'+esc(s.domain)+'</td>'+
+      '<td><span class="tag '+(validHealth&&h.ok&&h.sitemapOk?'good':'warn')+'">'+esc(health)+'</span></td>'+
+      '<td>'+fmtMetric(validGsc?g.clicks:null)+'</td><td>'+fmtMetric(validGsc?g.impressions:null)+'</td>'+
+      '<td>'+(validGsc&&g.impressions>0?(Number(g.clicks)/Number(g.impressions)*100).toFixed(2)+'%':'—')+'</td>'+
+      '<td>'+fmtMetric(validIndex?i.indexed:null)+'</td>'+
+      '<td>'+fmtMetric(validIndex?i.notIndexed:null)+'</td>'+
+      '<td>'+fmtMetric(validIndex?i.remaining:null)+'</td>'+
+      '<td>'+esc(reason)+'</td></tr>';
+  }).join('');
+  const gsc=state.gsc.find(x=>x.range?.start&&x.range?.end);
+  const gscDates=gsc?' · Google Web: '+gsc.range.start+' to '+gsc.range.end:' · GSC dates unavailable';
+  $('#dailySeoUpdated').textContent='Last dashboard refresh: '+(state.lastUpdated?new Date(state.lastUpdated).toLocaleString():'not yet')+gscDates+'. Every-three-day GitHub audits are separate from this live dashboard.';
+}
+
 function renderOverviewVisuals(){
   const healthHost=$('#overviewHealthVisual');if(!healthHost)return;
   const health=SITES.map(s=>by(state.health,s.id));
@@ -157,6 +181,7 @@ function renderPortfolioDetails(){
 }
 $('#portfolioFilter').onchange=renderPortfolioDetails;
 function status(){
+  renderDailyBoard();
   renderPortfolioDetails();
   renderOverviewVisuals();
   const healthComplete=state.loaded.health&&state.health.length===SITES.length;
@@ -648,7 +673,7 @@ function renderIndexProgress(){
     ['Verification progress',complete?(Number(p.verifiedPercent||0).toFixed(1)+'%'):'—','Checked / total sitemap URLs']
   ];
   $('#indexProgressSummary').innerHTML=cards.map(x=>`<div class="metric-card"><span>${x[0]}</span><strong>${x[1]}</strong><small>${x[2]}</small></div>`).join('');
-  renderCrawlStatus();renderOverviewInsights();
+  renderCrawlStatus();renderOverviewInsights();renderDailyBoard();
   $('#indexProgressTable').innerHTML=complete?(d.sites||[]).map(x=>{
     if(x.error)return `<tr><td class="table-domain">${esc(x.domain)}</td><td colspan="6"><span class="tag bad">${esc(x.error)}</span></td></tr>`;
     return `<tr><td class="table-domain">${esc(x.domain)}</td><td>${fmt(x.totalPages)}</td><td><span class="tag good">${fmt(x.indexed)}</span></td><td><span class="tag ${x.notIndexed?'warn':'good'}">${fmt(x.notIndexed)}</span></td><td>${fmt(x.remaining)}</td><td>${Number(x.verifiedPercent||0).toFixed(1)}%</td><td>${x.lastUpdated?new Date(x.lastUpdated).toLocaleString():'Not started'}</td></tr>`;
@@ -682,6 +707,31 @@ async function verifyNextIndexBatch(){
   finally{b.disabled=false;b.textContent=old}
 }
 
+function renderIndexingDetails(){
+  const box=$('#indexingDetailsTable');if(!box)return;
+  const filter=$('#indexingDetailsFilter').value;
+  const rows=(state.indexingDetails||[]).filter(r=>filter==='all'||r.status===filter);
+  box.innerHTML=rows.length?rows.map(r=>{
+    const label=r.status==='INDEXED'?'Indexed':r.status==='NOT_INDEXED'?'Not indexed':'Inspection error';
+    const link='<a href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+esc(r.url.replace(/^https?:\/\//,'').slice(0,90))+'</a>';
+    const mismatch=r.userCanonical&&r.googleCanonical&&r.userCanonical!==r.googleCanonical?' · Google canonical: '+r.googleCanonical:'';
+    const stamp=r.checkedAt?new Date(r.checkedAt).toLocaleString():'Unknown';
+    return '<tr><td class="table-domain">'+link+'</td><td><span class="tag '+(r.status==='INDEXED'?'good':'warn')+'">'+label+'</span></td><td>'+esc((r.coverageState||r.reason||'Unknown')+mismatch)+'</td><td>'+esc(r.action||'Check the URL in Search Console')+'</td><td>'+esc(stamp)+'</td></tr>';
+  }).join(''):'<tr><td colspan="5">No saved inspections match this filter. Unchecked URLs are not assumed to be excluded.</td></tr>';
+}
+async function loadIndexingDetails(){
+  const btn=$('#loadIndexingDetailsBtn');if(!btn)return;
+  btn.disabled=true;btn.textContent='Loading…';
+  try{
+    const site=$('#indexingDetailsSite').value;
+    const d=await api('/api/index-progress?details=1&site='+encodeURIComponent(site)+'&limit=500',{timeoutMs:40000});
+    state.indexingDetails=d.inspectedUrls||[];
+    $('#indexingDetailsNote').textContent='Saved Google URL Inspection results: '+state.indexingDetails.length+' rows for '+site+'. This does not include unchecked URLs or the full GSC Pages report.';
+    renderIndexingDetails();
+  }catch(e){$('#indexingDetailsNote').textContent='Inspection details unavailable: '+e.message;$('#indexingDetailsTable').innerHTML='<tr><td colspan="5">'+esc(e.message)+'</td></tr>'}
+  finally{btn.disabled=false;btn.textContent='Load inspected URLs'}
+}
+
 function renderIndexCoverage(){
   const d=state.indexCoverage;
   const rows=[];
@@ -705,13 +755,16 @@ async function runIndexCoverage(){
 
 async function opportunities(){if(!state.config.google)return toast('Connect Google service account first','bad');try{const rows=(await api('/api/gsc-opportunities')).opportunities||[];$('#opportunityTable').innerHTML=rows.length?rows.slice(0,25).map(x=>`<tr><td class="table-domain">${esc(x.domain)}</td><td>${esc(x.query)}</td><td>${Number(x.position).toFixed(1)}</td><td>${fmt(x.impressions)}</td><td>${(Number(x.ctr)*100).toFixed(2)}%</td><td title="${esc(x.page)}">${esc(x.page.replace(/^https?:\/\//,'').slice(0,42))}</td></tr>`).join(''):'<tr><td colspan="6">No matching opportunities found.</td></tr>';toast(`Found ${rows.length} opportunities`)}catch(e){toast(e.message,'bad')}}
 async function runAudit(){const b=$('#runAuditBtn'),old=b.innerHTML;b.innerHTML='↻ Auditing';b.disabled=true;try{const d=await api('/api/technical-audit'),rows=(d.sites||[]).map(s=>`<div class="audit-row"><div class="score-orb" style="--score:${s.score}"><b>${s.score}</b></div><div><strong>${s.domain}</strong><small>${s.latency||'—'} ms · ${s.issues?.length||0} issue(s)</small><p>${s.issues?.slice(0,4).map(i=>`• ${esc(i.message)}`).join('<br>')||'✓ No basic technical issues detected'}</p></div></div>`).join('');modal(`<h2>Technical SEO audit</h2><p>Homepage, metadata, robots.txt and sitemap checks.</p>${rows}`);toast('Technical audit completed')}catch(e){toast(e.message,'bad')}finally{b.innerHTML=old;b.disabled=false}}
+$('#refreshDailyBoard').onclick=()=>Promise.all([loadHealth(true),loadGsc(true),loadIndexProgress(true)]);
+$('#loadIndexingDetailsBtn').onclick=loadIndexingDetails;
+$('#indexingDetailsFilter').onchange=renderIndexingDetails;
 $('#refreshCrawlBtn').onclick=async()=>{await Promise.all([loadHealth(false),loadIndexProgress(true)])};$('#crawlSampleBtn').onclick=loadCrawlSample;
 $('#refreshBtn').onclick=()=>refresh(true);$('#runSearchIntelBtn').onclick=runSearchIntel;$('#runDeepAuditBtn').onclick=runDeepAudit;$('#runIndexCoverageBtn').onclick=runIndexCoverage;$('#verifyIndexBatchBtn').onclick=verifyNextIndexBatch;$('#refreshFacebookBtn').onclick=()=>loadFacebook(true);$('#refreshCruxBtn').onclick=()=>loadCrux(true);$('#runPagespeedBtn').onclick=loadPageSpeed;$('#historyCruxBtn').onclick=showCruxHistory;$('#discoverAnalyticsBtn').onclick=discoverAnalytics;$('#runAgentBtn').onclick=runAgent;$('#checkSitesBtn').onclick=()=>loadHealth(true);$('#sitemapRefreshBtn').onclick=()=>loadHealth(true);$('#refreshGscBtn').onclick=()=>loadGsc(true);$('#refreshGaBtn').onclick=()=>loadGa(true);$('#runAuditBtn').onclick=runAudit;$('#findOpportunitiesBtn').onclick=opportunities;
 $('#saveAdminKey').onclick=()=>{const v=$('#adminKey').value.trim();if(!v)return toast('Enter ADMIN_ACTION_KEY','bad');sessionStorage.setItem('seo-admin-key',v);$('#adminKey').value='';toast('Admin key loaded for this session')};$('#clearAdminKey').onclick=()=>{sessionStorage.removeItem('seo-admin-key');toast('Admin key cleared')};
 $('#saveFbRpm').onclick=()=>{const low=Number($('#fbRpmLow').value),high=Number($('#fbRpmHigh').value);if(!Number.isFinite(low)||!Number.isFinite(high)||low<0||high<low||high<=0)return toast('Enter a valid RPM range','bad');localStorage.setItem('fb-rpm-low',String(low));localStorage.setItem('fb-rpm-high',String(high));facebook();toast('Facebook earnings model updated')};
 $('#clearFbRpm').onclick=()=>{localStorage.removeItem('fb-rpm-low');localStorage.removeItem('fb-rpm-high');$('#fbRpmLow').value='';$('#fbRpmHigh').value='';facebook();toast('Facebook earnings estimate cleared')};$('#testLineBtn').onclick=async()=>{if(!requireKey())return;try{await api('/api/line-test',{method:'POST'});toast('Test LINE notification sent')}catch(e){toast(e.message,'bad')}};
 siteCards();gsc();ga();facebook();status();activity();sitemaps();actions();chart();integrations();
-$('#auditSiteSelect').innerHTML=options();$('#indexProgressSite').innerHTML=options();
+$('#auditSiteSelect').innerHTML=options();$('#indexProgressSite').innerHTML=options();$('#indexingDetailsSite').innerHTML=options();
 const storedRpm=fbRpm();if(storedRpm){$('#fbRpmLow').value=storedRpm.low;$('#fbRpmHigh').value=storedRpm.high}
 renderIndexProgress();
 window.seoPortfolioSites=()=>SITES.map(s=>({...s}));
