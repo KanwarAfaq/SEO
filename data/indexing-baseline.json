@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "source": "GSC Wizard URL Inspection tracker",
-  "capturedAt": "2026-11-11T04:37:39.708Z",
-  "notes": "Tracked-URL snapshot, not full GSC Pages coverage. Pending URLs may already be indexed.",
+  "capturedAt": "2026-11-11T05:56:46.188Z",
+  "notes": "Tracked URL snapshot, not full GSC Pages coverage. Pending URLs may already be indexed.",
   "sites": [
     {
       "id": "anytool",
@@ -11,14 +11,14 @@
       "trackedTotal": 288,
       "observed": 288,
       "counts": {
-        "INDEXED": 23,
-        "NOT_INDEXED": 7,
-        "PENDING": 258,
+        "INDEXED": 25,
+        "NOT_INDEXED": 20,
+        "PENDING": 243,
         "ERROR": 0
       },
       "reasons": {
-        "URL is unknown to Google": 4,
-        "Discovered - currently not indexed": 1,
+        "Discovered - currently not indexed": 7,
+        "URL is unknown to Google": 11,
         "Duplicate, Google chose different canonical than user": 2
       },
       "inspected": [
@@ -32,6 +32,17 @@
           "userCanonical": "https://anytool.online/ur/tools",
           "googleCanonical": "https://anytool.online/ur/tools",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=btQ-Bnlz_BxBBo4nl3RABA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/ar/privacy",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Discovered - currently not indexed",
+          "lastCheckAt": "2026-11-11T05:22:25.381+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=odX2ZX7LQPiTMXLXWN7fLw&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://anytool.online/categories/text",
@@ -56,6 +67,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=RGm9m4x444DjMfM6oVe-gw&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://anytool.online/privacy",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Discovered - currently not indexed",
+          "lastCheckAt": "2026-11-11T05:12:39.907+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=CnnqzEm1iaFkVNALfJk8wQ&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://anytool.online/tools/image-compress",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -65,6 +87,17 @@
           "userCanonical": "https://anytool.online/tools/image-compress",
           "googleCanonical": "https://anytool.online/tools/image-compress",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=RMqOlz3MAHHgHvxH0SguoA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/zh-tw/privacy",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:17:32.468+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=X_WHcjRtRE8jS9SMy-ZqRg&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://anytool.online/zh-tw/tools/aspect-ratio-calculator",
@@ -87,6 +120,39 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/date-calculator",
           "googleCanonical": "https://anytool.online/zh-tw/tools/date-calculator",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=dvpPsZ0HM8ITFnjhobOg0w&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/ur/contact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:07:33.108+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=uwY0nioOOO1cra0HznkRjA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/ar/contact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Discovered - currently not indexed",
+          "lastCheckAt": "2026-11-11T05:02:31.621+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=pumuv6xK_xnMby0pmCOeqg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/zh-tw/contact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Discovered - currently not indexed",
+          "lastCheckAt": "2026-11-11T04:57:31.135+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=8hhaWpzyu89WN0qeCMQ6sg&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://anytool.online/tools/overtime-pay",
@@ -133,6 +199,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=AI9sqwna1YFWz9G7paLXlQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://anytool.online/sources",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:52:33.941+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=1OhDgybZKgpvsm9ix_vOHw&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://anytool.online/zh-tw/tools/timer",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -177,6 +254,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=cj0OKD4IHB3562972DTzeQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://anytool.online/ar/about",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Discovered - currently not indexed",
+          "lastCheckAt": "2026-11-11T04:42:30.655+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=8wEbhycBX00BfLnMQcKzcQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/zh-tw/methodology",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:37:25.894+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=lA2InDnKKEQY7WXCZ-s3Tg&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://anytool.online/zh-tw/tools/timestamp-converter",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -199,6 +298,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=jT5iTuxzT5JlM_6RBaRXUw&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://anytool.online/ur/privacy",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:27:32.529+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=qUuON3jCdfmFHaNxywnyZw&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://anytool.online/zh-tw/tools",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -208,6 +318,17 @@
           "userCanonical": "https://anytool.online/zh-tw/tools",
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=0wRyn2oxD52meBr5uJP-Rw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/contact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:52:32.771+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=yvcQRNsa4bs34YXCZx_VSQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://anytool.online/tools/taiwan-elder-care",
@@ -243,6 +364,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=-qjfB7qrRXMIi58dswT7kA&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://anytool.online/methodology",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:32:32.667+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=o__d-HLYonvcvrQ9u3g9TQ&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://anytool.online/zh-tw/tools/dpi-calculator",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -252,6 +384,28 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/dpi-calculator",
           "googleCanonical": "https://anytool.online/zh-tw/tools/dpi-calculator",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=FZqLxT5zFhMlCi6sEJzRmg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/ur/methodology",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:47:33.192+00:00",
+          "lastCrawlTime": "2026-11-09T16:21:14+00:00",
+          "userCanonical": "https://anytool.online/ur/methodology",
+          "googleCanonical": "https://anytool.online/ur/methodology",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=wXzTsha2DVih5_zWGNGWgg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://anytool.online/ar/methodology",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:42:34.393+00:00",
+          "lastCrawlTime": "2026-11-02T06:30:40+00:00",
+          "userCanonical": "https://anytool.online/ar/methodology",
+          "googleCanonical": "https://anytool.online/ar/methodology",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=sBJ8tBlr8gjis4urvCE-ZQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://anytool.online/tools/nhi",
@@ -320,6 +474,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=d4FVILO0mtiZUoTRH9QZvQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://anytool.online/ur/about",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Discovered - currently not indexed",
+          "lastCheckAt": "2026-11-11T04:47:39.905+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:anytool.online&id=PhbHfvR_3_A8Us4uCSy-Cw&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://anytool.online/",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -361,17 +526,29 @@
       "trackedTotal": 572,
       "observed": 572,
       "counts": {
-        "INDEXED": 14,
-        "NOT_INDEXED": 44,
-        "PENDING": 514,
+        "INDEXED": 18,
+        "NOT_INDEXED": 72,
+        "PENDING": 482,
         "ERROR": 0
       },
       "reasons": {
-        "Crawled - currently not indexed": 24,
-        "URL is unknown to Google": 19,
-        "Soft 404": 1
+        "Crawled - currently not indexed": 25,
+        "URL is unknown to Google": 44,
+        "Soft 404": 2,
+        "Alternate page with proper canonical tag": 1
       },
       "inspected": [
+        {
+          "url": "https://scholarportal.site/blog/financial-aid-and-scholarships-nyu-b48c1f5f88",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:54:33.833+00:00",
+          "lastCrawlTime": "2026-09-25T19:06:07+00:00",
+          "userCanonical": "https://scholarportal.site/blog/financial-aid-and-scholarships-nyu-b48c1f5f88",
+          "googleCanonical": "https://scholarportal.site/blog/financial-aid-and-scholarships-nyu-b48c1f5f88",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=MHiD2poSEfQx2ZUGL7Eh5Q&utm_medium=link&utm_source=api"
+        },
         {
           "url": "https://scholarportal.site/blog/grants-scholarships-graduate-ea7dd53586",
           "status": "NOT_INDEXED",
@@ -393,6 +570,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=eJaEemjy1RBCDML3PNOQHg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/professional-resources-dfbef13129",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:56:31.171+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=p0tD8tvQpQ9hVF9Gqs1dMg&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/blog/financial-aid-for-international-students-in-the-usa-68863b6476",
@@ -428,6 +616,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=2KwC8yYhWwy8BGy8BC9mgA&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/graduate-student-scholarships-find-free-money-for-grad-school-sallie-add41f5b06",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:09:09.966+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=12UUSnim-lhi0j-yu9gr_w&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/blog/scholarships-for-international-students-in-the-us-a-2026-f053771ec3",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -437,6 +636,17 @@
           "userCanonical": "https://scholarportal.site/blog/scholarships-for-international-students-in-the-us-a-2026-f053771ec3",
           "googleCanonical": "https://scholarportal.site/blog/scholarships-for-international-students-in-the-us-a-2026-f053771ec3",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=VYjSy6UQ5mSxAMQAiEUSdQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/how-to-apply-for-u-s-college-scholarships-as-an-15b1de51a4",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:01:39.817+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=sp2M7mxcYyJFgF4A9QYdHQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/blog/mayors-scholarship-program-graduate-application-5f2a5be163",
@@ -470,6 +680,17 @@
           "userCanonical": "https://scholarportal.site/opportunity/908d9bfa-099d-477c-9b13-f351ca37d326/blog",
           "googleCanonical": "https://scholarportal.site/opportunity/908d9bfa-099d-477c-9b13-f351ca37d326/blog",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=scoNKfYY8CX2GD4BxQEgfg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/how-to-get-scholarships-for-graduate-school-2026-guide-1cae8ad9fb",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:16:50.801+00:00",
+          "lastCrawlTime": "2026-09-24T07:56:39+00:00",
+          "userCanonical": "https://scholarportal.site/blog/how-to-get-scholarships-for-graduate-school-2026-guide-1cae8ad9fb",
+          "googleCanonical": "https://scholarportal.site/blog/how-to-get-scholarships-for-graduate-school-2026-guide-1cae8ad9fb",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=yBJjjWbMCj2UggUrVBP8cA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/blog/university-scholarship-guidance-fac99ed5af",
@@ -514,6 +735,28 @@
           "userCanonical": "https://scholarportal.site/blog/120-graduate-school-scholarships-september-2026-717d4c5080",
           "googleCanonical": "https://scholarportal.site/blog/120-graduate-school-scholarships-september-2026-717d4c5080",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=ucVN4dx20hwA8PFKzgJdoQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/types-of-aid-harvard-college-df3a0e8683",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:54:15.921+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=NCTrhwLbEQepmA6XU6aubw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/what-documents-should-students-prepare-before-applying-for-7353761016",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:19:21.182+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=aejNMiFilJW6yKRq5SN0Qg&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/opportunity/4fe44099-1b0f-4ccb-bfb6-7d41144f08dc/blog",
@@ -604,6 +847,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=ouNd8hPfwoKnLdSV3Co3dw&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/instructions-for-graduate-applicants-f2ab13655b",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Alternate page with proper canonical tag",
+          "lastCheckAt": "2026-11-11T05:11:44.795+00:00",
+          "lastCrawlTime": "2026-09-26T01:01:25+00:00",
+          "userCanonical": "https://scholarportal.site/",
+          "googleCanonical": "https://scholarportal.site/blog/how-to-find-scholarships-for-graduate-school-2572aeaeb7",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=rM85nPju0wvnAjvi6mivPQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/students-golf-brand-course-studies-division-84f2f4a397",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:04:09.181+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=QxYN6QQtw0CSY2nLsDDhoA&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/blog/graduate-studies-office-of-merit-scholarships-fellowships-awards-95dbd40b01",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -613,6 +878,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=EjUDIcybuWhWbO18JvSHrg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/graduate-application-process-mastercard-foundation-69d454aa3e",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:39:13.886+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=c0AhNlKRxW43XLR2wXrcJA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/opportunity/06b9355d-1c0e-4e4d-b925-e193a547ac8a/blog",
@@ -637,6 +913,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=lYTXWMKg2AEEd6sa-GAsow&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/scholarships-for-international-students-full-guide-b0f9639863",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:24:31.751+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=msSM9f4cuglf_OR-yNrrUg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/finding-and-applying-for-scholarships-06ae264ce5",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Crawled - currently not indexed",
+          "lastCheckAt": "2026-11-11T04:43:54.135+00:00",
+          "lastCrawlTime": "2026-09-21T23:51:35+00:00",
+          "userCanonical": null,
+          "googleCanonical": "https://scholarportal.site/blog/finding-and-applying-for-scholarships-06ae264ce5",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=otKGxZB7UDxmVllpHLBBeg&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/opportunity/7f2bc471-235f-4fda-979a-20eddd01b180/blog",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -659,6 +957,50 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=NUe3N8LEaAvjQ0IciTLa4A&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/grants-and-fellowships-graduate-student-center-37197735ba",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:46:24.582+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=4t2F67d6sD09XfbNW8HWcA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/what-are-the-application-deadlines-for-international-students-689d857f59",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:49:08.137+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=Y6LtkfFIx_MK_nQvKTrSag&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/funding-resources-for-graduate-students-uw-geography-e3946163a0",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:37:14.81+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=LEFFqmqI18UlJ0CbmB4syA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/why-i-just-asked-my-students-to-put-their-laptops-away-ba3f8201fe",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:52:04.095+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=J81jdbWgKwAt_yif8w_x5A&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/blog/a-guide-to-scholarships-for-international-students-in-the-u-s-d7e8e2f5ae",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -668,6 +1010,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=3xRvmsDiMiTXW35Ns9GObA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/international-scholarships-to-study-in-the-us-b57b786727",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:39:04.727+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=WJ_6CCLHBTGYjpAX0dEQLQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/blog/graduate-admission-requirements-6d6798a0e5",
@@ -701,6 +1054,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=5XECj1BqIqyk1nHUnaB5dg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/my-suggested-application-timeline-for-graduate-school-and-funding-c05fd4ea83",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:06:52.968+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=GCmvajn9BnIa6An_ykfjXA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/blog/nationally-competitive-graduate-fellowships-2c588be896",
@@ -780,6 +1144,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=SmuSnBIGPXYb6pTM7dYLfA&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/international-scholarships-aid-3cb424a878",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:41:57.64+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=FfWhbgo98gvmrrgsRz2jqA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/today-s-students-coalition-united-for-impact-on-today-s-65ba32ca82",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:29:23.076+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=rXYMbglIu--fSHBxKG50qw&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/blog/my-suggested-application-timeline-for-graduate-school-c05fd4ea83",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -802,6 +1188,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=Heie2KQDnseJ39266mDBYw&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/international-applicants-financial-aid-007cb2597a",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:31:59.044+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=_9TKnIHJSk1kaZqkU1pLlg&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/blog/international-students-loans-scholarships-ebfccf8cbc",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -811,6 +1208,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=S4jBFBEEt4IApJi_l4Xn2Q&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/international-student-scholarship-search-international-financial-aid-aca1f1f045",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:49:18.326+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=ObcWsIZkJk0Iu2s6t3KyLQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/blog/graduate-scholarships-and-grants-nyu-steinhardt-c8e3d7a472",
@@ -846,6 +1254,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=TUcFGOgSIiaiWThq_95vpA&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/admissions-and-funding-graduate-department-of-english-0b06060b95",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:59:08.466+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=xGE34yxHPgR1t8SK6ZS07w&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/pricing",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -868,6 +1287,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=AcovefK2vGcNsnEkY3rjrw&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/applying-to-grad-school-the-ultimate-guide-0a327baebb",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:24:05.212+00:00",
+          "lastCrawlTime": "2026-09-25T15:45:15+00:00",
+          "userCanonical": "https://scholarportal.site/blog/applying-to-grad-school-the-ultimate-guide-0a327baebb",
+          "googleCanonical": "https://scholarportal.site/blog/applying-to-grad-school-the-ultimate-guide-0a327baebb",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=2nmSLHcIaF_nkV4XT0-Cyw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/admissions-application-instructions-the-graduate-school-ec45b812e4",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:51:24.647+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=PnHUOM70DY9RiECAtTfF8Q&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/opportunity/5bc18eff-e3d6-4e2f-b8be-ad42b1919d05/blog",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -877,6 +1318,17 @@
           "userCanonical": "https://scholarportal.site/opportunity/5bc18eff-e3d6-4e2f-b8be-ad42b1919d05/blog",
           "googleCanonical": "https://scholarportal.site/opportunity/5bc18eff-e3d6-4e2f-b8be-ad42b1919d05/blog",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=cjNTlRqaPQrADcYX_QyPWw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/how-to-pay-for-grad-school-loans-scholarships-aid-sallie-d5dcc18e2c",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:21:51+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=ahH14dIrj9nSEQ4gZ4xIgA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/privacy-policy",
@@ -899,6 +1351,28 @@
           "userCanonical": "https://scholarportal.site/opportunity/c4d87604-47d7-40d4-b132-417acfa87199/blog",
           "googleCanonical": "https://scholarportal.site/opportunity/c4d87604-47d7-40d4-b132-417acfa87199/blog",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=5d8VGMWOl0Ey-hQs5CF9bA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/what-are-the-deadlines-for-phd-applications-in-the-usa-92a762ff29",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "Soft 404",
+          "lastCheckAt": "2026-11-11T05:26:57.583+00:00",
+          "lastCrawlTime": "2026-10-11T21:07:47+00:00",
+          "userCanonical": "https://scholarportal.site/blog/what-are-the-deadlines-for-phd-applications-in-the-usa-92a762ff29",
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=yNpylLeijN8lYmDh15t9Tg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/business-school-scholarships-in-the-usa-for-international-4fa21e2386",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:46:56.626+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=VsJQv5tYW4tagWYq3r3ClQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/opportunity/58ddcca3-2a51-4f85-b54c-6dd5c18bde7f/blog",
@@ -945,6 +1419,39 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=Ozvo_lL15zzMLLBUo1E40g&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://scholarportal.site/blog/scholarships-for-international-students-in-the-us-1144a6fc1f",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:44:18.559+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=fNrvIOrZjwQmjm0j1IYXZw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/a-guide-to-graduate-school-scholarships-20ce314b9b",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T04:41:27.575+00:00",
+          "lastCrawlTime": "2026-09-21T11:14:58+00:00",
+          "userCanonical": "https://scholarportal.site/blog/a-guide-to-graduate-school-scholarships-20ce314b9b",
+          "googleCanonical": "https://scholarportal.site/blog/a-guide-to-graduate-school-scholarships-20ce314b9b",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=Ry5H570yXICtftrL6ir1ng&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/the-financial-aid-application-process-for-international-students-b3d3420ae4",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:34:13.713+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=Q6CwwSKMvYRT1RS09kbOcQ&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://scholarportal.site/opportunity/8b5bd47f-f1ba-444c-9b1e-d64fb77e5c22/blog",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -965,6 +1472,17 @@
           "userCanonical": "https://scholarportal.site/opportunity/7dbb9275-bb20-4b3e-a15e-202da869d9e4/blog",
           "googleCanonical": "https://scholarportal.site/opportunity/7dbb9275-bb20-4b3e-a15e-202da869d9e4/blog",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=MNAzFfhwt0P_g-6Z9cGj8Q&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://scholarportal.site/blog/international-student-scholarships-5f0dd5aebe",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:14:10.105+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:scholarportal.site&id=1Vu1o1fru3st5h9wRWHK5Q&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://scholarportal.site/opportunity/89cd23ff-dceb-49ae-9e66-512ff2521463/blog",
@@ -1019,9 +1537,9 @@
       "trackedTotal": 13,
       "observed": 13,
       "counts": {
-        "INDEXED": 2,
+        "INDEXED": 3,
         "NOT_INDEXED": 2,
-        "PENDING": 9,
+        "PENDING": 8,
         "ERROR": 0
       },
       "reasons": {
@@ -1038,6 +1556,17 @@
           "userCanonical": "https://kmafaq.site/about",
           "googleCanonical": "https://kmafaq.site/about",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.site&id=c2dmu_PtdaPypG-kqF22Vw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.site/projects",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:54:17.899+00:00",
+          "lastCrawlTime": "2026-10-25T06:20:40+00:00",
+          "userCanonical": "https://kmafaq.site/projects",
+          "googleCanonical": "https://kmafaq.site/projects",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.site&id=TlSLWPgXp4TGwGZXJvaAjg&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.site/blog/roman-urdu-nlp-challenges",
@@ -1082,15 +1611,26 @@
       "observed": 553,
       "counts": {
         "INDEXED": 3,
-        "NOT_INDEXED": 52,
-        "PENDING": 498,
+        "NOT_INDEXED": 83,
+        "PENDING": 467,
         "ERROR": 0
       },
       "reasons": {
-        "URL is unknown to Google": 49,
+        "URL is unknown to Google": 80,
         "Crawled - currently not indexed": 3
       },
       "inspected": [
+        {
+          "url": "https://kmafaq.online/blog/balochistan-polio-drive-border-risks",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:48:59.305+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=TR9Red9coweeWNPgbxrD5A&utm_medium=link&utm_source=api"
+        },
         {
           "url": "https://kmafaq.online/blog/installing-android-apps-outside-google-play-pakistan",
           "status": "NOT_INDEXED",
@@ -1103,6 +1643,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=8DKzv_FsLRWwPie-C9UCTQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/adrian-hamilton-manns-pia-ceo-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:54:04.85+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=4Bs65KGuFRzjhDUQ81i11A&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/ios-27-2-storage-reclaim-guide",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:15:01.95+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=MmipwGcQKTGr34J1qCmaDw&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/shop",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1112,6 +1674,28 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=d5aFj_dJ2we4wApjm97yow&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/nationwide-recall-chlorthalidone-blood-pressure-pills-pakistan",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:38:13.765+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=MOINca2QpOlIudNraNTHzw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pakistan-shaheens-squad-2026-acc-asia-cup-rising-stars",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:51:21.65+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=LqTuzJCjj_QJZrMDRIlYTA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/new-auto-policy-electric-vehicles-pakistan",
@@ -1147,6 +1731,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=1CexjbYrDhFAtt_JcblpXQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/gold-price-surge-pakistan-tola-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:48:54.318+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=89X7Nts5DMOcDfSm94w_og&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/xiaomi-hyperos-4-rollout-pakistan-guide",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:54:16.806+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=v6A67Hiey9yEdvQ8hScdGw&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/services",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1158,6 +1764,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=FMmvh1vYbDhhdwhr9JYooQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/punjab-local-government-elections-feb7-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:59:12.749+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=tYrl1mpAzX9gTxbRXvBo4Q&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/blog/abu-dhabi-t10-2026-pakistani-fans",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1167,6 +1784,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=7-wyRRhO3LrSqsKY1bxbMQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/india-china-arunachal-border-flare-up-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:12:13.938+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=3jtxPMQ7h2eRCYE8RBld_A&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/tools",
@@ -1213,6 +1841,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=kxiOUH6XKykap9uNzui7hQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/three-slot-gas-allocation-rising-oil-prices-karachi-gas-crisis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:30:34.343+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=gPR2Wfaz3dWS7kl4oskeZQ&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/blog/pakistans-first-astronaut-shenzhou-24-indo-china-collaboration",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1235,6 +1874,72 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=HHaDRNM6hXgJNPMAxQoT6w&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/india-pakistan-2027-world-cup-ticket-demand",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:04:38.554+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=PIh05H9aL3zQf-cKt5X_tQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/oman-qualification-2027-world-cup-implications-south-asia",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:20:13.431+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=CHVAxhfd3xXheneXzkT4KA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/today-gold-price-pakistan-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:25:15.42+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=kUPEc5cK4MZwKpe3FdexBw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/ramayana-movie-box-office-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:41:03.429+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=Cld7Fkixq2X6TSJaK0ocBw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pakistan-vs-india-saff-2026-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:56:57.097+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=incJbCLbXaLBtq9P7L0Wgw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/human-rights-activism-pakistan-legal-reforms",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:28:02.503+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=PXGRzDsOoy8XVqV9poNAXA&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/pricing",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1255,6 +1960,50 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=yhYJy6yoEfU-7DWHK8JkzQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/apple-ipad-mini-2026-guide",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:35:59.109+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=T4GMaQgwWaeNeu2LIVPzHQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/current-gold-price-pakistan-market-drivers-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:17:39.407+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=J8gEtz3EA_zbD-vvyM4NTA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pakistan-gasoline-price-drop-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:46:23.686+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=-hJHgQUsomdO2YckEMhuQQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pakistan-india-saff-2026-pre-match-analysis",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:02:07.768+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=GCVGM8ZP5_kp9SDylfCY-A&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/meta-muse-ai-agent-pakistan-guide",
@@ -1323,6 +2072,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=RaGjEQnS4PH4nCcc19CTcQ&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/vande-bharat-sleeper-features-fares-export",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:07:10.314+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=EQ8c-kprNk6B3mXqDFV7IA&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/blog/nvidia-ai-chips-us-china-tension-pakistan-policy",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1332,6 +2092,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=gxj5oMW99xbn1TrVaw9IYQ&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pakistan-maashi-surath-aur-mustaqbil-challenges",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:41:13.855+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=VRmdgsu3TtTO80Ul2z3ovg&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/ipl-janwari-ki-tajweez-asraat",
@@ -1354,6 +2125,28 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=B_1q3_6kjfwtK-tdtvXPHg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pta-refutes-fake-tiktok-ban-notification",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:43:56.538+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=0xsChJnS60JCtPPDBMIEiw&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/cyclone-murasu-andhra-pradesh-impact-pakistan",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:33:16.318+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=VJEIUpACrVjFyp7XJbGB-Q&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/karmabhoomi-express-fire-punjab-railway-safety",
@@ -1398,6 +2191,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=jhWvLOrNJdsXwjmbyMaJKg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/bangalore-pink-line-metro-inauguration-traffic-impact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:43:45.073+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=kgbrMyZ5L6rd6GSPiaxi4g&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/pakistans-first-influencer-awards-reveal-booming-digital-content-industry",
@@ -1543,6 +2347,28 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=zdid1B0q-Mk1TMJIwy9YdA&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/petrol-diesel-price-cut-impact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:05:24.822+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=VYLiPdnp2fvSQhzCctXZTg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/ongc-q2-fy27-profit-surge-global-oil-prices-south-asia",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:51:31.961+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=-C1QiJFrGP7iHfzsXdpQdg&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/blog/pakistans-tech-driven-fuel-subsidy-challenges-consumer-impact",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1565,6 +2391,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=zgA_llzkzz6thdi5FK9QaA&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://kmafaq.online/blog/chaudhry-salik-hussain-corruption-allegations-maryam-nawaz-punjab-politics",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:46:25.472+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=Uqw_vtyoYZdFDJbR5vBUpg&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://kmafaq.online/blog/diwali-indore-air-quality-index-spike",
           "status": "NOT_INDEXED",
           "verdict": "NEUTRAL",
@@ -1585,6 +2422,28 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=z-E0jVmF-e0y2QKrWXr8IA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/ai-driven-market-volatility-pakistani-investors",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:09:58.081+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=s7Ci_1SDsa0Cq6SDSpCglA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/dream11-revamped-platform-2026-impact",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T04:38:30.949+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=SVwpzQr9wAGiF6fXSkIDmA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/pakistan-forex-market-dam-cost-crisis",
@@ -1640,6 +2499,17 @@
           "userCanonical": null,
           "googleCanonical": null,
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=5ZFbfjhv1NU5JN4uN8WnzA&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://kmafaq.online/blog/pakistan-gold-prices-surge-record-levels",
+          "status": "NOT_INDEXED",
+          "verdict": "NEUTRAL",
+          "coverageState": "URL is unknown to Google",
+          "lastCheckAt": "2026-11-11T05:22:58.949+00:00",
+          "lastCrawlTime": null,
+          "userCanonical": null,
+          "googleCanonical": null,
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:kmafaq.online&id=kesIjJffc7gZSX93G7FGPQ&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://kmafaq.online/blog/emirates-profit-fall-iran-war-impact-pakistan",
@@ -1705,9 +2575,9 @@
       "trackedTotal": 64,
       "observed": 64,
       "counts": {
-        "INDEXED": 8,
+        "INDEXED": 11,
         "NOT_INDEXED": 1,
-        "PENDING": 55,
+        "PENDING": 52,
         "ERROR": 0
       },
       "reasons": {
@@ -1726,6 +2596,17 @@
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:worksheet.live&id=aZHhrsQ5lr7lLD-R-ChO8A&utm_medium=link&utm_source=api"
         },
         {
+          "url": "https://worksheet.live/create/coloring",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:35:17.268+00:00",
+          "lastCrawlTime": "2026-11-09T09:28:23+00:00",
+          "userCanonical": null,
+          "googleCanonical": "https://worksheet.live/create/coloring",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:worksheet.live&id=AGmW4apmNtz9E79nbkiSxA&utm_medium=link&utm_source=api"
+        },
+        {
           "url": "https://worksheet.live/create/word-scramble",
           "status": "INDEXED",
           "verdict": "PASS",
@@ -1735,6 +2616,17 @@
           "userCanonical": "https://worksheet.live/create/word-scramble",
           "googleCanonical": "https://worksheet.live/create/word-scramble",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:worksheet.live&id=5ZYRgQEjTRPQPeV2MNha0A&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://worksheet.live/guides/handwriting-practice-worksheets",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T04:50:18.566+00:00",
+          "lastCrawlTime": "2026-11-09T06:58:25+00:00",
+          "userCanonical": "https://worksheet.live/guides/handwriting-practice-worksheets",
+          "googleCanonical": "https://worksheet.live/guides/handwriting-practice-worksheets",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:worksheet.live&id=rPD2DtETBewpdIVgrsGGgw&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://worksheet.live/worksheets",
@@ -1757,6 +2649,17 @@
           "userCanonical": "https://worksheet.live/create/templates",
           "googleCanonical": "https://worksheet.live/create/templates",
           "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:worksheet.live&id=WLYjyR7RKFq7DkOGUR-2Vg&utm_medium=link&utm_source=api"
+        },
+        {
+          "url": "https://worksheet.live/math",
+          "status": "INDEXED",
+          "verdict": "PASS",
+          "coverageState": "Submitted and indexed",
+          "lastCheckAt": "2026-11-11T05:12:43.616+00:00",
+          "lastCrawlTime": "2026-11-10T01:43:26+00:00",
+          "userCanonical": null,
+          "googleCanonical": "https://worksheet.live/math",
+          "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=sc-domain:worksheet.live&id=bRtNOgtPaygVM8jG3mqqbA&utm_medium=link&utm_source=api"
         },
         {
           "url": "https://worksheet.live/worksheets/odd-and-even-numbers-bdd74663",
