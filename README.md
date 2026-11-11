@@ -1,5 +1,7 @@
 # SEO Control Center
 
+**November 11 indexing and three-day monitoring review:** [GSC investigation, per-URL evidence, committed fixes, LINE workflow and dashboard usage](docs/INDEXING_TRIAGE_2026-11-11.md). The updated daily dashboard and three-day consolidated LINE review supplement the existing four daily digests.
+
 A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**, **kmafaq.site**, **scholarportal.site**, and **worksheet.live**.
 
 ## What is already implemented
