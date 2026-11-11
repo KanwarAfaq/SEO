@@ -90,6 +90,17 @@
         <div class="section-head"><div><span class="eyebrow">PORTFOLIO HEALTH</span><h2>Your websites</h2></div><button class="text-btn" id="checkSitesBtn">Check all sites →</button></div>
         <div class="site-grid" id="siteGrid"></div>
 
+        <article class="panel daily-seo-panel" aria-labelledby="dailySeoTitle">
+          <div class="panel-head">
+            <div><span class="eyebrow">DAILY LIVE DASHBOARD · FIVE WEBSITES</span><h3 id="dailySeoTitle">Daily search and indexing watch</h3><p class="panel-copy">Live availability, finalized 28-day GSC metrics and saved URL inspections. Unchecked pages are not classified as unindexed.</p></div>
+            <button class="ghost-btn" id="refreshDailyBoard">Refresh all signals</button>
+          </div>
+          <p class="panel-copy" id="dailySeoUpdated">Loading current data…</p>
+          <div class="data-table-wrap"><table><thead><tr><th>Website</th><th>HTTP / Sitemap</th><th>Clicks · 28d</th><th>Impressions</th><th>CTR</th><th>Verified indexed</th><th>Verified not indexed</th><th>Unchecked</th><th>Priority reason</th></tr></thead>
+          <tbody id="dailySeoTable"><tr><td colspan="9">Waiting for live sources.</td></tr></tbody></table></div>
+          <p class="panel-copy">Use the Indexing tab for saved per-URL coverage reasons. The separately scheduled three-day review sends a consolidated LINE notification and stores GitHub Actions evidence.</p>
+        </article>
+
         <article class="panel portfolio-detail">
           <div class="panel-head"><div><span class="eyebrow">THE COMPLETE PICTURE</span><h3>Portfolio at a glance</h3><p class="panel-copy">Compare each website. Missing metrics stay unavailable until their source is connected.</p></div><label class="portfolio-filter">Show websites<select id="portfolioFilter"><option value="all">All websites</option><option value="attention">Needs attention</option></select></label></div>
           <div class="data-table-wrap"><table><caption class="portfolio-caption">Current health · 28-day search data · realtime visitors · saved URL inspection sample</caption><thead><tr><th scope="col">Website</th><th scope="col">Health / sitemap</th><th scope="col">Search clicks</th><th scope="col">Impressions</th><th scope="col">Active users</th><th scope="col">Verified indexing</th></tr></thead><tbody id="portfolioDetails"></tbody></table></div>
@@ -202,6 +213,15 @@
           <p class="panel-copy">Total pages come from live sitemaps. Indexed / not indexed are verified URL-by-URL with Google's URL Inspection API. “Remaining” means URLs not yet verified by this dashboard.</p>
           <div class="metric-grid index-progress-grid" id="indexProgressSummary"></div>
           <div class="data-table-wrap"><table><thead><tr><th>Site</th><th>Total pages</th><th>Indexed</th><th>Not indexed</th><th>Remaining</th><th>Verified</th><th>Last update</th></tr></thead><tbody id="indexProgressTable"><tr><td colspan="7">Loading verified indexing progress…</td></tr></tbody></table></div>
+        </article>
+
+        <article class="panel" aria-labelledby="inspectedDetailsTitle">
+          <div class="panel-head">
+            <div><span class="eyebrow">URL-BY-URL GOOGLE EVIDENCE</span><h3 id="inspectedDetailsTitle">Inspected pages and exact exclusion reasons</h3></div>
+            <div class="index-progress-actions"><select id="indexingDetailsSite" aria-label="Select website"></select><select id="indexingDetailsFilter" aria-label="Select indexing status"><option value="all">All inspected</option><option value="NOT_INDEXED">Not indexed</option><option value="INDEXED">Indexed</option><option value="ERROR">Errors</option></select><button class="ghost-btn" id="loadIndexingDetailsBtn">Load inspected URLs</button></div>
+          </div>
+          <p class="panel-copy" id="indexingDetailsNote">Shows saved URL Inspection results, not all pages in the Google Search Console Pages report.</p>
+          <div class="data-table-wrap"><table><thead><tr><th>Page</th><th>Google status</th><th>Reason</th><th>Recommended investigation</th><th>Last inspection</th></tr></thead><tbody id="indexingDetailsTable"><tr><td colspan="5">Choose a site and load saved inspections.</td></tr></tbody></table></div>
         </article>
 
         <div class="action-grid">
