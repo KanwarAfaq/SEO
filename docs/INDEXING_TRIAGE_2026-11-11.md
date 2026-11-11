@@ -47,6 +47,15 @@ Each website repository contains:
 - GitHub Actions must have `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_USER_ID`, and preferably `ADMIN_ACTION_KEY` and `VERCEL_AUTOMATION_BYPASS_SECRET` if deployment protection is enabled. Configure secrets using GitHub Settings; **never commit tokens**.
 - `get_site_summary` uses settled GSC metrics; no claims of realtime clicks. `GET /api/index-progress?details=1&site=<site-id>` reads previously persisted inspections; its results do **not** automatically synchronize with the separate GSC Wizard tracker.
 
+## Follow-up live retest (November 11)
+
+- **Portfolio article recovery:** The first deployment of static portfolio snapshots exposed a template mismatch for dynamic `/blog/:slug` pages: the article function expected the original empty React root, but the build had replaced it with the homepage snapshot. The affected sample pages temporarily served HTTP 503. Fixed by emitting `dist/app-shell.html` before prerendering and having `api/blog-page.js` use that pristine shell, plus regression coverage. A subsequent live audit confirmed **HTTP 200, correct article canonicals, and indexable pages** for `/blog/roman-urdu-nlp-challenges` and `/blog/github-pages-react-deployment`. Their live visible text (~48 and ~56 words) remains thin and merits real editorial expansion; do not invent material or pad with generic text.
+- **ScholarPortal:** `/programs` now serves ~314 words of original admissions/funding guidance and the sampled scholarship article has valid publisher/editorial organization schema. Both were HTTP 200, self-canonical, indexable, and reported zero on-page audit issues.
+- **Worksheet Studio:** `/create` now has a concise SERP title and ~405 words of instructions, with zero issues in the latest audit.
+- **Blog:** `/blog/meta-muse-ai-agent-pakistan-guide` serves 200, self-canonical, noindex=false, and ~1,277 words with no remaining sampled on-page schema errors.
+- **AnyTool:** `/tools/qr-generator` serves 200, self-canonical and passed the latest sampled on-page audit. Its legacy `www` URL returns a 308 redirect.
+- **Indexing tracker:** GSC Wizard now contains 288 AnyTool, 572 ScholarPortal (including one older URL no longer in the sitemap), 13 Portfolio, 553 K.M. Afaq Blog and 64 Worksheet tracked URLs. Most newly added URLs remain pending Google URL inspection. The current list is more comprehensive but is **not** a claim that all pages are already inspected.
+
 ## Verification and limitations
 
 - Confirmed Vercel deployment statuses are **not** a substitute for reviewing the next GitHub Actions audit logs and the live rendered experience.
