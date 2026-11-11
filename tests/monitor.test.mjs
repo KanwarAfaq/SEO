@@ -54,8 +54,9 @@ test('five detailed site cards fit LINE payload limits and label unavailable dat
   assert.ok(Buffer.byteLength(JSON.stringify(msg.contents)) < 50000);
   assert.ok(msg.contents.contents.every(c => Buffer.byteLength(JSON.stringify(c)) < 30000));
   assert.ok(msg.altText.length <= 400);
-  assert.match(JSON.stringify(msg), /GA4 realtime unavailable/);
-  assert.match(JSON.stringify(msg), /insufficient\/unavailable field data/);
+  assert.match(JSON.stringify(msg), /GOOGLE URL INSPECTIONS/);
+  assert.match(JSON.stringify(msg), /IMPRESSIONS/);
+  assert.doesNotMatch(JSON.stringify(msg), /GA4 realtime unavailable|insufficient\/unavailable field data/);
 });
 test('HTTP200 fallback page is still a failed sitemap', async () => {
   const row = await checkSite({ id: 'x', domain: 'a.test', url: 'https://a.test', sitemap: 'https://a.test/sitemap.xml' }, async () => new Response('<html>Fallback</html>'));
