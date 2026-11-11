@@ -1,5 +1,7 @@
 import {mkdir,writeFile,appendFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
+import monitorCore from '../api/_lib/indexing-monitor.js';
 import config from '../api/_lib/config.js';
 import {checkSite} from './monitor-health.mjs';
 const sites=config.getSites(),base=process.env.SEO_DASHBOARD_BASE||'https://seo-kmafaq.vercel.app';
@@ -14,30 +16,41 @@ async function api(path){
  if(!r.ok||data.error)throw Error(data.error||'HTTP '+r.status);
  return data;
 }
+const baseline=JSON.parse(await readFile('data/indexing-baseline.json','utf8'));
+let refreshed={};
+try{refreshed=JSON.parse(await readFile('data/indexing-refresh.json','utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
+const indexMonitor=monitorCore.buildIndexingMonitor(baseline,refreshed);
 const health=await Promise.all(sites.map(s=>checkSite(s)));
 const sources={};const gaps=[];
-for(const [name,url] of Object.entries({gsc:'/api/gsc-overview',indexing:'/api/index-progress'})){
+for(const [name,url] of Object.entries({gsc:'/api/gsc-overview'})){
  try{sources[name]=await api(url)}catch(e){gaps.push(name+': '+e.message);sources[name]={sites:[]}}
 }
+sources.indexing={sites:indexMonitor.sites.map(s=>({
+ id:s.id,domain:s.domain,totalPages:s.totalTracked,indexed:s.indexed,notIndexed:s.notIndexed,
+ remaining:s.pending,errors:s.errors,lastUpdated:s.lastNativeSweepAt||s.baselineCapturedAt,
+ indexingReasons:s.reasons.map(r=>({label:r.label,count:r.count,action:r.action})),
+ error:s.nativeSourceError||null
+}))};
+for(const row of indexMonitor.sites)if(row.nativeSourceError)gaps.push(row.domain+' URL Inspection refresh: '+row.nativeSourceError);
 const rows=sites.map(s=>{
  const h=health.find(x=>x.id===s.id)||{},g=sources.gsc.sites?.find(x=>x.id===s.id),i=sources.indexing.sites?.find(x=>x.id===s.id);
  const notes=[...(h.issues||[])];
  if(g?.error)notes.push('GSC: '+g.error);
- if(i?.error)notes.push('Indexing: '+i.error);
+ if(i?.error)notes.push('Indexing refresh: '+i.error);
  if(i?.indexingReasons?.length)notes.push('Indexing: '+i.indexingReasons[0].label+' ('+i.indexingReasons[0].count+' inspected)');
  return {id:s.id,domain:s.domain,repository:s.repository,http:h.status||'UNKNOWN',sitemap:h.sitemap||'UNKNOWN',robots:h.robots||'UNKNOWN',
   gsc:g&&!g.error&&g.clicks!=null?{clicks:g.clicks,impressions:g.impressions,range:g.range}:null,
-  inspection:i&&!i.error&&i.totalPages!=null?{indexed:i.indexed,notIndexed:i.notIndexed,unchecked:i.remaining,total:i.totalPages,lastUpdated:i.lastUpdated,reasons:i.indexingReasons}:null,
+  inspection:i&&i.totalPages!=null?{indexed:i.indexed,notIndexed:i.notIndexed,unchecked:i.remaining,total:i.totalPages,lastUpdated:i.lastUpdated,reasons:i.indexingReasons}:null,
   notes};
 });
 const healthy=rows.filter(r=>r.http==='OK'&&r.sitemap==='OK'&&r.robots==='OK').length;
 const checkedAt=new Date().toISOString();
 const summary=['SEO THREE-DAY REVIEW · '+checkedAt.slice(0,10),'Sites healthy: '+healthy+'/'+rows.length,
-...rows.map(r=>['','• '+r.domain+' — '+r.http+' / sitemap '+r.sitemap,r.gsc?'GSC 28d: '+r.gsc.clicks+' clicks / '+r.gsc.impressions+' impressions':'GSC: unavailable',r.inspection?'Verified '+r.inspection.indexed+' indexed / '+r.inspection.notIndexed+' not indexed; '+r.inspection.unchecked+' unchecked':'Index inspections: unavailable',...r.notes.slice(0,2).map(n=>'⚠ '+n.slice(0,110))].join('\n')),
+...rows.map(r=>['','• '+r.domain+' — '+r.http+' / sitemap '+r.sitemap,r.gsc?'GSC 28d: '+r.gsc.clicks+' clicks / '+r.gsc.impressions+' impressions':'GSC: unavailable',r.inspection?'Tracked '+r.inspection.total+': '+r.inspection.indexed+' indexed · '+r.inspection.notIndexed+' not indexed · '+r.inspection.unchecked+' uninspected':'Index inspections: unavailable',r.inspection?.reasons?.length?'Reasons: '+r.inspection.reasons.slice(0,3).map(v=>v.label+' ('+v.count+')').join('; '):'No confirmed exclusions yet',...r.notes.slice(0,2).map(n=>'⚠ '+n.slice(0,110))].join('\n')),
 ...(gaps.length?['','DATA GAPS: '+gaps.map(v=>v.slice(0,100)).join('; ')]:[]),
 '',base,'Unchecked URLs are unknown; indexed status is from inspected URLs only.'].join('\n').slice(0,4900);
-const report={checkedAt,healthy,siteCount:rows.length,sites:rows,sourceGaps:gaps,dashboard:base,note:'Inspected URL counts are not full GSC Pages coverage'};
-const md=['# Three-day SEO report · '+checkedAt,'',summary,'','## Details','Data sources: live HTTP health, GSC 28-day Search Analytics, saved URL Inspection records.','No indexing request or code mutation occurs in this workflow.'].join('\n');
+const report={checkedAt,healthy,siteCount:rows.length,sites:rows,sourceGaps:gaps,dashboard:base,indexingSnapshotAt:indexMonitor.lastSuccessfulRefreshAt||indexMonitor.baselineAt,indexingCounts:indexMonitor.counts,note:'Inspected URLs only, not full GSC Pages coverage. Pending URLs can already be indexed.'};
+const md=['# Three-day SEO report · '+checkedAt,'',summary,'','## Details','Data sources: live HTTP health, GSC 28-day Search Analytics, GSC Wizard tracker baseline and updated saved Google URL Inspections.','No indexing request or code mutation occurs in this workflow.'].join('\n');
 await mkdir('reports',{recursive:true});
 await writeFile('reports/three-day-review.json',JSON.stringify(report,null,2));
 await writeFile('reports/three-day-review.md',md);
