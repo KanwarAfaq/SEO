@@ -1,5 +1,7 @@
 # SEO Control Center
 
+**LINE reports are visual:** the four daily digest runs and the three-day five-site review now send small swipeable LINE Flex cards rather than long text. Each three-day message contains one portfolio overview and five site cards with indexing bars, traffic metrics, and status dots. Emergency site-health alerts and the authenticated LINE connection test also use visual cards. The complete technical report remains in GitHub Actions artifacts and this dashboard. The three-day workflow validates the visual structure before sending; a successful build is not itself confirmation of LINE delivery.
+
 **November 11 indexing and three-day monitoring review:** [GSC investigation, per-URL evidence, committed fixes, LINE workflow and dashboard usage](docs/INDEXING_TRIAGE_2026-11-11.md). The updated daily dashboard and three-day consolidated LINE review supplement the existing four daily digests.
 
 A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**, **kmafaq.site**, **scholarportal.site**, and **worksheet.live**.
