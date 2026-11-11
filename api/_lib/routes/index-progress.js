@@ -212,6 +212,6 @@ module.exports=async function handler(req,res){
     ...(showDetails ? { inspectedUrls:details.sort((a,b)=>{
       const rank={NOT_INDEXED:0,ERROR:1,INDEXED:2};
       return (rank[a.status]-rank[b.status])||String(b.checkedAt||'').localeCompare(String(a.checkedAt||''));
-    }).slice(0,Math.min(500,Math.max(1,Number(req.query?.limit||250)))) } : {})
+    }).slice(0,Math.min(1500,Math.max(1,Number(req.query?.limit||250)))) } : {})
   });
 };
