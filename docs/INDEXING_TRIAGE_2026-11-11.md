@@ -73,3 +73,30 @@ Each website repository contains:
 - [Google — Request recrawling](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl)
 
 *Prepared from repository inspection, connected Google Search Console data and live on-page tests on 2026-11-11. No ranking/indexing results have been fabricated.*
+
+
+## Second indexing repair pass (November 11, 2026, 13:52–13:57 Taipei)
+
+Google's latest official guidance: [documentation updates](https://developers.google.com/search/updates), [technical requirements](https://developers.google.com/search/docs/essentials/technical), [people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content), [crawl troubleshooting](https://developers.google.com/search/docs/crawling-indexing/troubleshoot-crawling-errors).
+
+### Implemented and committed
+
+- AnyTool: direct localized navigation to tool hubs, source and methodology pages; links to the four language editions in initial HTML. Live check: Arabic and Traditional Chinese tool hubs both HTTP 200 and self-canonical. Google canonical conflict records still require recrawl.
+- ScholarPortal: exclude duplicate and redirected article paths from crawlable discovery hubs and related-article links, consistent with canonical sitemap generation. Live checks: the blog hub, two previously excluded article samples and the historic article Soft 404 all HTTP 200 with self-canonicals. Content quality and recrawl remain separate.
+- Portfolio: link the public article archive from initial navigation; add original practical guides to the two previously very short Roman Urdu and Vite/GitHub Pages articles, in both React and server HTML. The guides preserve the existing stored articles and include relevant resources.
+- K.M. Afaq Blog: use actual article update timestamps (fallback to publication date) for sitemap lastmod. Two sampled articles are HTTP 200, self-canonical and indexable. Large discovery backlog remains.
+- Worksheet Studio: real printable subject hubs can be indexable even without uploaded database records; sitemap includes subjects supported by genuine printable worksheets. Live math hub and addition-within-20 worksheet HTTP 200, self-canonical, no sampled on-page issues.
+
+### Search Console sitemap submissions (all accepted and confirmed)
+
+| Canonical sitemap | Google accepted at UTC |
+|---|---|
+| https://anytool.online/sitemap.xml | 2026-11-11 05:55:02 |
+| https://scholarportal.site/sitemap.xml | 2026-11-11 05:55:04 |
+| https://kmafaq.site/sitemap.xml | 2026-11-11 05:55:06 |
+| https://kmafaq.online/sitemap.xml | 2026-11-11 05:55:09 |
+| https://worksheet.live/sitemap.xml | 2026-11-11 05:55:11 |
+
+All returned accepted, confirmed, zero submission errors, and pending download. Google controls subsequent indexing. The portfolio also has an erroneous historical sitemap registration at /blog (HTML, one GSC error). It should be removed in Search Console Sitemaps; the current integration offers submission/listing, not sitemap removal. Prefer the canonical non-www sitemap for AnyTool and K.M. Afaq Blog.
+
+The saved dashboard baseline was refreshed at 05:56:46 UTC: 1,490 tracked URLs, 60 indexed, 178 not indexed, 1,252 pending, zero errors. These are tracked URL counts, not sitewide coverage. The previous 12:37 Taipei snapshot is superseded. Continue the existing three-day review, compare the exact Google crawl date on changed pages, and prioritize excluded pages with real user demand and original content.
