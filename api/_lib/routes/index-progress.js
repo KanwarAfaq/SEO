@@ -1,7 +1,7 @@
 const { getSites, requireAdmin } = require('../config');
 const { googleFetch } = require('../google');
 const { seoStore } = require('../seo-store');
-const { summarizeReasons } = require('../indexing-diagnostics');
+const { summarizeReasons, reason } = require('../indexing-diagnostics');
 
 const SCOPE=['https://www.googleapis.com/auth/webmasters.readonly'];
 const UA='SEO-Control-Center-Index-Progress/1.0';
@@ -118,6 +118,8 @@ module.exports=async function handler(req,res){
   }
   const states=latestStates(history);
   const results=[];
+  const details=[];
+  const showDetails=method==='GET' && String(req.query?.details||'')==='1';
 
   for(const site of selected){
     try{
@@ -129,6 +131,24 @@ module.exports=async function handler(req,res){
 
       const prior=states[site.id]||{};
       const records=normalizeRecords(prior,urls);
+      // Read-only detail mode for the dashboard. Only return saved inspection evidence.
+      if(showDetails){
+        for(const [url,record] of Object.entries(records)){
+          const triage=reason(record);
+          details.push({
+            id:site.id,domain:site.domain,url,
+            status:record.error?'ERROR':record.verdict==='PASS'?'INDEXED':'NOT_INDEXED',
+            coverageState:record.coverageState||null,
+            verdict:record.verdict||null,
+            reason:triage?.label||null,
+            action:triage?.action||null,
+            userCanonical:record.userCanonical||null,
+            googleCanonical:record.googleCanonical||null,
+            lastCrawlTime:record.lastCrawlTime||null,
+            checkedAt:record.checkedAt||null
+          });
+        }
+      }
 
       if(method==='POST'){
         const now=Date.now();
@@ -188,6 +208,10 @@ module.exports=async function handler(req,res){
     counting:'Inspected URL-by-URL; indexed is PASS among those URLs, NOT GSC sitewide indexed count; errors are not checked',
     batchSize:method==='POST'?batch:0,
     portfolio,
-    sites:results
+    sites:results,
+    ...(showDetails ? { inspectedUrls:details.sort((a,b)=>{
+      const rank={NOT_INDEXED:0,ERROR:1,INDEXED:2};
+      return (rank[a.status]-rank[b.status])||String(b.checkedAt||'').localeCompare(String(a.checkedAt||''));
+    }).slice(0,Math.min(500,Math.max(1,Number(req.query?.limit||250)))) } : {})
   });
 };
