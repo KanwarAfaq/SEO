@@ -61,6 +61,10 @@ await writeFile('reports/three-day-line-visual.json',JSON.stringify(visual,null,
 if(process.env.GITHUB_STEP_SUMMARY)await appendFile(process.env.GITHUB_STEP_SUMMARY,md+'\n');
 console.log(JSON.stringify({healthy,total:rows.length,dataGaps:gaps.length,dryRun:dry}));
 if(dry){console.log('DRY_RUN_OK (LINE not contacted)');process.exit(0)}
+// The routine 08:15 digest is the only healthy-status push. The three-day
+// scan updates the dashboard silently unless a data source or site is failing.
+const notable=rows.some(r=>r.http!=='OK'||r.sitemap!=='OK'||r.robots!=='OK')||gaps.length>0;
+if(!notable){console.log('THREE_DAY_QUIET_OK: saved audit, no duplicate healthy LINE notification');process.exit(0)}
 const token=process.env.LINE_CHANNEL_ACCESS_TOKEN,to=process.env.LINE_USER_ID;
 if(!token||!to)throw Error('Missing LINE_CHANNEL_ACCESS_TOKEN or LINE_USER_ID; report saved but no message sent');
 const retryKey=randomUUID();
