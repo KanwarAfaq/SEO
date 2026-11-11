@@ -2,6 +2,7 @@ import {mkdir,writeFile,appendFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import monitorCore from '../api/_lib/indexing-monitor.js';
+import {buildThreeDayVisual} from './line-three-day-visual.mjs';
 import config from '../api/_lib/config.js';
 import {checkSite} from './monitor-health.mjs';
 const sites=config.getSites(),base=process.env.SEO_DASHBOARD_BASE||'https://seo-kmafaq.vercel.app';
@@ -50,11 +51,13 @@ const summary=['SEO THREE-DAY REVIEW · '+checkedAt.slice(0,10),'Sites healthy: 
 ...(gaps.length?['','DATA GAPS: '+gaps.map(v=>v.slice(0,100)).join('; ')]:[]),
 '',base,'Unchecked URLs are unknown; indexed status is from inspected URLs only.'].join('\n').slice(0,4900);
 const report={checkedAt,healthy,siteCount:rows.length,sites:rows,sourceGaps:gaps,dashboard:base,indexingSnapshotAt:indexMonitor.lastSuccessfulRefreshAt||indexMonitor.baselineAt,indexingCounts:indexMonitor.counts,note:'Inspected URLs only, not full GSC Pages coverage. Pending URLs can already be indexed.'};
+const visual=buildThreeDayVisual(report,base);
 const md=['# Three-day SEO report · '+checkedAt,'',summary,'','## Details','Data sources: live HTTP health, GSC 28-day Search Analytics, GSC Wizard tracker baseline and updated saved Google URL Inspections.','No indexing request or code mutation occurs in this workflow.'].join('\n');
 await mkdir('reports',{recursive:true});
 await writeFile('reports/three-day-review.json',JSON.stringify(report,null,2));
 await writeFile('reports/three-day-review.md',md);
 await writeFile('reports/three-day-line-preview.txt',summary);
+await writeFile('reports/three-day-line-visual.json',JSON.stringify(visual,null,2));
 if(process.env.GITHUB_STEP_SUMMARY)await appendFile(process.env.GITHUB_STEP_SUMMARY,md+'\n');
 console.log(JSON.stringify({healthy,total:rows.length,dataGaps:gaps.length,dryRun:dry}));
 if(dry){console.log('DRY_RUN_OK (LINE not contacted)');process.exit(0)}
@@ -65,7 +68,7 @@ for(let attempt=0;attempt<3;attempt++){
  try{
   const r=await fetch('https://api.line.me/v2/bot/message/push',{method:'POST',signal:AbortSignal.timeout(15000),
    headers:{authorization:'Bearer '+token,'content-type':'application/json','x-line-retry-key':retryKey},
-   body:JSON.stringify({to,messages:[{type:'text',text:summary}]})});
+   body:JSON.stringify({to,messages:[visual]})});
   if(r.ok||(r.status===409&&r.headers.get('x-line-accepted-request-id'))){console.log('LINE_THREE_DAY_ACCEPTED');process.exit(0)}
   if(r.status<500&&r.status!==429)throw Object.assign(Error('LINE HTTP '+r.status),{permanent:true});
   throw Error('Transient LINE HTTP '+r.status);
