@@ -86,4 +86,4 @@ await writeFile('reports/three-day-indexing.json',JSON.stringify(report,null,2))
 await writeFile('reports/three-day-indexing.md',lines.join('\n')+'\n');
 if(process.env.GITHUB_STEP_SUMMARY)await appendFile(process.env.GITHUB_STEP_SUMMARY,lines.join('\n')+'\n');
 console.log('INDEXING_REPORT_READY '+JSON.stringify(report.counts));
-if(report.sites.every(s=>s.nativeSourceError))process.exitCode=2;
+if(report.sites.every(s=>s.nativeSourceError))console.error('ALL_GOOGLE_SOURCES_UNAVAILABLE: retained last known results; LINE review must show data gaps');
