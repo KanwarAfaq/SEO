@@ -205,6 +205,25 @@
       <section class="content hidden" id="view-indexing">
         <div class="page-intro"><div><span class="eyebrow">INDEXING</span><h1>Index control</h1><p>Track verified Google coverage, inspect, submit and notify.</p></div></div>
 
+        <article class="panel" aria-labelledby="gscTrackerTitle">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">GOOGLE URL INSPECTION · FIVE PROPERTIES</span>
+              <h3 id="gscTrackerTitle">Three-day indexing report</h3>
+              <p class="panel-copy">Tracked URLs: independently verified indexed, not indexed, and pending. The pending group is unknown, not an exclusion.</p>
+            </div>
+            <button class="ghost-btn" id="refreshIndexingMonitor">Refresh saved report</button>
+          </div>
+          <p class="panel-copy" id="indexingMonitorTimestamp">Loading the latest saved Google inspection evidence…</p>
+          <div class="metric-grid index-progress-grid" id="indexingMonitorSummary"></div>
+          <div class="data-table-wrap"><table>
+            <thead><tr><th>Website</th><th>Tracked</th><th>Indexed</th><th>Not indexed</th><th>Not yet inspected</th><th>Inspection errors</th><th>Top Google reason</th></tr></thead>
+            <tbody id="indexingMonitorTable"><tr><td colspan="7">Loading five-site indexing results…</td></tr></tbody>
+          </table></div>
+          <div id="indexingMonitorReasons" aria-live="polite"></div>
+          <p class="panel-copy">This is a tracked-URL audit using GSC Wizard results plus subsequent native Google URL inspections, not the complete Search Console Pages report. Automated monitoring runs every three days; GitHub Actions and LINE provide the audit history.</p>
+        </article>
+
         <article class="panel index-progress-panel">
           <div class="panel-head">
             <div><span class="eyebrow">VERIFIED COVERAGE</span><h3>Indexing progress</h3></div>
