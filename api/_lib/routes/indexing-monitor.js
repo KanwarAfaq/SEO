@@ -1,15 +1,12 @@
-const fs=require('node:fs');
-const path=require('node:path');
 const {buildIndexingMonitor}=require('../indexing-monitor');
-const load=p=>JSON.parse(fs.readFileSync(path.join(process.cwd(),p),'utf8'));
+// Static imports guarantee that Vercel bundles both evidence files with /api/control.
+const baselineSnapshot=require('../../../data/indexing-baseline.json');
+const refreshedSnapshot=require('../../../data/indexing-refresh.json');
 module.exports=async function handler(req,res){
  res.setHeader('Cache-Control','no-store, max-age=0');
  if(req.method!=='GET')return res.status(405).json({error:'GET only'});
  try {
-  const baseline=load('data/indexing-baseline.json');
-  let refresh={};
-  try{refresh=load('data/indexing-refresh.json')}catch(error){if(error.code!=='ENOENT')throw error}
-  const report=buildIndexingMonitor(baseline,refresh);
+  const report=buildIndexingMonitor(baselineSnapshot,refreshedSnapshot);
   const site=req.query?.site,view=req.query?.details==='1';
   if(site&&!report.sites.some(s=>s.id===site))return res.status(400).json({error:'Unknown website'});
   if(!view)report.sites=report.sites.map(({inspectedUrls,...s})=>s);
