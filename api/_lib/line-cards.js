@@ -12,8 +12,8 @@ function buildHealthAlert(incidents,sites,stamp,base='https://seo-kmafaq.vercel.
   ]};
  });
  const body=[
-  label('SEO · LIVE HEALTH',{size:'xs',weight:'bold',color:colors.red}),
-  label(issues.length+' alert'+(issues.length===1?'':'s'),{size:'xxl',weight:'bold',margin:'md'}),
+  label(issues.length?'SEO · LIVE HEALTH':'SEO · RECOVERED',{size:'xs',weight:'bold',color:issues.length?colors.red:colors.green}),
+  label(issues.length?issues.length+' alert'+(issues.length===1?'':'s'):'All sites healthy',{size:'xxl',weight:'bold',margin:'md'}),
   {type:'separator',margin:'lg'},
   ...tiles,
   {type:'separator',margin:'lg'},
