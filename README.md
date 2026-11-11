@@ -4,6 +4,25 @@
 
 A multi-site SEO operations dashboard for **anytool.online**, **kmafaq.online**, **kmafaq.site**, **scholarportal.site**, and **worksheet.live**.
 
+## Google indexing: three-day verified coverage report (November 11, 2026)
+
+The **Overview** and **Indexing** screens show saved Google URL Inspection results for all five properties. Open **Indexing → Three-day indexing report** for tracked, indexed, not-indexed, pending and inspection-error counts with exact Google exclusion reasons, sample affected URLs and recommended fixes. **Load inspected URLs** drills into the tracked URL evidence. A pending URL is **unknown**, not necessarily excluded. The counts are **not** the full sitewide Search Console Pages report.
+
+Initial GSC Wizard baseline from November 11: **1,490 tracked; 50 indexed; 106 not indexed; 1,334 pending**. These reflect a point-in-time inspection snapshot and may already be changing as GSC Wizard works through the pending URLs.
+
+The `.github/workflows/three-day-review.yml` workflow now:
+
+1. Runs every third UTC day (daily GitHub cron with a deterministic gate) or manually via Actions.
+2. Inspects **up to 40 previously unverified URLs per website per run** using the existing protected `POST /api/index-progress` endpoint. This is a fixed request budget per run, not a guarantee that the quota or site storage is available.
+3. Combines the new results with prior verified records in `data/indexing-refresh.json` (retaining last-good data on transient errors), commits the snapshot to trigger the dashboard deployment, and saves `reports/three-day-indexing.{json,md}` as artifacts.
+4. Generates a five-site report and attempts one LINE push containing counts and the top Google reasons. Existing four daily LINE digests remain separate.
+
+**GitHub Actions secrets required for the new three-day scan:** `SEO_STORAGE_SECRET` **or** `ADMIN_ACTION_KEY` authorized to POST to the SEO API; for LINE, `LINE_CHANNEL_ACCESS_TOKEN` and `LINE_USER_ID`. If Vercel deployment protection is on, also configure `VERCEL_AUTOMATION_BYPASS_SECRET`. Google API credentials remain on Vercel. Missing credentials are reported rather than counted as successful inspections.
+
+**Check execution:** [Three-day workflow](https://github.com/KanwarAfaq/SEO/actions/workflows/three-day-review.yml), use **Run workflow → dry_run** to generate evidence without Google inspections/LINE, and **dry_run=false** to run the full inspection and LINE delivery attempt. A successful Vercel deployment proves the code built; it does **not** prove LINE accepted the message or the first scheduled Action executed. Check Actions logs for `LINE_THREE_DAY_ACCEPTED`, review saved artifacts, and confirm the LINE recipient received it. Scheduled GitHub Actions can run late.
+
+The initial dashboard commit and routing correction have deployed successfully. The first complete three-day inspection + LINE run has **not** been confirmed in this report.
+
 ## What is already implemented
 
 - Modern responsive visual dashboard for all five sites.
