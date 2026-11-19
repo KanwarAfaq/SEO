@@ -7,8 +7,8 @@ const col=(items,opts={})=>({type:'box',layout:'vertical',contents:items,...opts
 const row=(items,opts={})=>({type:'box',layout:'horizontal',contents:items,...opts});
 const legend=(label,color,val)=>col([t(label,{color:colors.muted,size:'xxs'}),t(n(val),{size:'xl',color,weight:'bold',margin:'xs'})],{flex:1});
 const bar=(parts,blankColor=colors.bg)=>{
-  const segments=parts.filter(p=>Number(p.value)>0).map(p=>({type:'box',layout:'vertical',height:'10px',backgroundColor:p.color,flex:Math.max(1,Math.round(Number(p.value)))}));
-  if(!segments.length)segments.push({type:'box',layout:'vertical',height:'10px',backgroundColor:blankColor,flex:1});
+  const segments=parts.filter(p=>Number(p.value)>0).map(p=>({type:'box',layout:'vertical',height:'10px',backgroundColor:p.color,flex:Math.max(1,Math.round(Number(p.value))),contents:[]}));
+  if(!segments.length)segments.push({type:'box',layout:'vertical',height:'10px',backgroundColor:blankColor,flex:1,contents:[]});
   return row(segments,{height:'10px',cornerRadius:'5px',backgroundColor:colors.bg});
 };
 const percent=(a,b)=>b>0?Math.round(Number(a||0)/Number(b)*100)+'%':'—';
