@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/validate-line.yml'
+      - 'scripts/digest-format.mjs'
+      - 'scripts/line-three-day-visual.mjs'
+      - 'scripts/validate-line-payload.mjs'
 permissions:
   contents: read
 jobs:
