@@ -116,9 +116,9 @@ export function buildDetailedDigest(summary, sites, base) {
       ]},
       {type:'box',layout:'horizontal',height:'9px',cornerRadius:'5px',backgroundColor:'#E2E8F0',contents:
         idx&&checked>0?[
-          {type:'box',layout:'vertical',flex:Math.max(1,pass),backgroundColor:color.green},
-          {type:'box',layout:'vertical',flex:Math.max(1,excluded),backgroundColor:color.red},
-          {type:'box',layout:'vertical',flex:Math.max(1,checked-pass-excluded),backgroundColor:'#CBD5E1'}
+          {type:'box',layout:'vertical',flex:Math.max(1,pass),backgroundColor:color.green ,contents:[]},
+          {type:'box',layout:'vertical',flex:Math.max(1,excluded),backgroundColor:color.red ,contents:[]},
+          {type:'box',layout:'vertical',flex:Math.max(1,checked-pass-excluded),backgroundColor:'#CBD5E1' ,contents:[]}
         ].filter((_,i)=>[pass,excluded,checked-pass-excluded][i]>0):
         [{type:'box',layout:'vertical',flex:1,backgroundColor:'#CBD5E1'}]
       }
@@ -133,8 +133,8 @@ export function buildDetailedDigest(summary, sites, base) {
         {type:'box',layout:'vertical',flex:1,contents:[txt(g?number(g.impressions):'—',{size:'xxl',weight:'bold'}),txt('IMPRESSIONS',{size:'xxs',color:color.muted})]}
       ]},
       {type:'box',layout:'horizontal',height:'6px',margin:'md',cornerRadius:'3px',contents:[
-        {type:'box',layout:'vertical',flex:Math.max(1,Number(g?.impressions||0)),backgroundColor:color.blue},
-        {type:'box',layout:'vertical',flex:Math.max(1,maxImpressions-Number(g?.impressions||0)),backgroundColor:'#E2E8F0'}
+        {type:'box',layout:'vertical',flex:Math.max(1,Number(g?.impressions||0)),backgroundColor:color.blue ,contents:[]},
+        {type:'box',layout:'vertical',flex:Math.max(1,maxImpressions-Number(g?.impressions||0)),backgroundColor:'#E2E8F0' ,contents:[]}
       ]},
       {type:'separator',margin:'lg'},
       txt('GOOGLE URL INSPECTIONS · SAMPLE',{size:'xxs',color:color.muted,weight:'bold',margin:'md'}),
