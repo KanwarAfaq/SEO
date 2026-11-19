@@ -101,21 +101,30 @@ console.log(JSON.stringify({ healthy, sites: sites.length, issues: incidents.len
 if (DRY_RUN) { console.log('DRY_RUN_OK — report saved; no writes or notifications'); process.exit(0); }
 if (!process.env.LINE_CHANNEL_ACCESS_TOKEN || !process.env.LINE_USER_ID) throw new Error('LINE_CHANNEL_ACCESS_TOKEN or LINE_USER_ID missing');
 
-// Reuse one key and unchanged payload for retries of this send only (LINE's 24h window).
-const retryKey = randomUUID();
-let sent = false;
-for (let attempt = 0; attempt < 3; attempt++) {
-  try {
-    const r = await fetch('https://api.line.me/v2/bot/message/push', {
-      method: 'POST', signal: AbortSignal.timeout(15000),
-      headers: { authorization: 'Bearer ' + process.env.LINE_CHANNEL_ACCESS_TOKEN, 'content-type': 'application/json', 'x-line-retry-key': retryKey },
-      body: JSON.stringify({ to: process.env.LINE_USER_ID, messages: [digestCard] })
-    });
-    if (r.ok || (r.status === 409 && r.headers.get('x-line-accepted-request-id'))) { sent = true; break; }
-    if (r.status < 500 && r.status !== 429) throw Object.assign(new Error('LINE push rejected: HTTP ' + r.status), { permanent: true });
-    throw new Error('LINE push temporarily failed: HTTP ' + r.status);
-  } catch (e) { if (e.permanent || attempt === 2) throw e; }
-  await new Promise(resolve => setTimeout(resolve, (2 ** attempt) * 1500));
+// Prefer six-card visual report. If LINE rejects the carousel, retry one
+// compact visual Flex summary (never send four routine texts). Record the
+// sanitized response reason so invalid Flex payloads can be fixed.
+let sent=false;
+for(const [variant,payload] of [['carousel',digestCard],['summary',summary]]){
+ const retryKey=randomUUID();
+ let invalid=false;
+ for(let attempt=0;attempt<3;attempt++){
+  const r=await fetch('https://api.line.me/v2/bot/message/push',{
+   method:'POST',signal:AbortSignal.timeout(15000),
+   headers:{authorization:'Bearer '+process.env.LINE_CHANNEL_ACCESS_TOKEN,'content-type':'application/json','x-line-retry-key':retryKey},
+   body:JSON.stringify({to:process.env.LINE_USER_ID,messages:[payload]})
+  });
+  if(r.ok||(r.status===409&&r.headers.get('x-line-accepted-request-id'))){sent=true;console.log('LINE_VISUAL_ACCEPTED '+variant);break}
+  const body=await r.text().catch(()=>'');
+  // LINE error detail contains validation paths, not channel tokens.
+  console.warn('LINE_PUSH_REJECTED '+variant+' HTTP '+r.status+' '+body.slice(0,1200));
+  if(r.status===400){invalid=true;break}
+  if(r.status!==429&&r.status<500)throw new Error('LINE authentication or destination rejected HTTP '+r.status);
+  if(attempt===2)throw new Error('LINE temporary failure HTTP '+r.status);
+  await new Promise(resolve=>setTimeout(resolve,(2**attempt)*1500));
+ }
+ if(sent)break;
+ if(!invalid)break;
 }
 if (!sent) throw new Error('LINE delivery not accepted');
 console.log('LINE_DIGEST_OK');
