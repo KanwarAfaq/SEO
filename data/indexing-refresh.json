@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "capturedAt": "2026-11-24T16:29:34.959Z",
+  "capturedAt": "2026-11-27T15:37:59.269Z",
   "source": "SEO native Search Console URL Inspection API",
   "sites": [
     {
@@ -8,7 +8,7 @@
       "domain": "anytool.online",
       "advanced": 40,
       "error": null,
-      "lastAttemptAt": "2026-11-24T16:29:34.959Z",
+      "lastAttemptAt": "2026-11-27T15:37:59.269Z",
       "inspectedUrls": [
         {
           "id": "anytool",
@@ -462,15 +462,15 @@
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ur/tools/yaml-json-converter",
-          "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
-          "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T09:03:07.164Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/ur/tools/yaml-json-converter",
+          "googleCanonical": "https://anytool.online/ur/tools/yaml-json-converter",
+          "lastCrawlTime": "2026-11-19T03:55:25Z",
+          "checkedAt": "2026-11-27T15:39:55.958Z"
         },
         {
           "id": "anytool",
@@ -484,35 +484,35 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T09:03:01.205Z"
+          "checkedAt": "2026-11-27T15:39:49.909Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/zh-tw/tools/yaml-json-converter",
-          "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
-          "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T09:03:01.116Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/zh-tw/tools/yaml-json-converter",
+          "googleCanonical": "https://anytool.online/zh-tw/tools/yaml-json-converter",
+          "lastCrawlTime": "2026-11-17T22:46:27Z",
+          "checkedAt": "2026-11-27T15:39:49.827Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/tools/yaml-json-converter",
           "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
+          "coverageState": "URL is unknown to Google",
           "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T09:03:01.034Z"
+          "checkedAt": "2026-11-27T15:39:49.872Z"
         },
         {
           "id": "anytool",
@@ -526,26 +526,12 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T09:02:55.025Z"
+          "checkedAt": "2026-11-27T15:39:43.743Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ur/tools/date-calculator",
-          "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
-          "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T09:02:54.840Z"
-        },
-        {
-          "id": "anytool",
-          "domain": "anytool.online",
-          "url": "https://anytool.online/tools/date-calculator",
           "status": "NOT_INDEXED",
           "coverageState": "URL is unknown to Google",
           "verdict": "NEUTRAL",
@@ -554,7 +540,21 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T06:05:21.135Z"
+          "checkedAt": "2026-11-27T15:39:43.674Z"
+        },
+        {
+          "id": "anytool",
+          "domain": "anytool.online",
+          "url": "https://anytool.online/tools/date-calculator",
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/tools/date-calculator",
+          "googleCanonical": "https://anytool.online/tools/date-calculator",
+          "lastCrawlTime": "2026-11-17T07:04:41Z",
+          "checkedAt": "2026-11-27T15:39:37.581Z"
         },
         {
           "id": "anytool",
@@ -568,35 +568,35 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T06:05:21.038Z"
+          "checkedAt": "2026-11-27T15:39:37.640Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ar/tools/aspect-ratio-calculator",
           "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
+          "coverageState": "URL is unknown to Google",
           "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T06:05:14.929Z"
+          "checkedAt": "2026-11-27T15:39:27.063Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/tools/aspect-ratio-calculator",
           "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
+          "coverageState": "URL is unknown to Google",
           "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-11T06:05:14.904Z"
+          "checkedAt": "2026-11-27T15:39:21.030Z"
         },
         {
           "id": "anytool",
@@ -610,7 +610,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T17:45:51.464Z"
+          "checkedAt": "2026-11-27T15:39:20.938Z"
         },
         {
           "id": "anytool",
@@ -624,7 +624,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T17:45:51.218Z"
+          "checkedAt": "2026-11-27T15:39:20.879Z"
         },
         {
           "id": "anytool",
@@ -638,40 +638,12 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T17:45:45.077Z"
+          "checkedAt": "2026-11-27T15:39:14.854Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ur/tools/text-case",
-          "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
-          "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T17:45:45.063Z"
-        },
-        {
-          "id": "anytool",
-          "domain": "anytool.online",
-          "url": "https://anytool.online/tools/password-strength-checker",
-          "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
-          "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T17:45:44.837Z"
-        },
-        {
-          "id": "anytool",
-          "domain": "anytool.online",
-          "url": "https://anytool.online/ar/tools/text-case",
           "status": "NOT_INDEXED",
           "coverageState": "Discovered - currently not indexed",
           "verdict": "NEUTRAL",
@@ -680,7 +652,35 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T07:11:04.180Z"
+          "checkedAt": "2026-11-27T15:39:14.835Z"
+        },
+        {
+          "id": "anytool",
+          "domain": "anytool.online",
+          "url": "https://anytool.online/tools/password-strength-checker",
+          "status": "NOT_INDEXED",
+          "coverageState": "Discovered - currently not indexed",
+          "verdict": "NEUTRAL",
+          "reason": "Discovered, not indexed",
+          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:39:14.769Z"
+        },
+        {
+          "id": "anytool",
+          "domain": "anytool.online",
+          "url": "https://anytool.online/ar/tools/text-case",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:39:08.639Z"
         },
         {
           "id": "anytool",
@@ -694,7 +694,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T07:10:58.100Z"
+          "checkedAt": "2026-11-27T15:39:08.640Z"
         },
         {
           "id": "anytool",
@@ -708,7 +708,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T07:10:58.088Z"
+          "checkedAt": "2026-11-27T15:38:58.002Z"
         },
         {
           "id": "anytool",
@@ -722,35 +722,35 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-10T07:10:58.073Z"
+          "checkedAt": "2026-11-27T15:38:51.871Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/tools/timestamp-converter",
-          "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
-          "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-09T20:41:35.790Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/tools/timestamp-converter",
+          "googleCanonical": "https://anytool.online/tools/timestamp-converter",
+          "lastCrawlTime": "2026-11-15T11:34:03Z",
+          "checkedAt": "2026-11-27T15:38:51.857Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/zh-tw/tools/url-encoder",
-          "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
-          "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-09T20:41:29.557Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/zh-tw/tools/url-encoder",
+          "googleCanonical": "https://anytool.online/zh-tw/tools/url-encoder",
+          "lastCrawlTime": "2026-11-13T06:59:21Z",
+          "checkedAt": "2026-11-27T15:38:45.752Z"
         },
         {
           "id": "anytool",
@@ -764,63 +764,63 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-09T20:41:29.359Z"
+          "checkedAt": "2026-11-27T15:38:45.729Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ur/tools/base64",
-          "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
-          "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-09T06:16:09.669Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/ur/tools/base64",
+          "googleCanonical": "https://anytool.online/ur/tools/base64",
+          "lastCrawlTime": "2026-11-19T16:31:28Z",
+          "checkedAt": "2026-11-27T15:38:39.643Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ur/tools/ocr",
           "status": "NOT_INDEXED",
-          "coverageState": "Page with redirect",
+          "coverageState": "Duplicate, Google chose different canonical than user",
           "verdict": "NEUTRAL",
-          "reason": "Page with redirect",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": "https://www.anytool.online/ur/tools/ocr",
+          "reason": "Canonical or duplicate mismatch",
+          "action": "Check rel=canonical, duplicate URLs, redirects and internal links; use one preferred indexable URL",
+          "userCanonical": "https://anytool.online/ur/tools/ocr",
           "googleCanonical": "https://www.anytool.online/ur/tools/ocr",
-          "lastCrawlTime": "2026-09-20T13:23:09Z",
-          "checkedAt": "2026-11-08T16:39:08.122Z"
+          "lastCrawlTime": "2026-11-26T06:48:06Z",
+          "checkedAt": "2026-11-27T15:38:23.424Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ar/tools/ocr",
           "status": "NOT_INDEXED",
-          "coverageState": "Page with redirect",
+          "coverageState": "Duplicate, Google chose different canonical than user",
           "verdict": "NEUTRAL",
-          "reason": "Page with redirect",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": "https://www.anytool.online/ar/tools/ocr",
+          "reason": "Canonical or duplicate mismatch",
+          "action": "Check rel=canonical, duplicate URLs, redirects and internal links; use one preferred indexable URL",
+          "userCanonical": "https://anytool.online/ar/tools/ocr",
           "googleCanonical": "https://www.anytool.online/ar/tools/ocr",
-          "lastCrawlTime": "2026-09-20T22:21:07Z",
-          "checkedAt": "2026-11-08T16:39:07.896Z"
+          "lastCrawlTime": "2026-11-26T11:15:49Z",
+          "checkedAt": "2026-11-27T15:38:23.202Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/zh-tw/tools/ocr",
           "status": "NOT_INDEXED",
-          "coverageState": "Page with redirect",
+          "coverageState": "Duplicate, Google chose different canonical than user",
           "verdict": "NEUTRAL",
-          "reason": "Page with redirect",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": "https://www.anytool.online/zh-tw/tools/ocr",
+          "reason": "Canonical or duplicate mismatch",
+          "action": "Check rel=canonical, duplicate URLs, redirects and internal links; use one preferred indexable URL",
+          "userCanonical": "https://anytool.online/zh-tw/tools/ocr",
           "googleCanonical": "https://www.anytool.online/zh-tw/tools/ocr",
-          "lastCrawlTime": "2026-09-20T12:19:51Z",
-          "checkedAt": "2026-11-08T16:39:01.851Z"
+          "lastCrawlTime": "2026-11-26T09:54:30Z",
+          "checkedAt": "2026-11-27T15:38:17.453Z"
         },
         {
           "id": "anytool",
@@ -834,21 +834,21 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-08T16:39:01.799Z"
+          "checkedAt": "2026-11-27T15:38:17.071Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/tools/ocr",
-          "status": "NOT_INDEXED",
-          "coverageState": "Page with redirect",
-          "verdict": "NEUTRAL",
-          "reason": "Page with redirect",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": "https://www.anytool.online/tools/ocr",
-          "googleCanonical": "https://www.anytool.online/tools/ocr",
-          "lastCrawlTime": "2026-09-20T14:33:37Z",
-          "checkedAt": "2026-11-08T16:39:01.783Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/tools/ocr",
+          "googleCanonical": "https://anytool.online/tools/ocr",
+          "lastCrawlTime": "2026-11-26T06:09:21Z",
+          "checkedAt": "2026-11-27T15:38:17.271Z"
         },
         {
           "id": "anytool",
@@ -862,21 +862,21 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-08T05:55:20.470Z"
+          "checkedAt": "2026-11-27T15:38:10.965Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ar/tools/image-to-sketch",
           "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
+          "coverageState": "URL is unknown to Google",
           "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-08T05:55:14.340Z"
+          "checkedAt": "2026-11-27T08:32:19.611Z"
         },
         {
           "id": "anytool",
@@ -890,35 +890,35 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-08T05:55:14.337Z"
+          "checkedAt": "2026-11-27T08:32:19.580Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/zh-tw/tools/image-to-sketch",
           "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
+          "coverageState": "Discovered - currently not indexed",
           "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "reason": "Discovered, not indexed",
+          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-07T16:23:52.868Z"
+          "checkedAt": "2026-11-27T08:32:13.412Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/tools/image-to-sketch",
           "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
+          "coverageState": "Discovered - currently not indexed",
           "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "reason": "Discovered, not indexed",
+          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-07T16:23:52.811Z"
+          "checkedAt": "2026-11-27T08:32:13.292Z"
         },
         {
           "id": "anytool",
@@ -932,7 +932,7 @@
           "userCanonical": "https://anytool.online/ar/tools/taiwan-id-photo",
           "googleCanonical": "https://www.anytool.online/ar/tools/taiwan-id-photo",
           "lastCrawlTime": "2026-11-01T20:16:25Z",
-          "checkedAt": "2026-11-07T16:23:46.701Z"
+          "checkedAt": "2026-11-26T08:17:14.130Z"
         },
         {
           "id": "anytool",
@@ -946,7 +946,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-07T05:52:50.566Z"
+          "checkedAt": "2026-11-26T08:17:08.042Z"
         },
         {
           "id": "anytool",
@@ -960,7 +960,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-07T05:52:44.506Z"
+          "checkedAt": "2026-11-26T08:17:08.070Z"
         },
         {
           "id": "anytool",
@@ -974,21 +974,21 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-07T05:52:44.456Z"
+          "checkedAt": "2026-11-25T08:33:27.328Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/ar/tools/loan-payment",
           "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
+          "coverageState": "URL is unknown to Google",
           "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-05T17:59:25.383Z"
+          "checkedAt": "2026-11-25T08:33:21.065Z"
         },
         {
           "id": "anytool",
@@ -1002,21 +1002,21 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-05T17:59:25.284Z"
+          "checkedAt": "2026-11-25T08:33:21.410Z"
         },
         {
           "id": "anytool",
           "domain": "anytool.online",
           "url": "https://anytool.online/zh-tw/tools/loan-payment",
-          "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
-          "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-11-05T17:59:19.176Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://anytool.online/zh-tw/tools/loan-payment",
+          "googleCanonical": "https://anytool.online/zh-tw/tools/loan-payment",
+          "lastCrawlTime": "2026-11-17T13:14:16Z",
+          "checkedAt": "2026-11-25T08:33:20.895Z"
         },
         {
           "id": "anytool",
@@ -3284,7 +3284,7 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/date-calculator",
           "googleCanonical": "https://anytool.online/zh-tw/tools/date-calculator",
           "lastCrawlTime": "2026-11-09T13:02:47Z",
-          "checkedAt": "2026-11-11T09:02:54.997Z"
+          "checkedAt": "2026-11-27T15:39:43.695Z"
         },
         {
           "id": "anytool",
@@ -3298,7 +3298,7 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/aspect-ratio-calculator",
           "googleCanonical": "https://anytool.online/zh-tw/tools/aspect-ratio-calculator",
           "lastCrawlTime": "2026-11-03T19:50:44Z",
-          "checkedAt": "2026-11-11T06:05:14.982Z"
+          "checkedAt": "2026-11-27T15:39:37.548Z"
         },
         {
           "id": "anytool",
@@ -3311,8 +3311,8 @@
           "action": null,
           "userCanonical": "https://anytool.online/zh-tw/tools/text-case",
           "googleCanonical": "https://anytool.online/zh-tw/tools/text-case",
-          "lastCrawlTime": "2026-11-03T03:54:09Z",
-          "checkedAt": "2026-11-10T07:11:04.311Z"
+          "lastCrawlTime": "2026-11-10T07:22:55Z",
+          "checkedAt": "2026-11-27T15:39:08.632Z"
         },
         {
           "id": "anytool",
@@ -3325,8 +3325,8 @@
           "action": null,
           "userCanonical": "https://anytool.online/zh-tw/tools/timestamp-converter",
           "googleCanonical": "https://anytool.online/zh-tw/tools/timestamp-converter",
-          "lastCrawlTime": "2026-11-07T15:09:46Z",
-          "checkedAt": "2026-11-09T20:41:35.995Z"
+          "lastCrawlTime": "2026-11-19T06:48:22Z",
+          "checkedAt": "2026-11-27T15:38:51.859Z"
         },
         {
           "id": "anytool",
@@ -3340,7 +3340,7 @@
           "userCanonical": "https://anytool.online/ur/tools/url-encoder",
           "googleCanonical": "https://anytool.online/ur/tools/url-encoder",
           "lastCrawlTime": "2026-10-26T20:46:16Z",
-          "checkedAt": "2026-11-09T20:41:29.704Z"
+          "checkedAt": "2026-11-27T15:38:45.733Z"
         },
         {
           "id": "anytool",
@@ -3354,7 +3354,7 @@
           "userCanonical": "https://anytool.online/tools/url-encoder",
           "googleCanonical": "https://anytool.online/tools/url-encoder",
           "lastCrawlTime": "2026-10-28T01:29:28Z",
-          "checkedAt": "2026-11-09T06:16:24.725Z"
+          "checkedAt": "2026-11-27T15:38:39.571Z"
         },
         {
           "id": "anytool",
@@ -3368,7 +3368,7 @@
           "userCanonical": "https://anytool.online/tools/base64",
           "googleCanonical": "https://anytool.online/tools/base64",
           "lastCrawlTime": "2026-11-03T03:28:16Z",
-          "checkedAt": "2026-11-09T06:16:09.751Z"
+          "checkedAt": "2026-11-27T15:38:39.590Z"
         },
         {
           "id": "anytool",
@@ -3382,7 +3382,7 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/base64",
           "googleCanonical": "https://anytool.online/zh-tw/tools/base64",
           "lastCrawlTime": "2026-11-02T11:44:26Z",
-          "checkedAt": "2026-11-09T06:16:03.585Z"
+          "checkedAt": "2026-11-27T15:38:29.328Z"
         },
         {
           "id": "anytool",
@@ -3396,7 +3396,7 @@
           "userCanonical": "https://anytool.online/ar/tools/base64",
           "googleCanonical": "https://anytool.online/ar/tools/base64",
           "lastCrawlTime": "2026-11-02T20:53:14Z",
-          "checkedAt": "2026-11-09T06:16:03.562Z"
+          "checkedAt": "2026-11-27T15:38:23.691Z"
         },
         {
           "id": "anytool",
@@ -3410,7 +3410,7 @@
           "userCanonical": "https://anytool.online/ar/tools/taiwan-elder-care",
           "googleCanonical": "https://anytool.online/ar/tools/taiwan-elder-care",
           "lastCrawlTime": "2026-11-01T22:15:22Z",
-          "checkedAt": "2026-11-08T05:55:20.513Z"
+          "checkedAt": "2026-11-27T15:38:11.058Z"
         },
         {
           "id": "anytool",
@@ -3424,7 +3424,7 @@
           "userCanonical": "https://anytool.online/tools/taiwan-elder-care",
           "googleCanonical": "https://anytool.online/tools/taiwan-elder-care",
           "lastCrawlTime": "2026-11-07T14:24:48Z",
-          "checkedAt": "2026-11-08T05:55:14.382Z"
+          "checkedAt": "2026-11-27T15:38:10.899Z"
         },
         {
           "id": "anytool",
@@ -3438,7 +3438,7 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/taiwan-id-photo",
           "googleCanonical": "https://anytool.online/zh-tw/tools/taiwan-id-photo",
           "lastCrawlTime": "2026-11-02T18:25:54Z",
-          "checkedAt": "2026-11-07T16:23:46.756Z"
+          "checkedAt": "2026-11-27T08:32:16.371Z"
         },
         {
           "id": "anytool",
@@ -3452,7 +3452,7 @@
           "userCanonical": "https://anytool.online/ur/tools/taiwan-id-photo",
           "googleCanonical": "https://anytool.online/ur/tools/taiwan-id-photo",
           "lastCrawlTime": "2026-11-02T20:33:59Z",
-          "checkedAt": "2026-11-07T16:23:46.683Z"
+          "checkedAt": "2026-11-26T08:17:13.946Z"
         },
         {
           "id": "anytool",
@@ -3465,8 +3465,8 @@
           "action": null,
           "userCanonical": "https://anytool.online/tools/taiwan-id-photo",
           "googleCanonical": "https://anytool.online/tools/taiwan-id-photo",
-          "lastCrawlTime": "2026-11-01T21:06:11Z",
-          "checkedAt": "2026-11-07T05:52:50.588Z"
+          "lastCrawlTime": "2026-11-09T18:07:22Z",
+          "checkedAt": "2026-11-26T08:17:07.832Z"
         },
         {
           "id": "anytool",
@@ -3480,7 +3480,7 @@
           "userCanonical": "https://anytool.online/zh-tw/tools/timer",
           "googleCanonical": "https://anytool.online/zh-tw/tools/timer",
           "lastCrawlTime": "2026-11-03T03:06:39Z",
-          "checkedAt": "2026-11-07T05:52:44.451Z"
+          "checkedAt": "2026-11-25T08:33:27.130Z"
         },
         {
           "id": "anytool",
@@ -4240,14 +4240,14 @@
         }
       ],
       "totalPages": 302,
-      "sweepCompletedAt": "2026-11-24T16:31:46.087Z"
+      "sweepCompletedAt": "2026-11-27T15:40:02.358Z"
     },
     {
       "id": "scholarportal",
       "domain": "scholarportal.site",
       "advanced": 4,
       "error": null,
-      "lastAttemptAt": "2026-11-24T16:29:34.959Z",
+      "lastAttemptAt": "2026-11-27T15:37:59.269Z",
       "inspectedUrls": [
         {
           "id": "scholarportal",
@@ -9406,28 +9406,28 @@
           "domain": "scholarportal.site",
           "url": "https://scholarportal.site/blog/120-graduate-school-scholarships-september-2026-717d4c5080",
           "status": "NOT_INDEXED",
-          "coverageState": "URL is unknown to Google",
+          "coverageState": "Crawled - currently not indexed",
           "verdict": "NEUTRAL",
-          "reason": "URL is unknown to Google",
-          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-10-01T10:45:08.176Z"
+          "reason": "Crawled, not indexed",
+          "action": "Evaluate originality, quality, duplication, helpfulness and internal links; avoid thin mass-produced pages",
+          "userCanonical": "https://scholarportal.site/blog/120-graduate-school-scholarships-september-2026-717d4c5080",
+          "googleCanonical": "https://scholarportal.site/blog/120-graduate-school-scholarships-september-2026-717d4c5080",
+          "lastCrawlTime": "2026-10-02T18:56:03Z",
+          "checkedAt": "2026-11-25T08:34:03.076Z"
         },
         {
           "id": "scholarportal",
           "domain": "scholarportal.site",
           "url": "https://scholarportal.site/privacy-policy",
-          "status": "NOT_INDEXED",
-          "coverageState": "Discovered - currently not indexed",
-          "verdict": "NEUTRAL",
-          "reason": "Discovered, not indexed",
-          "action": "Improve important pages, relevant internal linking, sitemap accuracy and crawl accessibility",
-          "userCanonical": null,
-          "googleCanonical": null,
-          "lastCrawlTime": null,
-          "checkedAt": "2026-09-30T18:48:47.883Z"
+          "status": "INDEXED",
+          "coverageState": "Submitted and indexed",
+          "verdict": "PASS",
+          "reason": "Indexed",
+          "action": null,
+          "userCanonical": "https://scholarportal.site/privacy-policy",
+          "googleCanonical": "https://scholarportal.site/privacy-policy",
+          "lastCrawlTime": "2026-10-11T04:41:57Z",
+          "checkedAt": "2026-11-25T08:33:57.017Z"
         },
         {
           "id": "scholarportal",
@@ -10085,7 +10085,7 @@
           "userCanonical": "https://scholarportal.site/blog/applying-to-grad-school-the-ultimate-guide-0a327baebb",
           "googleCanonical": "https://scholarportal.site/blog/applying-to-grad-school-the-ultimate-guide-0a327baebb",
           "lastCrawlTime": "2026-09-25T15:45:15Z",
-          "checkedAt": "2026-10-01T03:55:25.009Z"
+          "checkedAt": "2026-11-25T08:34:03.235Z"
         },
         {
           "id": "scholarportal",
@@ -10099,7 +10099,7 @@
           "userCanonical": "https://scholarportal.site/blog/application-deadlines-and-requirements-overview-e8d739c34c",
           "googleCanonical": "https://scholarportal.site/blog/application-deadlines-and-requirements-overview-e8d739c34c",
           "lastCrawlTime": "2026-09-29T02:07:36Z",
-          "checkedAt": "2026-10-01T03:55:18.956Z"
+          "checkedAt": "2026-11-25T08:33:56.859Z"
         },
         {
           "id": "scholarportal",
@@ -10113,7 +10113,7 @@
           "userCanonical": "https://scholarportal.site/blog/how-to-get-scholarships-for-graduate-school-in-2026-477269a3e5",
           "googleCanonical": "https://scholarportal.site/blog/how-to-get-scholarships-for-graduate-school-in-2026-477269a3e5",
           "lastCrawlTime": "2026-09-23T08:22:03Z",
-          "checkedAt": "2026-10-01T03:55:18.829Z"
+          "checkedAt": "2026-11-25T08:33:56.944Z"
         },
         {
           "id": "scholarportal",
@@ -13138,17 +13138,185 @@
           "googleCanonical": null,
           "lastCrawlTime": null,
           "checkedAt": "2026-11-23T07:38:48.380Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/115dee1c-f71a-460c-8cac-fb9e8d35fbc7/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:20.379Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/ebce9868-2ea4-4ff9-b677-dee999c17389/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:14.221Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/blog/7-tips-for-applying-for-scholarships-focus-5f3c5bea95",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:14.041Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/23311b8d-5056-4f72-971a-b17c421deb94/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:14.027Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/9e2e5639-4c84-4f33-9ca5-a01b0d8e2ba4/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:33:09.980Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/520b29d0-ecbd-49ae-91a5-2a440deb6364/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:33:04.025Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/0a305998-da2e-4c07-ba8c-e9509ebc8297/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:33:03.875Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/blog/funding-opportunities-for-graduate-students-b5e46a216a",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:33:03.800Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/da8d0e93-8e0b-48fa-aab8-12b798504636/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:56.585Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/4710d430-71be-47f8-846a-554d34415ab8/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:50.533Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/blog/graduate-admissions-scholarship-application-c133f9d33f",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:50.478Z"
+        },
+        {
+          "id": "scholarportal",
+          "domain": "scholarportal.site",
+          "url": "https://scholarportal.site/opportunity/311c1871-4632-4947-8f30-f1116e31d74f/blog",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:50.467Z"
         }
       ],
-      "totalPages": 635,
-      "sweepCompletedAt": "2026-11-24T16:32:07.560Z"
+      "totalPages": 647,
+      "sweepCompletedAt": "2026-11-27T15:40:26.328Z"
     },
     {
       "id": "kmafaq-site",
       "domain": "kmafaq.site",
       "advanced": 0,
       "error": null,
-      "lastAttemptAt": "2026-11-24T16:29:34.959Z",
+      "lastAttemptAt": "2026-11-27T15:37:59.269Z",
       "inspectedUrls": [
         {
           "id": "kmafaq-site",
@@ -13218,7 +13386,7 @@
           "userCanonical": null,
           "googleCanonical": null,
           "lastCrawlTime": null,
-          "checkedAt": "2026-11-19T07:25:50.122Z"
+          "checkedAt": "2026-11-26T08:17:41.632Z"
         },
         {
           "id": "kmafaq-site",
@@ -13288,7 +13456,7 @@
           "userCanonical": "https://kmafaq.site/publications",
           "googleCanonical": "https://kmafaq.site/publications",
           "lastCrawlTime": "2026-11-08T15:13:03Z",
-          "checkedAt": "2026-11-20T07:16:56.313Z"
+          "checkedAt": "2026-11-27T08:32:53.606Z"
         },
         {
           "id": "kmafaq-site",
@@ -13302,7 +13470,7 @@
           "userCanonical": "https://kmafaq.site/about",
           "googleCanonical": "https://kmafaq.site/about",
           "lastCrawlTime": "2026-11-19T17:18:09Z",
-          "checkedAt": "2026-11-20T07:16:50.296Z"
+          "checkedAt": "2026-11-27T08:32:47.249Z"
         },
         {
           "id": "kmafaq-site",
@@ -13316,7 +13484,7 @@
           "userCanonical": "https://kmafaq.site/projects",
           "googleCanonical": "https://kmafaq.site/projects",
           "lastCrawlTime": "2026-11-20T03:20:55Z",
-          "checkedAt": "2026-11-20T07:16:50.205Z"
+          "checkedAt": "2026-11-27T08:32:47.249Z"
         },
         {
           "id": "kmafaq-site",
@@ -13330,7 +13498,7 @@
           "userCanonical": "https://kmafaq.site/",
           "googleCanonical": "https://kmafaq.site/",
           "lastCrawlTime": "2026-11-18T00:00:12Z",
-          "checkedAt": "2026-11-20T07:16:50.198Z"
+          "checkedAt": "2026-11-27T08:32:47.173Z"
         }
       ],
       "totalPages": 13,
@@ -13341,7 +13509,7 @@
       "domain": "kmafaq.online",
       "advanced": 40,
       "error": null,
-      "lastAttemptAt": "2026-11-24T16:29:34.959Z",
+      "lastAttemptAt": "2026-11-27T15:37:59.269Z",
       "inspectedUrls": [
         {
           "id": "kmafaq-online",
@@ -20706,17 +20874,787 @@
           "googleCanonical": null,
           "lastCrawlTime": null,
           "checkedAt": "2026-11-22T06:47:30.284Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/anthropic-researcher-resignation-ai-slowdown-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:36.314Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/bilawal-bhutto-zardari-indian-media-terrorism-claim",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:30.215Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/sbp-holds-policy-rate-at-11-5-amid-inflation-pressures",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:30.213Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-raises-bounty-masood-azhar-fatf-review",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:30.191Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/ios-27-pakistan-practical-guide",
+          "status": "NOT_INDEXED",
+          "coverageState": "Page with redirect",
+          "verdict": "NEUTRAL",
+          "reason": "Page with redirect",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": "https://www.kmafaq.online/blog/apple-ios-27-siri-ai-update-pakistan",
+          "lastCrawlTime": "2026-09-23T14:27:53Z",
+          "checkedAt": "2026-11-27T15:42:24.101Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-minister-refuses-womens-asia-cup-trophy",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:23.863Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/dow-jones-ai-federal-rate-hike-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:23.594Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/oracle-ai-driven-layoffs-india-tech-professionals",
+          "status": "NOT_INDEXED",
+          "coverageState": "Page with redirect",
+          "verdict": "NEUTRAL",
+          "reason": "Page with redirect",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": "https://www.kmafaq.online/blog/oracle-ai-driven-layoffs-india-tech-professionals",
+          "lastCrawlTime": "2026-09-23T23:34:39Z",
+          "checkedAt": "2026-11-27T15:42:17.769Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/kp-cm-sohail-afridi-abduction-political-victimisation",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:17.744Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/strait-of-hormuz-oil-tanker-explosion-pakistan-energy",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:17.493Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/us-confirms-space-weapons-deployment-south-asia",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:42:04.581Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/saudi-air-strikes-houthi-hormuz-security",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:58.436Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/rentomojo-ipo-allotment-status-guide",
+          "status": "NOT_INDEXED",
+          "coverageState": "Page with redirect",
+          "verdict": "NEUTRAL",
+          "reason": "Canonical or duplicate mismatch",
+          "action": "Check rel=canonical, duplicate URLs, redirects and internal links; use one preferred indexable URL",
+          "userCanonical": "https://kmafaq.online/blog/rentomojo-ipo-allotment-status-guide",
+          "googleCanonical": "https://www.kmafaq.online/blog/rentomojo-ipo-allotment-status-guide",
+          "lastCrawlTime": "2026-09-24T23:03:31Z",
+          "checkedAt": "2026-11-27T15:41:58.391Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-bounty-masood-azhar-fatf-india-spat",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:58.390Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/us-space-weapons-ars-race-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:52.314Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/former-cricket-captains-call-humane-treatment-imran-khan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:52.233Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/indian-pakistani-naval-collision-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:52.198Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-u19-english-final-ball-analysis-expanded",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:46.134Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/yemen-conflict-pakistan-security-energy",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:46.072Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/zuckerberg-nvidia-ai-safety-debate-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:46.062Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/haris-raf-test-return-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:35.217Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/redmi-note-17-pro-max-note-17-pro-review-specs-pricing-india",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:30.075Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-petrol-price-hike-economic-impact",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:29.342Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/yoshua-bengios-alarm-ai-regulation-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:29.113Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-hospital-fire-safety-scandal-14-infant-deaths",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:23.702Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-women-thailand-women-asian-games-2026-quarter-final-preview",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:23.222Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/powerus-pakistan-army-drone-partnership",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:23.002Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/us-saudi-f35-sale-china-tech-threat-pakistan-south-asia",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:17.107Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-women-cricket-thailand-asian-games-quarterfinal-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:17.095Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/poland-airports-closures-drone-threat",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:16.882Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-austerity-fuel-conservation-tips",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:41:05.640Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/fed-rate-hike-pakistan-economy-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:59.447Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/arab-sea-pakistan-india-naval-collision-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:59.414Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-abstains-un-iran-sanctions",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:59.403Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/apple-siri-ai-test-iphone-18-preview",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:53.337Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/openai-six-ai-misbehavior-cases-alignment-insights",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:53.303Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/sbp-10-rupee-note-rumors",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:53.268Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/legacy-software-bug-grounds-thousands-nats-outage",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:47.183Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/acc-men-asia-cup-rising-stars-2026-pakistan-bangladesh-semi-final-preview",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:47.149Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/imran-khan-first-imprisonment-details-implications",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T15:40:47.108Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/government-protest-ban-constitutional-review",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:32:35.898Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/herat-pipeline-tapi-pakistan-energy-security",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:32:35.865Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/iran-drone-attack-kuwait-denial",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:32:29.877Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/1password-breach-pakistan-guide",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:32:29.672Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/regional-anti-terrorism-law-reforms-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-27T08:32:29.660Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/openai-ai-safety-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:30.700Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/ai-generated-intelligence-near-miss-pakistan-defence",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:30.677Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/google-gemini-4-neon-seo-guide-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:24.605Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/24k-gold-price-pakistan-investors-guide",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:24.587Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/babar-azam-ilt20-debut-analysis",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-26T08:17:24.568Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/pakistan-fuel-price-cuts-short-term-economic-impacts",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-25T08:33:44.135Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/google-gemini-ai-breach-lessons-pakistani-businesses",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-25T08:33:44.073Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/meta-muse-ai-agent-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-25T08:33:38.243Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/us-approval-f35-sale-saudi-pakistan",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-25T08:33:38.000Z"
+        },
+        {
+          "id": "kmafaq-online",
+          "domain": "kmafaq.online",
+          "url": "https://kmafaq.online/blog/huawei-guilty-us-verdict-pakistan-implications",
+          "status": "NOT_INDEXED",
+          "coverageState": "URL is unknown to Google",
+          "verdict": "NEUTRAL",
+          "reason": "URL is unknown to Google",
+          "action": "Inspect the URL in Search Console and compare the Google-selected and declared canonicals",
+          "userCanonical": null,
+          "googleCanonical": null,
+          "lastCrawlTime": null,
+          "checkedAt": "2026-11-25T08:33:37.983Z"
         }
       ],
-      "totalPages": 602,
-      "sweepCompletedAt": "2026-11-24T16:34:22.905Z"
+      "totalPages": 613,
+      "sweepCompletedAt": "2026-11-27T15:42:42.735Z"
     },
     {
       "id": "worksheet",
       "domain": "worksheet.live",
       "advanced": 0,
       "error": null,
-      "lastAttemptAt": "2026-11-24T16:29:34.959Z",
+      "lastAttemptAt": "2026-11-27T15:37:59.269Z",
       "inspectedUrls": [
         {
           "id": "worksheet",
@@ -21360,7 +22298,7 @@
           "userCanonical": "https://worksheet.live/create/templates",
           "googleCanonical": "https://worksheet.live/create/templates",
           "lastCrawlTime": "2026-11-19T23:17:49Z",
-          "checkedAt": "2026-11-20T07:15:08.322Z"
+          "checkedAt": "2026-11-27T08:32:03.184Z"
         },
         {
           "id": "worksheet",
@@ -21374,7 +22312,7 @@
           "userCanonical": null,
           "googleCanonical": "https://worksheet.live/create/coloring",
           "lastCrawlTime": "2026-11-15T16:43:02Z",
-          "checkedAt": "2026-11-20T07:15:08.279Z"
+          "checkedAt": "2026-11-27T08:32:03.183Z"
         },
         {
           "id": "worksheet",
@@ -21387,8 +22325,8 @@
           "action": null,
           "userCanonical": "https://worksheet.live/",
           "googleCanonical": "https://worksheet.live/",
-          "lastCrawlTime": "2026-11-18T14:04:28Z",
-          "checkedAt": "2026-11-20T07:15:02.210Z"
+          "lastCrawlTime": "2026-11-24T11:08:56Z",
+          "checkedAt": "2026-11-27T08:31:57.005Z"
         },
         {
           "id": "worksheet",
@@ -21402,7 +22340,7 @@
           "userCanonical": "https://worksheet.live/create",
           "googleCanonical": "https://worksheet.live/create",
           "lastCrawlTime": "2026-11-20T07:12:19Z",
-          "checkedAt": "2026-11-20T07:15:02.206Z"
+          "checkedAt": "2026-11-27T08:31:57.238Z"
         },
         {
           "id": "worksheet",
@@ -21415,8 +22353,8 @@
           "action": null,
           "userCanonical": "https://worksheet.live/worksheets",
           "googleCanonical": "https://worksheet.live/worksheets",
-          "lastCrawlTime": "2026-11-17T03:44:48Z",
-          "checkedAt": "2026-11-20T07:15:02.154Z"
+          "lastCrawlTime": "2026-11-24T15:18:26Z",
+          "checkedAt": "2026-11-27T08:31:57.012Z"
         },
         {
           "id": "worksheet",
